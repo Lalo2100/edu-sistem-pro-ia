@@ -20,7 +20,7 @@ textarea{min-height:120px;resize:vertical}
 button{border:0;border-radius:10px;padding:14px;font-size:16px;font-weight:bold;cursor:pointer}
 .primary{background:#1769aa;color:#fff}.secondary{background:#e7eef7;color:#173b67}
 #resultado{white-space:pre-wrap;line-height:1.5;background:#fafafa;border:1px solid #d9e0e8;padding:16px;border-radius:10px;min-height:200px}
-.small{font-size:13px;color:#667085}.material-list{margin-top:12px}.material{display:flex;gap:8px;align-items:center;padding:9px;background:#f5f8fc;border-radius:9px;margin:6px 0}.material span{flex:1}.material input{width:auto}.danger{background:#fbe5e5;color:#9b2226;padding:7px 10px;font-size:13px}
+.small{font-size:13px;color:#667085}
 @media(max-width:650px){.grid,.buttons{grid-template-columns:1fr}.full{grid-column:auto}main{margin:12px auto}.card{padding:16px}}
 </style>
 </head>
@@ -32,14 +32,6 @@ button{border:0;border-radius:10px;padding:14px;font-size:16px;font-weight:bold;
 
 <main>
 <section class="card">
-<h2>📚 Materiales de referencia</h2>
-<p class="small">Subí Diseños Curriculares, documentos de actualización curricular, programas, ejemplos de planificaciones o secuencias y otros materiales. Después elegí cuáles querés que Gemini use como referencia.</p>
-<input id="archivo" type="file" accept=".pdf,.docx,.txt,.md,.csv,.html,.htm">
-<br><br><button class="secondary" onclick="subirMaterial()">Agregar material</button>
-<div id="materiales" class="material-list"></div>
-</section>
-
-<section class="card">
 <h2>¿Qué querés crear?</h2>
 <div class="grid">
 <div>
@@ -48,10 +40,7 @@ button{border:0;border-radius:10px;padding:14px;font-size:16px;font-weight:bold;
 <option value="anual">Planificación anual</option>
 <option value="secuencia">Secuencia didáctica</option>
 <option value="proyecto">Proyecto</option>
-<option value="evaluacion">Evaluación</option>
-<option value="material">Material educativo</option>
-<option value="efemeride">Efeméride</option>
-<option value="acto">Acto escolar</option>
+<option value="rubrica">Rúbrica</option>
 </select>
 </div>
 <div>
@@ -79,11 +68,11 @@ button{border:0;border-radius:10px;padding:14px;font-size:16px;font-weight:bold;
 <div class="full">
 <label>¿Cómo querés que lo realice?</label>
 <textarea id="indicaciones" placeholder="Ej.: Necesito que tenga fundamentación, objetivos, contenidos, actividades y evaluación. Que sea sencillo y esté organizado en una tabla."></textarea>
-<p class="small">Podés escribir con tus propias palabras el formato, las secciones, extensión o características que necesitás. No existe una sección “Modelos”.</p>
+<p class="small">Acá podés indicar el formato o las características que necesitás, sin subir modelos.</p>
 </div>
 </div>
 <div class="buttons">
-<button class="primary" onclick="generar()">✨ Crear con Gemini</button>
+<button class="primary" onclick="generar()">Crear con IA</button>
 <button class="secondary" onclick="limpiar()">Limpiar</button>
 </div>
 </section>
@@ -102,31 +91,6 @@ button{border:0;border-radius:10px;padding:14px;font-size:16px;font-weight:bold;
 </main>
 
 <script>
-let lista=[];
-async function cargarMateriales(){
- const r=await fetch("/api/materiales"); const j=await r.json();
- lista=j.materiales||[]; renderMateriales();
-}
-function renderMateriales(){
- const box=document.getElementById("materiales");
- if(!lista.length){box.innerHTML='<p class="small">Todavía no agregaste materiales.</p>';return;}
- box.innerHTML=lista.map(m=>`<div class="material"><input type="checkbox" data-id="${m.id}" checked><span>📄 ${esc(m.nombre)} <small>(${m.caracteres} caracteres)</small></span><button class="danger" onclick="eliminar('${m.id}')">Eliminar</button></div>`).join("");
-}
-function esc(s){return s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
-async function subirMaterial(){
- const f=document.getElementById("archivo").files[0];
- if(!f){alert("Seleccioná un archivo.");return;}
- const fd=new FormData(); fd.append("material",f);
- document.getElementById("estado").textContent="Leyendo material...";
- try{
-  const r=await fetch("/api/materiales",{method:"POST",body:fd});
-  const j=await r.json(); if(!r.ok) throw new Error(j.error||"No se pudo agregar");
-  document.getElementById("archivo").value=""; await cargarMateriales();
-  document.getElementById("estado").textContent="Material agregado. Marcá los materiales que querés usar.";
- }catch(e){document.getElementById("estado").textContent="Error: "+e.message;}
-}
-async function eliminar(id){await fetch("/api/materiales/"+id,{method:"DELETE"});await cargarMateriales();}
-function seleccionados(){return [...document.querySelectorAll('#materiales input[type="checkbox"]:checked')].map(x=>x.dataset.id);}
 async function generar(){
  const estado=document.getElementById("estado");
  const resultado=document.getElementById("resultado");
@@ -139,15 +103,14 @@ async function generar(){
    area:document.getElementById("area").value,
    tema:document.getElementById("tema").value,
    duracion:document.getElementById("duracion").value,
-   indicaciones:document.getElementById("indicaciones").value,
-   materialIds:seleccionados()
+   indicaciones:document.getElementById("indicaciones").value
  };
  try{
    const r=await fetch("/api/generar",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(data)});
    const j=await r.json();
    if(!r.ok) throw new Error(j.error||"No se pudo generar");
    resultado.textContent=j.texto;
-   estado.textContent=j.materialesUsados?.length ? "Generado con Gemini usando: "+j.materialesUsados.join(", ") : "Generado correctamente con Gemini.";
+   estado.textContent="Trabajo generado correctamente.";
  }catch(e){estado.textContent="Error: "+e.message}
 }
 async function copiar(){
@@ -167,7 +130,6 @@ function limpiar(){
  document.getElementById("resultado").textContent="";
  document.getElementById("estado").textContent="Formulario limpio.";
 }
-cargarMateriales();
 </script>
 </body>
 </html>
