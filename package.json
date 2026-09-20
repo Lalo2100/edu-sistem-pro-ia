@@ -1,0 +1,16 @@
+{
+  "name": "edu-sistem-pro-ia",
+  "version": "1.1.0",
+  "private": true,
+  "description": "Edu.sistem pro ia - asistente inteligente para docentes con Gemini y materiales de referencia",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "multer": "^1.4.5-lts.1",
+    "pdf-parse": "^1.1.1",
+    "mammoth": "^1.8.0"
+  }
+}
