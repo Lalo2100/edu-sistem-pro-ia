@@ -1,6 +1,8 @@
 const express = require("express");
 const path = require("path");
 const multer = require("multer");
+const pdfParse = require("pdf-parse");
+const mammoth = require("mammoth");
 
 const app = express();
 
@@ -15,6 +17,10 @@ const upload = multer({
 app.use(express.json({ limit: "2mb" }));
 app.use(express.static(__dirname));
 
+/* =========================
+   SALUD
+   ========================= */
+
 app.get("/api/health", (_req, res) => {
   res.json({
     ok: true,
@@ -23,6 +29,60 @@ app.get("/api/health", (_req, res) => {
     geminiConfigured: Boolean(process.env.GEMINI_API_KEY)
   });
 });
+
+/* =========================
+   EXTRAER TEXTO
+   ========================= */
+
+async function extraerTextoArchivo(file) {
+  const nombre = file.originalname.toLowerCase();
+
+  if (nombre.endsWith(".pdf")) {
+    const resultado = await pdfParse(file.buffer);
+    return resultado.text || "";
+  }
+
+  if (
+    nombre.endsWith(".docx") ||
+    nombre.endsWith(".doc")
+  ) {
+    const resultado = await mammoth.extractRawText({
+      buffer: file.buffer
+    });
+
+    return resultado.value || "";
+  }
+
+  return file.buffer.toString("utf8");
+}
+
+/* =========================
+   LIMPIAR RESULTADO
+   ========================= */
+
+function limpiarMarkdown(texto) {
+  if (!texto) return "";
+
+  let salida = texto;
+
+  salida = salida.replace(/^#{1,6}\s*/gm, "");
+
+  salida = salida.replace(/\*\*(.*?)\*\*/g, "$1");
+
+  salida = salida.replace(/__(.*?)__/g, "$1");
+
+  salida = salida.replace(/^\s*[-*]\s+/gm, "• ");
+
+  salida = salida.replace(/^\s*>\s?/gm, "");
+
+  salida = salida.replace(/\n{3,}/g, "\n\n");
+
+  return salida.trim();
+}
+
+/* =========================
+   PROMPT
+   ========================= */
 
 function buildPrompt({
   tipo,
@@ -49,7 +109,11 @@ Generá directamente un documento pedagógico completo, claro, profesional y lis
 
 Usá español argentino.
 
-No inventes citas, normas, diseños curriculares ni documentos oficiales que no hayan sido proporcionados.
+No inventes citas, normas, diseños curriculares ni documentos oficiales.
+
+Si se proporcionan materiales de referencia, utilizalos como fuente contextual para elaborar el documento. No los menciones innecesariamente y no inventes información que contradiga esos materiales.
+
+DATOS DEL TRABAJO
 
 TIPO: ${kind}
 NIVEL: ${nivel || "No indicado"}
@@ -58,135 +122,287 @@ GRADO/CURSO: ${grado || "No indicado"}
 TEMA: ${tema}
 DURACIÓN: ${duracion || "A definir"}
 
-INDICACIONES DEL DOCENTE:
+INDICACIONES DEL DOCENTE
+
 ${indicaciones || "Sin indicaciones adicionales."}
 
-MATERIALES DE REFERENCIA:
+MATERIALES DE REFERENCIA
+
 ${materialesTexto || "No se adjuntaron materiales de referencia."}
 
-Completá las secciones pedagógicas que correspondan.
+CRITERIOS DE REDACCIÓN
 
-Para planificación o secuencia, considerá cuando sea pertinente:
-Fundamentación; Propósitos; Objetivos; Aprendizajes; Contenidos; Contenidos prioritarios; Ejes; Tiempo/Cronograma; Actividades de inicio, desarrollo y cierre; Recursos; Evaluación; Criterios de evaluación; Bibliografía o fuentes solo si corresponde.
+El documento debe ser claro, ordenado y profesional.
 
-Para proyecto, agregá además producto final, etapas, responsables y articulaciones cuando sean pertinentes.
+No utilices Markdown.
 
-Para rúbrica, presentá criterios y niveles de logro en una tabla clara.
+No uses:
+#
+##
+###
+**
+***
 
-Respetá especialmente las indicaciones del docente sobre formato, extensión y organización.
+Usá títulos y subtítulos escritos normalmente.
+
+Podés utilizar listas con guiones simples si son necesarias.
 
 No expliques cómo funciona la IA.
 
-Entregá directamente el documento.`;
+Entregá directamente el documento.
+
+Para PLANIFICACIÓN ANUAL considerá, cuando corresponda:
+
+Fundamentación
+Propósitos
+Objetivos
+Aprendizajes
+Contenidos
+Contenidos prioritarios
+Ejes
+Organización temporal
+Cronograma
+Actividades
+Estrategias de enseñanza
+Recursos
+Evaluación
+Criterios de evaluación
+Bibliografía o fuentes
+
+Para SECUENCIA DIDÁCTICA considerá:
+
+Fundamentación
+Propósitos
+Objetivos
+Aprendizajes
+Contenidos
+Inicio
+Desarrollo
+Cierre
+Recursos
+Evaluación
+Criterios de evaluación
+Cronograma
+
+Para PROYECTO considerá:
+
+Fundamentación
+Propósitos
+Objetivos
+Aprendizajes
+Contenidos
+Producto final
+Etapas
+Actividades
+Organización
+Responsables
+Recursos
+Articulaciones
+Evaluación
+
+Para RÚBRICA:
+
+Presentá criterios de evaluación y niveles de logro de manera clara.
+
+Si una tabla resulta necesaria, organizá la información de manera que pueda copiarse fácilmente a Word.
+
+Respetá especialmente las indicaciones del docente sobre formato, extensión y organización.
+
+Entregá únicamente el documento final.`;
 }
 
-app.post("/api/generar", upload.array("materiales"), async (req, res) => {
-  const data = req.body || {};
+/* =========================
+   GENERACIÓN
+   ========================= */
 
-  if (!data.tipo || !data.tema) {
-    return res.status(400).json({
-      error: "Indicá al menos el tipo de trabajo y el tema."
-    });
-  }
+app.post(
+  "/api/generar",
+  upload.array("materiales"),
+  async (req, res) => {
 
-  const apiKey = process.env.GEMINI_API_KEY;
+    const data = req.body || {};
 
-  if (!apiKey) {
-    return res.status(503).json({
-      error: "La IA no está configurada. Agregá GEMINI_API_KEY en Vercel."
-    });
-  }
+    if (!data.tipo || !data.tema) {
+      return res.status(400).json({
+        error: "Indicá al menos el tipo de trabajo y el tema."
+      });
+    }
 
-  try {
-    const materiales = req.files || [];
+    const apiKey = process.env.GEMINI_API_KEY;
 
-    const materialesTexto = materiales.map((f) => {
-      return `\n--- MATERIAL DE REFERENCIA: ${f.originalname} ---\n${f.buffer.toString("utf8")}`;
-    }).join("\n");
+    if (!apiKey) {
+      return res.status(503).json({
+        error:
+          "La IA no está configurada. Agregá GEMINI_API_KEY en Vercel."
+      });
+    }
 
-    const datosParaPrompt = {
-      ...data,
-      materialesTexto
-    };
+    try {
 
-    const r = await fetch(
-      "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-goog-api-key": apiKey
-        },
-        body: JSON.stringify({
-          contents: [
-            {
-              parts: [
-                {
-                  text: buildPrompt(datosParaPrompt)
-                }
-              ]
-            }
-          ],
-          generationConfig: {
-            maxOutputTokens: 6000
+      const materiales = req.files || [];
+
+      const materialesProcesados = [];
+
+      for (const file of materiales) {
+        try {
+          const texto = await extraerTextoArchivo(file);
+
+          if (texto && texto.trim()) {
+            materialesProcesados.push({
+              nombre: file.originalname,
+              texto: texto.trim()
+            });
           }
-        })
+        } catch (error) {
+          console.error(
+            "Error leyendo material:",
+            file.originalname,
+            error
+          );
+        }
       }
-    );
 
-    const j = await r.json();
+      const materialesTexto =
+        materialesProcesados
+          .map(
+            (m) =>
+              `--- MATERIAL: ${m.nombre} ---\n${m.texto}`
+          )
+          .join("\n\n");
 
-    if (!r.ok) {
-      console.error("Gemini error:", j);
+      const datosParaPrompt = {
+        ...data,
+        materialesTexto
+      };
 
-      return res.status(502).json({
-        error: j?.error?.message || "Gemini no pudo generar el contenido."
+      const respuesta = await fetch(
+        "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent",
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type": "application/json",
+            "x-goog-api-key": apiKey
+          },
+
+          body: JSON.stringify({
+            contents: [
+              {
+                parts: [
+                  {
+                    text: buildPrompt(datosParaPrompt)
+                  }
+                ]
+              }
+            ],
+
+            generationConfig: {
+              maxOutputTokens: 6000
+            }
+          })
+        }
+      );
+
+      const resultado = await respuesta.json();
+
+      if (!respuesta.ok) {
+
+        console.error(
+          "Gemini error:",
+          resultado
+        );
+
+        return res.status(502).json({
+          error:
+            resultado?.error?.message ||
+            "Gemini no pudo generar el contenido."
+        });
+      }
+
+      const textoGenerado =
+        (
+          resultado?.candidates?.[0]?.content?.parts ||
+          []
+        )
+          .map((parte) => parte.text || "")
+          .join("")
+          .trim();
+
+      if (!textoGenerado) {
+        return res.status(502).json({
+          error:
+            "Gemini no devolvió contenido. Probá nuevamente."
+        });
+      }
+
+      const textoFinal =
+        limpiarMarkdown(textoGenerado);
+
+      return res.json({
+        ok: true,
+        texto: textoFinal,
+        modelo: "Gemini 3.6 Flash",
+        materialesUsados:
+          materialesProcesados.map(
+            (m) => m.nombre
+          )
+      });
+
+    } catch (error) {
+
+      console.error(
+        "Generation error:",
+        error
+      );
+
+      return res.status(500).json({
+        error:
+          "No se pudo generar el trabajo. Revisá los registros de Vercel."
       });
     }
-
-    const texto = (j?.candidates?.[0]?.content?.parts || [])
-      .map((p) => p.text || "")
-      .join("")
-      .trim();
-
-    if (!texto) {
-      return res.status(502).json({
-        error: "Gemini no devolvió contenido. Probá nuevamente."
-      });
-    }
-
-    return res.json({
-      ok: true,
-      texto,
-      modelo: "Gemini 3.6 Flash",
-      materialesUsados: materiales.map((f) => f.originalname)
-    });
-
-  } catch (err) {
-    console.error("Generation error:", err);
-
-    return res.status(500).json({
-      error: "No se pudo conectar con Gemini. Revisá la configuración del servidor."
-    });
   }
-});
+);
+
+/* =========================
+   PÁGINA PRINCIPAL
+   ========================= */
 
 app.get("/", (_req, res) => {
-  res.sendFile(path.join(__dirname, "index.html"));
+  res.sendFile(
+    path.join(__dirname, "index.html")
+  );
 });
 
+/* =========================
+   RUTAS RESTANTES
+   ========================= */
+
 app.get("*", (_req, res) => {
-  res.sendFile(path.join(__dirname, "index.html"));
+  res.sendFile(
+    path.join(__dirname, "index.html")
+  );
 });
+
+/* =========================
+   EXPORTACIÓN
+   ========================= */
 
 module.exports = app;
 
+/* =========================
+   SERVIDOR LOCAL
+   ========================= */
+
 if (require.main === module) {
-  const PORT = process.env.PORT || 3021;
+
+  const PORT =
+    process.env.PORT || 3021;
 
   app.listen(PORT, () => {
+
     console.log(
       `Edu.sistem pro ia funcionando en http://localhost:${PORT}`
     );
+
   });
 }
