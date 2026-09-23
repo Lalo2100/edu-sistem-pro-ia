@@ -1,135 +1,59 @@
 <!doctype html>
-<html lang="es">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Edu.sistem pro ia</title>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#1769aa"><meta name="description" content="Edu.sistem Pro IA - Asistente inteligente para docentes"><title>Edu.sistem Pro IA</title>
 <style>
-*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f4f7fb;color:#18212f}
-header{background:#173b67;color:white;padding:22px 18px;text-align:center}
-header h1{margin:0;font-size:28px}header p{margin:7px 0 0;opacity:.9}
-main{max-width:850px;margin:22px auto;padding:0 15px}
-.card{background:white;border-radius:16px;padding:20px;box-shadow:0 4px 18px #00000012;margin-bottom:18px}
-h2{margin-top:0;color:#173b67}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-label{font-weight:bold;font-size:14px;display:block;margin-bottom:5px}
-input,select,textarea{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:9px;font-size:16px}
-textarea{min-height:120px;resize:vertical}
-.full{grid-column:1/-1}
-.buttons{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-button{border:0;border-radius:10px;padding:14px;font-size:16px;font-weight:bold;cursor:pointer}
-.primary{background:#1769aa;color:#fff}.secondary{background:#e7eef7;color:#173b67}
-#resultado{white-space:pre-wrap;line-height:1.5;background:#fafafa;border:1px solid #d9e0e8;padding:16px;border-radius:10px;min-height:200px}
-.small{font-size:13px;color:#667085}
-@media(max-width:650px){.grid,.buttons{grid-template-columns:1fr}.full{grid-column:auto}main{margin:12px auto}.card{padding:16px}}
-</style>
-</head>
-<body>
-<header>
-  <h1>Edu.sistem pro ia</h1>
-  <p>Asistente inteligente para docentes</p>
-</header>
-
+:root{--blue:#1769aa;--navy:#173b67;--teal:#18a999;--gold:#f5b942;--bg:#f4f7fb;--card:#fff;--text:#18212f;--muted:#667085;--line:#d9e2ec;--ok:#16805b;--danger:#b42318}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--text)}
+header{background:linear-gradient(135deg,var(--navy),#1769aa 65%,#18a999);color:#fff;padding:18px 16px 24px}.top{max-width:1080px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:20px}.brand{display:flex;align-items:center;gap:12px}.brandLogo{width:64px;height:64px;flex:0 0 64px;display:block;filter:drop-shadow(0 4px 8px #0002)}.brand h1{font-size:26px;margin:0}.brand p{margin:4px 0 0;opacity:.9;font-size:14px}.status{font-size:13px;background:#ffffff1f;border:1px solid #ffffff33;padding:8px 11px;border-radius:999px}
+nav{max-width:1080px;margin:16px auto 0;display:flex;gap:8px;flex-wrap:wrap}nav button{background:#fff1;color:#fff;border:1px solid #ffffff33;padding:9px 12px;border-radius:10px;font-weight:700;cursor:pointer}
+main{max-width:1080px;margin:20px auto;padding:0 14px}.hero{display:grid;grid-template-columns:1.3fr .7fr;gap:16px;margin-bottom:16px}.card{background:var(--card);border:1px solid #e3e9f0;border-radius:18px;padding:20px;box-shadow:0 6px 24px #173b6710;margin-bottom:16px}.hero .card{margin:0}.hero h2{font-size:25px;margin:0 0 8px;color:var(--navy)}.hero p{margin:0;color:var(--muted);line-height:1.5}.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.step{background:#f6f9fc;border-radius:12px;padding:12px}.step b{display:block;color:var(--blue);font-size:13px}.step span{font-size:13px;color:var(--muted)}
+h2{color:var(--navy);margin:0 0 8px}.small{font-size:13px;color:var(--muted);line-height:1.45}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.full{grid-column:1/-1}label{display:block;font-weight:800;font-size:13px;margin:0 0 6px}input,select,textarea{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:10px;font:inherit;background:#fff}textarea{min-height:125px;resize:vertical}.buttons{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}button{border:0;border-radius:10px;padding:12px 15px;font-size:15px;font-weight:800;cursor:pointer}.primary{background:var(--blue);color:#fff}.secondary{background:#e8f0f8;color:var(--navy)}.ghost{background:#fff;border:1px solid var(--line);color:var(--navy)}button:disabled{opacity:.6;cursor:not-allowed}
+.material{display:flex;align-items:center;gap:9px;padding:10px;background:#f6f9fc;border:1px solid #e6edf4;border-radius:10px;margin-top:7px}.material span{flex:1}.danger{background:#fdecec;color:var(--danger);padding:7px 9px;font-size:12px}.tag{display:inline-block;background:#e9f7f4;color:#087f71;padding:4px 8px;border-radius:999px;font-size:12px;font-weight:800}
+#resultadoTexto{white-space:pre-wrap;line-height:1.58;background:#fbfcfe;border:1px solid var(--line);padding:18px;border-radius:12px;min-height:220px;overflow:auto}.state{padding:9px 11px;border-radius:9px;background:#f5f8fb;color:var(--muted);font-size:13px}.ok{color:var(--ok)}.err{color:var(--danger)}
+.plans{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.plan{border:1px solid var(--line);border-radius:14px;padding:15px;background:#fff}.plan h3{margin:0;color:var(--navy)}.price{font-size:20px;font-weight:900;margin:8px 0}.plan p{font-size:13px;color:var(--muted);margin:0}.note{background:#fff8e7;border:1px solid #f3dda2;color:#795a00;padding:11px;border-radius:10px;font-size:13px;margin-top:12px}
+footer{max-width:1080px;margin:0 auto;padding:10px 14px 30px;color:var(--muted);font-size:12px;text-align:center}@media(max-width:800px){.hero{grid-template-columns:1fr}.plans{grid-template-columns:1fr 1fr}.steps{grid-template-columns:1fr 1fr}}@media(max-width:620px){.grid,.plans{grid-template-columns:1fr}.full{grid-column:auto}.top{align-items:flex-start}.status{display:none}.brand h1{font-size:21px}.brandLogo{width:52px;height:52px;flex-basis:52px}}
+</style></head><body>
+<header><div class="top"><div class="brand" aria-label="Edu.sistem Pro IA">
+<svg class="brandLogo" viewBox="0 0 120 120" role="img" aria-label="Logo Edu.sistem Pro IA">
+<defs><linearGradient id="logoGrad" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#1769aa"/><stop offset="1" stop-color="#18a999"/></linearGradient></defs>
+<rect x="2" y="2" width="116" height="116" rx="28" fill="#fff"/>
+<path d="M60 15 99 29v35c0 25-16 41-39 51C37 105 21 89 21 64V29l39-14Z" fill="url(#logoGrad)"/>
+<path d="m34 47 26-14 26 14-26 14-26-14Z" fill="#fff"/>
+<path d="M41 56v18c11 7 27 7 38 0V56L60 66 41 56Z" fill="#fff" opacity=".92"/>
+<circle cx="92" cy="28" r="8" fill="#f5b942"/>
+</svg>
+<div><h1>Edu.sistem Pro IA</h1><p>Asistente inteligente para docentes</p></div></div><div id="status" class="status">Comprobando conexión…</div></div>
+<nav><button onclick="ir('crear')">Crear</button><button onclick="ir('materiales')">Materiales</button><button onclick="ir('planes')">Planes</button><button onclick="ir('resultado')">Resultado</button></nav></header>
 <main>
-<section class="card">
-<h2>¿Qué querés crear?</h2>
-<div class="grid">
-<div>
-<label>Tipo de trabajo</label>
-<select id="tipo">
-<option value="anual">Planificación anual</option>
-<option value="secuencia">Secuencia didáctica</option>
-<option value="proyecto">Proyecto</option>
-<option value="rubrica">Rúbrica</option>
-</select>
-</div>
-<div>
-<label>Nivel</label>
-<select id="nivel">
-<option>Inicial</option><option selected>Primaria</option><option>Secundaria</option><option>Superior</option>
-</select>
-</div>
-<div>
-<label>Grado / Curso</label>
-<input id="grado" placeholder="Ej.: 5.º grado">
-</div>
-<div>
-<label>Área / Materia</label>
-<input id="area" placeholder="Ej.: Lengua">
-</div>
-<div class="full">
-<label>Tema</label>
-<input id="tema" placeholder="¿Sobre qué necesitás trabajar?">
-</div>
-<div>
-<label>Duración</label>
-<input id="duracion" placeholder="Ej.: 4 semanas">
-</div>
-<div class="full">
-<label>¿Cómo querés que lo realice?</label>
-<textarea id="indicaciones" placeholder="Ej.: Necesito que tenga fundamentación, objetivos, contenidos, actividades y evaluación. Que sea sencillo y esté organizado en una tabla."></textarea>
-<p class="small">Acá podés indicar el formato o las características que necesitás, sin subir modelos.</p>
-</div>
-</div>
-<div class="buttons">
-<button class="primary" onclick="generar()">Crear con IA</button>
-<button class="secondary" onclick="limpiar()">Limpiar</button>
-</div>
-</section>
-
-<section class="card">
-<h2>Resultado</h2>
-<div id="estado" class="small">Todavía no generaste un trabajo.</div>
-<br>
-<div id="resultado"></div>
-<br>
-<div class="buttons">
-<button class="primary" onclick="copiar()">Copiar</button>
-<button class="secondary" onclick="compartir()">Compartir</button>
-</div>
-</section>
-</main>
-
+<section class="hero"><div class="card"><h2>Prepará tu trabajo docente sin complicarte</h2><p>Elegí el documento, indicá los datos básicos y, si querés, agregá tus Diseños Curriculares o materiales institucionales. La IA los toma como referencia.</p><div class="steps" style="margin-top:14px"><div class="step"><b>1. Elegí</b><span>qué necesitás crear</span></div><div class="step"><b>2. Indicá</b><span>nivel, grado y área</span></div><div class="step"><b>3. Referenciá</b><span>tus materiales</span></div><div class="step"><b>4. Generá</b><span>y descargá/copialo</span></div></div></div><div class="card"><h2>🚀 Prueba rápida</h2><p class="small">Cargá un ejemplo y probá la generación.</p><button class="primary" style="width:100%;margin-top:12px" onclick="demo()">Completar ejemplo</button></div></section>
+<section id="materiales" class="card"><h2>📚 Materiales de referencia</h2><p class="small">Podés seleccionar PDF, Word, TXT, MD, CSV o HTML. Los archivos quedan en esta pantalla y se envían junto con la generación; no se necesita almacenamiento permanente en Vercel.</p><input id="archivo" type="file" accept=".pdf,.docx,.txt,.md,.csv,.html,.htm" multiple><div class="buttons"><button class="secondary" onclick="agregarMaterial()">+ Agregar material</button></div><div id="materialesLista"></div></section>
+<section id="crear" class="card"><h2>✨ ¿Qué querés crear?</h2><div class="grid">
+<div><label>Tipo de trabajo</label><select id="tipo"><option value="anual">Planificación anual</option><option value="secuencia">Secuencia didáctica</option><option value="proyecto">Proyecto</option><option value="rubrica">Rúbrica</option></select></div>
+<div><label>Nivel</label><select id="nivel"><option>Inicial</option><option selected>Primaria</option><option>Secundaria</option><option>Superior</option></select></div>
+<div><label>Grado / Curso</label><input id="grado" placeholder="Ej.: 5.º grado"></div><div><label>Área / Materia</label><input id="area" placeholder="Ej.: Lengua"></div>
+<div class="full"><label>Tema</label><input id="tema" placeholder="¿Sobre qué necesitás trabajar?"></div><div><label>Duración</label><input id="duracion" placeholder="Ej.: 4 semanas"></div>
+<div class="full"><label>¿Cómo querés que lo realice?</label><textarea id="indicaciones" placeholder="Ej.: incluir fundamentación, objetivos, actividades y evaluación, organizado en tablas."></textarea><p class="small">Podés escribirlo con tus palabras.</p></div></div>
+<div class="buttons"><button id="btnGenerar" class="primary" onclick="generar()">✨ Crear con Gemini</button><button class="secondary" onclick="limpiar()">Limpiar</button></div></section>
+<section id="resultado" class="card"><h2>📄 Resultado</h2><div id="estado" class="state">Todavía no generaste un trabajo.</div><br><div id="resultadoTexto"></div><div class="buttons"><button class="primary" onclick="copiar()">Copiar</button><button class="secondary" onclick="descargar()">Descargar .txt</button><button class="secondary" onclick="descargarWord()">Descargar Word</button><button class="ghost" onclick="imprimir()">Imprimir / PDF</button><button class="ghost" onclick="compartir()">Compartir</button></div></section>
+<section id="planes" class="card"><h2>💳 Planes</h2><p class="small">La estructura comercial queda preparada para la etapa de lanzamiento.</p><div class="plans"><div class="plan"><h3>Gratis</h3><div class="price">5 / mes</div><p>Para conocer la herramienta.</p></div><div class="plan"><h3>Docente</h3><div class="price">100 / mes</div><p>Para uso habitual.</p></div><div class="plan"><h3>Profesional</h3><div class="price">300 / mes</div><p>Para mayor volumen.</p></div><div class="plan"><h3>Institución</h3><div class="price">1000 / mes</div><p>Para equipos educativos.</p></div></div></section>
+</main><footer>Edu.sistem Pro IA · Asistente inteligente para docentes</footer>
 <script>
-async function generar(){
- const estado=document.getElementById("estado");
- const resultado=document.getElementById("resultado");
- estado.textContent="Generando...";
- resultado.textContent="";
- const data={
-   tipo:document.getElementById("tipo").value,
-   nivel:document.getElementById("nivel").value,
-   grado:document.getElementById("grado").value,
-   area:document.getElementById("area").value,
-   tema:document.getElementById("tema").value,
-   duracion:document.getElementById("duracion").value,
-   indicaciones:document.getElementById("indicaciones").value
- };
- try{
-   const r=await fetch("/api/generar",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(data)});
-   const j=await r.json();
-   if(!r.ok) throw new Error(j.error||"No se pudo generar");
-   resultado.textContent=j.texto;
-   estado.textContent="Trabajo generado correctamente.";
- }catch(e){estado.textContent="Error: "+e.message}
-}
-async function copiar(){
- const t=document.getElementById("resultado").textContent;
- if(!t) return;
- await navigator.clipboard.writeText(t);
- document.getElementById("estado").textContent="Copiado. Ahora podés pegarlo donde quieras.";
-}
-async function compartir(){
- const t=document.getElementById("resultado").textContent;
- if(!t) return;
- if(navigator.share) await navigator.share({title:"Edu.sistem pro ia",text:t});
- else await copiar();
-}
-function limpiar(){
- ["grado","area","tema","duracion","indicaciones"].forEach(id=>document.getElementById(id).value="");
- document.getElementById("resultado").textContent="";
- document.getElementById("estado").textContent="Formulario limpio.";
-}
-</script>
-</body>
-</html>
+let materiales=[];let ultimo='';const $=id=>document.getElementById(id);
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function ir(id){$(id).scrollIntoView({behavior:'smooth'});}
+function setEstado(t,cl=''){$('estado').textContent=t;$('estado').className='state '+cl;}
+async function health(){try{const r=await fetch('/api/health');const j=await r.json();$('status').textContent=j.geminiConfigured?'✓ Gemini conectado':'⚠ Falta GEMINI_API_KEY';}catch(e){$('status').textContent='⚠ Servidor no disponible';}}
+function agregarMaterial(){const files=[...$('archivo').files];if(!files.length){alert('Seleccioná uno o más archivos.');return;}for(const f of files){if(!materiales.some(x=>x.name===f.name&&x.size===f.size))materiales.push(f);} $('archivo').value='';renderMateriales();}
+function renderMateriales(){const box=$('materialesLista');if(!materiales.length){box.innerHTML='<p class="small">Todavía no agregaste materiales.</p>';return;}box.innerHTML=materiales.map((m,i)=>`<div class="material"><span>📄 ${esc(m.name)} <small>(${Math.round(m.size/1024)} KB)</small></span><button class="danger" onclick="eliminarMaterial(${i})">Eliminar</button></div>`).join('');}
+function eliminarMaterial(i){materiales.splice(i,1);renderMateriales();}
+async function generar(){const tema=$('tema').value.trim();if(!tema){setEstado('Escribí el tema que necesitás trabajar.','err');ir('crear');return;}const btn=$('btnGenerar');btn.disabled=true;btn.textContent='⏳ Generando…';$('resultadoTexto').textContent='';setEstado('Consultando Gemini y preparando el documento…');const fd=new FormData();fd.append('tipo',$('tipo').value);fd.append('nivel',$('nivel').value);fd.append('grado',$('grado').value);fd.append('area',$('area').value);fd.append('tema',tema);fd.append('duracion',$('duracion').value);fd.append('indicaciones',$('indicaciones').value);materiales.forEach(f=>fd.append('materiales',f,f.name));try{const r=await fetch('/api/generar',{method:'POST',body:fd});const raw=await r.text();let j={};try{j=JSON.parse(raw)}catch(_){j={error:raw||('HTTP '+r.status)}}if(!r.ok)throw Error(j.error||('HTTP '+r.status));ultimo=j.texto||'';$('resultadoTexto').textContent=ultimo;setEstado('✓ Generado correctamente con '+(j.modelo||'Gemini')+(j.materialesUsados?.length?' · Materiales usados: '+j.materialesUsados.join(', '):''),'ok');ir('resultado');}catch(e){setEstado('Error: '+e.message,'err');}finally{btn.disabled=false;btn.textContent='✨ Crear con Gemini';}}
+async function copiar(){if(!ultimo)return;try{await navigator.clipboard.writeText(ultimo);setEstado('✓ Copiado al portapapeles.','ok')}catch(e){setEstado('No se pudo copiar automáticamente.','err')}}
+function descargar(){if(!ultimo)return;const a=document.createElement('a');const u=URL.createObjectURL(new Blob([ultimo],{type:'text/plain;charset=utf-8'}));a.href=u;a.download='Edu.sistem_Pro_IA_resultado.txt';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000);}
+function descargarWord(){if(!ultimo)return;const html='<!doctype html><html><head><meta charset="utf-8"><title>Edu.sistem Pro IA</title></head><body style="font-family:Arial;line-height:1.55"><h1>Edu.sistem Pro IA</h1><div>'+esc(ultimo).replace(/\n/g,'<br>')+'</div></body></html>';const blob=new Blob(['\ufeff',html],{type:'application/msword'});const u=URL.createObjectURL(blob);const a=document.createElement('a');a.href=u;a.download='Edu.sistem_Pro_IA_resultado.doc';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000);}
+function imprimir(){if(!ultimo)return;const w=window.open('','_blank');if(!w){setEstado('El navegador bloqueó la ventana de impresión. Permitila para descargar PDF.','err');return;}w.document.write('<html><head><title>Edu.sistem Pro IA</title><style>body{font-family:Arial;line-height:1.55;padding:35px;white-space:pre-wrap}</style></head><body>'+esc(ultimo)+'</body></html>');w.document.close();w.print();}
+async function compartir(){if(!ultimo)return;if(navigator.share){try{await navigator.share({title:'Edu.sistem Pro IA',text:ultimo})}catch(e){}}else copiar();}
+function limpiar(){['grado','area','tema','duracion','indicaciones'].forEach(id=>$(id).value='');$('resultadoTexto').textContent='';ultimo='';setEstado('Formulario limpio.');}
+function demo(){$('tipo').value='secuencia';$('nivel').value='Primaria';$('grado').value='5.º grado';$('area').value='Lengua';$('tema').value='Comprensión lectora y producción de textos';$('duracion').value='4 semanas';$('indicaciones').value='Incluir fundamentación, propósitos, objetivos, aprendizajes, contenidos, actividades de inicio-desarrollo-cierre, criterios de evaluación y recursos. Organizar el cronograma en una tabla.';ir('crear');}
+health();renderMateriales();
+window.addEventListener('error',e=>{if(e.message)setEstado('Error de la aplicación: '+e.message,'err');});
+</script></body></html>
