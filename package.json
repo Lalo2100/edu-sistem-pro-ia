@@ -1,1 +1,11 @@
-{"name":"edu-sistem-pro-ia","version":"2.4.0","private":true,"dependencies":{"multer":"^1.4.5-lts.1","pdf-parse":"^1.1.1","mammoth":"^1.8.0"}}
+{
+  "name": "edu-sistem-pro-ia",
+  "version": "2.4.0",
+  "private": true,
+  "dependencies": {
+    "express": "^4.21.2",
+    "multer": "^1.4.5-lts.1",
+    "pdf-parse": "^1.1.1",
+    "mammoth": "^1.8.0"
+  }
+}
