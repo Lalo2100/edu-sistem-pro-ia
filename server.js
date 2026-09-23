@@ -1,7 +1,16 @@
 const express = require("express");
 const path = require("path");
+const multer = require("multer");
 
 const app = express();
+
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    files: 10,
+    fileSize: 10 * 1024 * 1024
+  }
+});
 
 app.use(express.json({ limit: "2mb" }));
 
