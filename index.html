@@ -13,6 +13,117 @@ h2{color:var(--navy);margin:0 0 8px}.small{font-size:13px;color:var(--muted);lin
 .plans{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.plan{border:1px solid var(--line);border-radius:14px;padding:15px;background:#fff}.plan h3{margin:0;color:var(--navy)}.price{font-size:20px;font-weight:900;margin:8px 0}.plan p{font-size:13px;color:var(--muted);margin:0}.note{background:#fff8e7;border:1px solid #f3dda2;color:#795a00;padding:11px;border-radius:10px;font-size:13px;margin-top:12px}
 footer{max-width:1080px;margin:0 auto;padding:10px 14px 30px;color:var(--muted);font-size:12px;text-align:center}@media(max-width:800px){.hero{grid-template-columns:1fr}.plans{grid-template-columns:1fr 1fr}.steps{grid-template-columns:1fr 1fr}}@media(max-width:620px){.grid,.plans{grid-template-columns:1fr}.full{grid-column:auto}.top{align-items:flex-start}.status{display:none}.brand h1{font-size:21px}.brandLogo{width:52px;height:52px;flex-basis:52px}}
 </style></head><body>
+  <section id="biblioteca-cordoba" style="
+  margin:20px auto;
+  max-width:1100px;
+  padding:20px;
+  border-radius:18px;
+  background:#ffffff;
+  box-shadow:0 4px 18px rgba(0,0,0,.08);
+  border:1px solid #e5e7eb;
+">
+
+  <div style="margin-bottom:18px;">
+    <h2 style="margin:0 0 6px;font-size:24px;">
+      📚 Biblioteca Curricular Córdoba
+    </h2>
+
+    <p style="margin:0;color:#667085;">
+      Recursos curriculares para acompañar la elaboración de tus trabajos docentes.
+    </p>
+  </div>
+
+  <div style="
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:12px;
+  ">
+
+    <button type="button" onclick="seleccionarBiblioteca('Inicial')">
+      🟣 Inicial
+    </button>
+
+    <button type="button" onclick="seleccionarBiblioteca('Primaria')">
+      🔵 Primaria
+    </button>
+
+    <button type="button" onclick="seleccionarBiblioteca('Secundaria')">
+      🟢 Secundaria
+    </button>
+
+    <button type="button" onclick="seleccionarBiblioteca('Superior')">
+      🟠 Superior
+    </button>
+
+    <button type="button" onclick="seleccionarBiblioteca('Educación Especial')">
+      🟡 Educación Especial
+    </button>
+
+    <button type="button" onclick="seleccionarBiblioteca('Jóvenes y Adultos')">
+      🟤 Jóvenes y Adultos
+    </button>
+
+    <button type="button" onclick="seleccionarBiblioteca('Educación Rural')">
+      🌾 Educación Rural
+    </button>
+
+    <button type="button" onclick="seleccionarBiblioteca('Educación Técnico Profesional')">
+      🔧 Educación Técnico Profesional
+    </button>
+
+    <button type="button" onclick="seleccionarBiblioteca('Progresiones')">
+      📈 Progresiones
+    </button>
+
+    <button type="button" onclick="seleccionarBiblioteca('Aprendizajes y Contenidos Fundamentales')">
+      🎯 Aprendizajes y Contenidos Fundamentales
+    </button>
+
+    <button type="button" onclick="seleccionarBiblioteca('Actualización curricular')">
+      📘 Actualización curricular
+    </button>
+
+    <button type="button" onclick="seleccionarBiblioteca('Referencias 2026')">
+      🏛️ Referencias 2026
+    </button>
+
+    <button type="button" onclick="seleccionarBiblioteca('Materiales que carga el docente')">
+      👨‍🏫 Materiales que carga el docente
+    </button>
+
+  </div>
+
+  <div id="biblioteca-seleccionada" style="
+    display:none;
+    margin-top:18px;
+    padding:14px;
+    border-radius:12px;
+    background:#f8fafc;
+    border:1px solid #e2e8f0;
+  "></div>
+
+</section>
+
+<script>
+function seleccionarBiblioteca(categoria) {
+  const panel = document.getElementById("biblioteca-seleccionada");
+
+  panel.style.display = "block";
+
+  panel.innerHTML = `
+    <strong>📚 ${categoria}</strong>
+    <p style="margin:8px 0 0;color:#667085;">
+      Categoría seleccionada. Los materiales curriculares asociados
+      podrán utilizarse como referencia para elaborar el trabajo docente.
+    </p>
+  `;
+
+  panel.scrollIntoView({
+    behavior: "smooth",
+    block: "nearest"
+  });
+}
+</script>
 <header><div class="top"><div class="brand" aria-label="Edu.sistem Pro IA">
 <svg class="brandLogo" viewBox="0 0 120 120" role="img" aria-label="Logo Edu.sistem Pro IA">
 <defs><linearGradient id="logoGrad" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#1769aa"/><stop offset="1" stop-color="#18a999"/></linearGradient></defs>
