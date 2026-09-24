@@ -6,6 +6,10 @@ const mammoth = require("mammoth");
 
 const app = express();
 
+/* =========================================================
+   CONFIGURACIÓN DE ARCHIVOS
+   ========================================================= */
+
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: {
@@ -17,9 +21,9 @@ const upload = multer({
 app.use(express.json({ limit: "2mb" }));
 app.use(express.static(__dirname));
 
-/* =========================
-   SALUD
-   ========================= */
+/* =========================================================
+   HEALTH CHECK
+   ========================================================= */
 
 app.get("/api/health", (_req, res) => {
   res.json({
@@ -30,18 +34,20 @@ app.get("/api/health", (_req, res) => {
   });
 });
 
-/* =========================
-   EXTRAER TEXTO
-   ========================= */
+/* =========================================================
+   LECTURA DE MATERIALES
+   ========================================================= */
 
 async function extraerTextoArchivo(file) {
-  const nombre = file.originalname.toLowerCase();
+  const nombre = (file.originalname || "").toLowerCase();
 
+  /* PDF */
   if (nombre.endsWith(".pdf")) {
     const resultado = await pdfParse(file.buffer);
     return resultado.text || "";
   }
 
+  /* WORD */
   if (
     nombre.endsWith(".docx") ||
     nombre.endsWith(".doc")
@@ -53,36 +59,46 @@ async function extraerTextoArchivo(file) {
     return resultado.value || "";
   }
 
+  /* TXT, MD, CSV, HTML y otros textos */
   return file.buffer.toString("utf8");
 }
 
-/* =========================
-   LIMPIAR RESULTADO
-   ========================= */
+/* =========================================================
+   LIMPIEZA DEL TEXTO GENERADO
+   ========================================================= */
 
-function limpiarMarkdown(texto) {
+function limpiarResultado(texto) {
   if (!texto) return "";
 
   let salida = texto;
 
+  /* Eliminar encabezados Markdown */
   salida = salida.replace(/^#{1,6}\s*/gm, "");
 
+  /* Eliminar negritas Markdown */
   salida = salida.replace(/\*\*(.*?)\*\*/g, "$1");
 
-  salida = salida.replace(/__(.*?)__/g, "$1");
+  /* Eliminar cursivas Markdown */
+  salida = salida.replace(/\*(.*?)\*/g, "$1");
 
+  /* Eliminar guiones de listas y convertirlos en viñetas */
   salida = salida.replace(/^\s*[-*]\s+/gm, "• ");
 
+  /* Eliminar blockquotes */
   salida = salida.replace(/^\s*>\s?/gm, "");
 
+  /* Eliminar separadores */
+  salida = salida.replace(/^\s*[-*_]{3,}\s*$/gm, "");
+
+  /* Evitar demasiados saltos */
   salida = salida.replace(/\n{3,}/g, "\n\n");
 
   return salida.trim();
 }
 
-/* =========================
+/* =========================================================
    PROMPT
-   ========================= */
+   ========================================================= */
 
 function buildPrompt({
   tipo,
@@ -94,64 +110,88 @@ function buildPrompt({
   indicaciones,
   materialesTexto
 }) {
-  const names = {
+  const nombres = {
     anual: "PLANIFICACIÓN ANUAL",
     secuencia: "SECUENCIA DIDÁCTICA",
     proyecto: "PROYECTO",
     rubrica: "RÚBRICA"
   };
 
-  const kind = names[tipo] || "PROPUESTA DOCENTE";
+  const tipoTrabajo =
+    nombres[tipo] || "PROPUESTA DOCENTE";
 
-  return `Sos Edu.sistem pro ia, un asistente de apoyo para docentes de Argentina.
+  return `
+Sos Edu.sistem pro ia, un asistente de apoyo para docentes de Argentina.
 
-Generá directamente un documento pedagógico completo, claro, profesional y listo para editar.
+Tu tarea es elaborar directamente un documento pedagógico completo, claro, profesional y práctico.
 
-Usá español argentino.
+Utilizá español argentino.
 
-No inventes citas, normas, diseños curriculares ni documentos oficiales.
+IMPORTANTE SOBRE LOS MATERIALES DE REFERENCIA:
 
-Si se proporcionan materiales de referencia, utilizalos como fuente contextual para elaborar el documento. No los menciones innecesariamente y no inventes información que contradiga esos materiales.
+Los materiales proporcionados por el docente son fuentes de referencia.
+
+Si se adjunta un Diseño Curricular, programa, documento institucional u otro material pedagógico, analizá su contenido y utilizalo para fundamentar y seleccionar aprendizajes, contenidos, objetivos, ejes, criterios y actividades cuando corresponda.
+
+No inventes información que contradiga los materiales proporcionados.
+
+No inventes citas, páginas, resoluciones, documentos oficiales ni referencias que no aparezcan en los materiales o que no sean necesarias.
 
 DATOS DEL TRABAJO
 
-TIPO: ${kind}
-NIVEL: ${nivel || "No indicado"}
-GRADO/CURSO: ${grado || "No indicado"}
-ÁREA/MATERIA: ${area || "No indicada"}
-TEMA: ${tema}
-DURACIÓN: ${duracion || "A definir"}
+Tipo de trabajo:
+${tipoTrabajo}
 
-INDICACIONES DEL DOCENTE
+Nivel:
+${nivel || "No indicado"}
+
+Grado / Curso:
+${grado || "No indicado"}
+
+Área / Materia:
+${area || "No indicada"}
+
+Tema:
+${tema}
+
+Duración:
+${duracion || "A definir"}
+
+INDICACIONES DEL DOCENTE:
 
 ${indicaciones || "Sin indicaciones adicionales."}
 
-MATERIALES DE REFERENCIA
+MATERIALES DE REFERENCIA:
 
 ${materialesTexto || "No se adjuntaron materiales de referencia."}
 
-CRITERIOS DE REDACCIÓN
+REGLAS DE PRESENTACIÓN:
 
-El documento debe ser claro, ordenado y profesional.
+Entregá directamente el documento final.
+
+No expliques cómo funciona la inteligencia artificial.
 
 No utilices Markdown.
 
-No uses:
+No utilices:
 #
 ##
 ###
 **
 ***
+ni otros símbolos Markdown para organizar el documento.
 
-Usá títulos y subtítulos escritos normalmente.
+Usá títulos claros escritos normalmente.
 
-Podés utilizar listas con guiones simples si son necesarias.
+Usá subtítulos claros.
 
-No expliques cómo funciona la IA.
+Cuando corresponda, utilizá listas con viñetas.
 
-Entregá directamente el documento.
+El documento debe ser cómodo para copiar y pegar en Word.
 
-Para PLANIFICACIÓN ANUAL considerá, cuando corresponda:
+TIPO DE DOCUMENTO:
+
+Si es PLANIFICACIÓN ANUAL, incluí cuando corresponda:
 
 Fundamentación
 Propósitos
@@ -169,7 +209,7 @@ Evaluación
 Criterios de evaluación
 Bibliografía o fuentes
 
-Para SECUENCIA DIDÁCTICA considerá:
+Si es SECUENCIA DIDÁCTICA, incluí cuando corresponda:
 
 Fundamentación
 Propósitos
@@ -179,12 +219,13 @@ Contenidos
 Inicio
 Desarrollo
 Cierre
+Actividades
 Recursos
 Evaluación
 Criterios de evaluación
 Cronograma
 
-Para PROYECTO considerá:
+Si es PROYECTO, incluí cuando corresponda:
 
 Fundamentación
 Propósitos
@@ -200,20 +241,176 @@ Recursos
 Articulaciones
 Evaluación
 
-Para RÚBRICA:
+Si es RÚBRICA:
 
-Presentá criterios de evaluación y niveles de logro de manera clara.
+Presentá criterios de evaluación claros y niveles de logro.
 
-Si una tabla resulta necesaria, organizá la información de manera que pueda copiarse fácilmente a Word.
+La rúbrica debe ser fácil de copiar a Word y utilizar con estudiantes.
 
-Respetá especialmente las indicaciones del docente sobre formato, extensión y organización.
+Respetá las indicaciones específicas del docente sobre extensión, organización, enfoque y formato.
 
-Entregá únicamente el documento final.`;
+Entregá únicamente el documento final.
+`;
 }
 
-/* =========================
-   GENERACIÓN
-   ========================= */
+/* =========================================================
+   LLAMADA A GEMINI
+   ========================================================= */
+
+async function llamarGemini(modelo, prompt, apiKey) {
+  const url =
+    `https://generativelanguage.googleapis.com/v1beta/models/${modelo}:generateContent`;
+
+  return await fetch(url, {
+    method: "POST",
+
+    headers: {
+      "Content-Type": "application/json",
+      "x-goog-api-key": apiKey
+    },
+
+    body: JSON.stringify({
+      contents: [
+        {
+          parts: [
+            {
+              text: prompt
+            }
+          ]
+        }
+      ],
+
+      generationConfig: {
+        maxOutputTokens: 6000
+      }
+    })
+  });
+}
+
+/* =========================================================
+   GENERACIÓN CON REINTENTOS Y MODELO ALTERNATIVO
+   ========================================================= */
+
+async function generarConGemini(prompt, apiKey) {
+
+  const modelos = [
+    "gemini-3.6-flash",
+    "gemini-3.5-flash-lite"
+  ];
+
+  let ultimoError = null;
+
+  for (const modelo of modelos) {
+
+    for (let intento = 1; intento <= 2; intento++) {
+
+      try {
+
+        const respuesta =
+          await llamarGemini(
+            modelo,
+            prompt,
+            apiKey
+          );
+
+        const datos =
+          await respuesta.json();
+
+        /* ÉXITO */
+        if (respuesta.ok) {
+
+          const texto =
+            (
+              datos?.candidates?.[0]?.content?.parts ||
+              []
+            )
+              .map((parte) => parte.text || "")
+              .join("")
+              .trim();
+
+          if (texto) {
+            return {
+              ok: true,
+              texto,
+              modelo
+            };
+          }
+
+          ultimoError =
+            "Gemini no devolvió contenido.";
+        }
+
+        /* SATURACIÓN / LÍMITE TEMPORAL */
+        if (
+          respuesta.status === 429 ||
+          respuesta.status === 503
+        ) {
+
+          ultimoError =
+            datos?.error?.message ||
+            "El modelo está temporalmente saturado.";
+
+          /*
+           * Esperamos antes del segundo intento.
+           * Primer intento: 2 segundos
+           * Segundo intento: 4 segundos
+           */
+
+          if (intento < 2) {
+
+            const espera =
+              intento === 1
+                ? 2000
+                : 4000;
+
+            await new Promise(
+              (resolve) =>
+                setTimeout(resolve, espera)
+            );
+          }
+
+          continue;
+        }
+
+        /*
+         * Otro error: no tiene sentido
+         * seguir repitiendo la misma solicitud.
+         */
+
+        ultimoError =
+          datos?.error?.message ||
+          `Error de Gemini (${respuesta.status}).`;
+
+        break;
+
+      } catch (error) {
+
+        ultimoError =
+          error?.message ||
+          "No se pudo conectar con Gemini.";
+
+        if (intento < 2) {
+
+          await new Promise(
+            (resolve) =>
+              setTimeout(resolve, 2000)
+          );
+        }
+      }
+    }
+  }
+
+  return {
+    ok: false,
+    error:
+      ultimoError ||
+      "Los modelos de Gemini no pudieron responder."
+  };
+}
+
+/* =========================================================
+   GENERAR DOCUMENTO
+   ========================================================= */
 
 app.post(
   "/api/generar",
@@ -222,15 +419,21 @@ app.post(
 
     const data = req.body || {};
 
+    /* Validación */
     if (!data.tipo || !data.tema) {
+
       return res.status(400).json({
-        error: "Indicá al menos el tipo de trabajo y el tema."
+        error:
+          "Indicá al menos el tipo de trabajo y el tema."
       });
     }
 
-    const apiKey = process.env.GEMINI_API_KEY;
+    /* API KEY */
+    const apiKey =
+      process.env.GEMINI_API_KEY;
 
     if (!apiKey) {
+
       return res.status(503).json({
         error:
           "La IA no está configurada. Agregá GEMINI_API_KEY en Vercel."
@@ -239,21 +442,35 @@ app.post(
 
     try {
 
-      const materiales = req.files || [];
+      const materiales =
+        req.files || [];
 
       const materialesProcesados = [];
 
-      for (const file of materiales) {
-        try {
-          const texto = await extraerTextoArchivo(file);
+      /* -----------------------------------------
+         PROCESAR TODOS LOS MATERIALES
+         ----------------------------------------- */
 
-          if (texto && texto.trim()) {
+      for (const file of materiales) {
+
+        try {
+
+          const texto =
+            await extraerTextoArchivo(file);
+
+          if (
+            texto &&
+            texto.trim()
+          ) {
+
             materialesProcesados.push({
               nombre: file.originalname,
               texto: texto.trim()
             });
           }
+
         } catch (error) {
+
           console.error(
             "Error leyendo material:",
             file.originalname,
@@ -262,12 +479,21 @@ app.post(
         }
       }
 
+      /* -----------------------------------------
+         ARMAR CONTEXTO
+         ----------------------------------------- */
+
       const materialesTexto =
         materialesProcesados
-          .map(
-            (m) =>
-              `--- MATERIAL: ${m.nombre} ---\n${m.texto}`
-          )
+          .map((material) => {
+
+            return `
+--- MATERIAL DE REFERENCIA: ${material.nombre} ---
+
+${material.texto}
+`;
+
+          })
           .join("\n\n");
 
       const datosParaPrompt = {
@@ -275,77 +501,60 @@ app.post(
         materialesTexto
       };
 
-      const respuesta = await fetch(
-        "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent",
-        {
-          method: "POST",
+      const prompt =
+        buildPrompt(datosParaPrompt);
 
-          headers: {
-            "Content-Type": "application/json",
-            "x-goog-api-key": apiKey
-          },
+      /* -----------------------------------------
+         GENERAR
+         ----------------------------------------- */
 
-          body: JSON.stringify({
-            contents: [
-              {
-                parts: [
-                  {
-                    text: buildPrompt(datosParaPrompt)
-                  }
-                ]
-              }
-            ],
+      const resultado =
+        await generarConGemini(
+          prompt,
+          apiKey
+        );
 
-            generationConfig: {
-              maxOutputTokens: 6000
-            }
-          })
-        }
-      );
-
-      const resultado = await respuesta.json();
-
-      if (!respuesta.ok) {
+      if (!resultado.ok) {
 
         console.error(
-          "Gemini error:",
-          resultado
+          "Gemini final error:",
+          resultado.error
         );
 
         return res.status(502).json({
           error:
-            resultado?.error?.message ||
-            "Gemini no pudo generar el contenido."
+            "La IA está temporalmente ocupada. La aplicación está funcionando. Esperá unos segundos y probá nuevamente."
         });
       }
 
-      const textoGenerado =
-        (
-          resultado?.candidates?.[0]?.content?.parts ||
-          []
-        )
-          .map((parte) => parte.text || "")
-          .join("")
-          .trim();
-
-      if (!textoGenerado) {
-        return res.status(502).json({
-          error:
-            "Gemini no devolvió contenido. Probá nuevamente."
-        });
-      }
+      /* -----------------------------------------
+         LIMPIAR
+         ----------------------------------------- */
 
       const textoFinal =
-        limpiarMarkdown(textoGenerado);
+        limpiarResultado(
+          resultado.texto
+        );
+
+      /* -----------------------------------------
+         RESPUESTA
+         ----------------------------------------- */
 
       return res.json({
+
         ok: true,
+
         texto: textoFinal,
-        modelo: "Gemini 3.6 Flash",
+
+        modelo:
+          resultado.modelo,
+
         materialesUsados:
           materialesProcesados.map(
-            (m) => m.nombre
+            (material) =>
+              material.nombre
           )
+
       });
 
     } catch (error) {
@@ -357,52 +566,63 @@ app.post(
 
       return res.status(500).json({
         error:
-          "No se pudo generar el trabajo. Revisá los registros de Vercel."
+          "No se pudo generar el trabajo. Revisá la configuración del servidor."
       });
     }
   }
 );
 
-/* =========================
+/* =========================================================
    PÁGINA PRINCIPAL
-   ========================= */
+   ========================================================= */
 
 app.get("/", (_req, res) => {
+
   res.sendFile(
-    path.join(__dirname, "index.html")
+    path.join(
+      __dirname,
+      "index.html"
+    )
   );
 });
 
-/* =========================
+/* =========================================================
    RUTAS RESTANTES
-   ========================= */
+   ========================================================= */
 
 app.get("*", (_req, res) => {
+
   res.sendFile(
-    path.join(__dirname, "index.html")
+    path.join(
+      __dirname,
+      "index.html"
+    )
   );
 });
 
-/* =========================
-   EXPORTACIÓN
-   ========================= */
+/* =========================================================
+   EXPORTACIÓN PARA VERCEL
+   ========================================================= */
 
 module.exports = app;
 
-/* =========================
+/* =========================================================
    SERVIDOR LOCAL
-   ========================= */
+   ========================================================= */
 
 if (require.main === module) {
 
   const PORT =
     process.env.PORT || 3021;
 
-  app.listen(PORT, () => {
+  app.listen(
+    PORT,
+    () => {
 
-    console.log(
-      `Edu.sistem pro ia funcionando en http://localhost:${PORT}`
-    );
+      console.log(
+        `Edu.sistem pro ia funcionando en http://localhost:${PORT}`
+      );
 
-  });
+    }
+  );
 }
