@@ -1,4 +1,3 @@
-```html
 <!doctype html>
 <html lang="es">
 <head>
@@ -9,12 +8,17 @@
 <style>
 :root{
   --bg:#f5f7fb;
-  --card:#ffffff;
+  --card:#fff;
   --text:#182230;
   --muted:#667085;
   --line:#e5e7eb;
   --primary:#4f46e5;
   --primary-dark:#3730a3;
+  --soft:#eef2ff;
+  --ok:#067647;
+  --ok-bg:#ecfdf3;
+  --err:#b42318;
+  --err-bg:#fef3f2;
 }
 
 *{box-sizing:border-box}
@@ -29,7 +33,7 @@ body{
 header{
   background:#fff;
   border-bottom:1px solid var(--line);
-  padding:16px 24px;
+  padding:14px 20px;
   display:flex;
   justify-content:space-between;
   align-items:center;
@@ -42,9 +46,11 @@ header{
   gap:12px;
 }
 
+/* LOGO INTEGRADO: NO DEPENDE DE logo.svg */
 .logo{
-  width:44px;
-  height:44px;
+  width:48px;
+  height:48px;
+  flex:none;
 }
 
 .brand{
@@ -55,15 +61,17 @@ header{
 .subtitle{
   font-size:12px;
   color:var(--muted);
+  margin-top:2px;
 }
 
 .badge{
-  background:#eef2ff;
+  background:var(--soft);
   color:var(--primary-dark);
   padding:7px 10px;
   border-radius:20px;
   font-size:12px;
   font-weight:700;
+  white-space:nowrap;
 }
 
 main{
@@ -166,7 +174,7 @@ button:disabled{
 }
 
 button.secondary{
-  background:#eef2ff;
+  background:var(--soft);
   color:var(--primary-dark);
 }
 
@@ -183,42 +191,96 @@ button.danger{
   font-size:12px;
 }
 
+/* =========================
+   BIBLIOTECA
+========================= */
+
 .library-grid{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-  gap:10px;
-  margin-top:15px;
+  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+  gap:12px;
+  margin-top:16px;
 }
 
-.library-btn{
-  background:#fff;
-  color:var(--text);
+.library-card{
   border:1px solid var(--line);
-  text-align:left;
-  min-height:55px;
+  border-radius:14px;
+  padding:14px;
+  background:#fff;
 }
 
-.library-btn.active{
-  border:2px solid var(--primary);
-  background:#eef2ff;
+.library-title{
+  font-weight:800;
+  font-size:15px;
+  margin-bottom:5px;
+}
+
+.library-description{
+  font-size:12px;
+  color:var(--muted);
+  line-height:1.4;
+  min-height:34px;
+}
+
+.library-upload{
+  margin-top:10px;
+}
+
+.library-upload input{
+  font-size:12px;
+  padding:9px;
+}
+
+.library-files{
+  margin-top:8px;
+}
+
+.library-file{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  padding:7px 0;
+  border-bottom:1px solid var(--line);
+  font-size:12px;
+}
+
+.library-file:last-child{
+  border-bottom:0;
+}
+
+.library-file-name{
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.library-count{
+  display:inline-block;
+  margin-top:7px;
+  padding:4px 8px;
+  border-radius:12px;
+  background:var(--soft);
   color:var(--primary-dark);
+  font-size:11px;
+  font-weight:700;
 }
 
-.library-selected{
+.library-info{
   margin-top:14px;
   padding:12px;
   border-radius:10px;
   background:#f8fafc;
   color:#475467;
+  font-size:13px;
 }
 
-.library-selected.ok{
-  background:#ecfdf3;
-  color:#067647;
-}
+/* =========================
+   MATERIALES DOCENTE
+========================= */
 
 .material-box{
-  margin-top:16px;
+  margin-top:18px;
   padding:16px;
   border:1px dashed #cbd5e1;
   border-radius:13px;
@@ -238,6 +300,10 @@ button.danger{
   border-bottom:0;
 }
 
+/* =========================
+   RESULTADO
+========================= */
+
 .state{
   padding:12px;
   border-radius:10px;
@@ -245,13 +311,13 @@ button.danger{
 }
 
 .state.ok{
-  background:#ecfdf3;
-  color:#067647;
+  background:var(--ok-bg);
+  color:var(--ok);
 }
 
 .state.err{
-  background:#fef3f2;
-  color:#b42318;
+  background:var(--err-bg);
+  color:var(--err);
 }
 
 #resultadoTexto{
@@ -259,6 +325,10 @@ button.danger{
   line-height:1.6;
   min-height:20px;
 }
+
+/* =========================
+   PLANES
+========================= */
 
 .plans{
   display:grid;
@@ -285,6 +355,20 @@ footer{
 }
 
 @media(max-width:700px){
+
+  header{
+    padding:12px 14px;
+  }
+
+  .logo{
+    width:44px;
+    height:44px;
+  }
+
+  .brand{
+    font-size:18px;
+  }
+
   .grid{
     grid-template-columns:1fr;
   }
@@ -301,13 +385,14 @@ footer{
     font-size:27px;
   }
 
-  header{
-    padding:14px;
-  }
-
   .badge{
     display:none;
   }
+
+  .library-grid{
+    grid-template-columns:1fr;
+  }
+
 }
 </style>
 </head>
@@ -318,15 +403,59 @@ footer{
 
 <div class="logo-wrap">
 
-<img
-  class="logo"
-  src="/logo.svg"
-  alt="Edu.sistem Pro IA"
->
+<!-- LOGO SVG INTEGRADO -->
+<svg class="logo"
+     viewBox="0 0 100 100"
+     xmlns="http://www.w3.org/2000/svg"
+     aria-label="Logo Edu.sistem Pro IA">
+
+  <defs>
+    <linearGradient id="eduGradient"
+                    x1="0"
+                    y1="0"
+                    x2="1"
+                    y2="1">
+
+      <stop offset="0%" stop-color="#4f46e5"/>
+      <stop offset="100%" stop-color="#7c3aed"/>
+
+    </linearGradient>
+  </defs>
+
+  <rect
+    x="4"
+    y="4"
+    width="92"
+    height="92"
+    rx="24"
+    fill="url(#eduGradient)"
+  />
+
+  <path
+    d="M20 34 L50 20 L80 34 L50 48 Z"
+    fill="#ffffff"
+  />
+
+  <path
+    d="M30 43 V61 C30 69 39 76 50 76 C61 76 70 69 70 61 V43"
+    fill="none"
+    stroke="#ffffff"
+    stroke-width="6"
+    stroke-linecap="round"
+  />
+
+  <circle
+    cx="50"
+    cy="60"
+    r="5"
+    fill="#ffffff"
+  />
+
+</svg>
 
 <div>
-<div class="brand">Edu.sistem Pro IA</div>
-<div class="subtitle">Asistente inteligente para docentes</div>
+  <div class="brand">Edu.sistem Pro IA</div>
+  <div class="subtitle">Asistente inteligente para docentes</div>
 </div>
 
 </div>
@@ -357,103 +486,453 @@ Simple, rápido y pensado para usar desde el celular.
 
 <section id="biblioteca" class="card">
 
-<section id="biblioteca" class="card">
+<h2>📚 Biblioteca Curricular Córdoba</h2>
 
-  <h2>📚 Biblioteca Curricular Córdoba</h2>
+<p class="small">
+Cargá los documentos curriculares en la categoría correspondiente.
+Podés agregar varios documentos en cada categoría.
+</p>
 
-  <p class="small">
-    Seleccioná los documentos complementarios que querés tener en cuenta
-    para elaborar tu trabajo docente.
-  </p>
+<div class="library-grid">
 
-  <div class="library-grid">
 
-    <button
-      type="button"
-      class="library-btn"
-      data-cat="Progresiones"
-      onclick="seleccionarBiblioteca(this)">
-      📈 Progresiones
-    </button>
+<!-- PRIMARIA -->
 
-    <button
-      type="button"
-      class="library-btn"
-      data-cat="Aprendizajes y Contenidos Fundamentales"
-      onclick="seleccionarBiblioteca(this)">
-      🎯 Aprendizajes y Contenidos Fundamentales
-    </button>
+<div class="library-card">
 
-    <button
-      type="button"
-      class="library-btn"
-      data-cat="Actualización curricular"
-      onclick="seleccionarBiblioteca(this)">
-      📘 Actualización curricular
-    </button>
+<div class="library-title">
+🔵 Primaria
+</div>
 
-    <button
-      type="button"
-      class="library-btn"
-      data-cat="Diseños Curriculares"
-      onclick="seleccionarBiblioteca(this)">
-      📚 Diseños Curriculares
-    </button>
+<div class="library-description">
+Diseños, progresiones y actualizaciones curriculares de Educación Primaria.
+</div>
 
-    <button
-      type="button"
-      class="library-btn"
-      data-cat="Referencias 2026"
-      onclick="seleccionarBiblioteca(this)">
-      🏛️ Referencias 2026
-    </button>
+<div class="library-upload">
 
-  </div>
+<input
+type="file"
+class="biblioteca-file-input"
+data-cat="Primaria"
+accept=".pdf,.docx,.txt,.md"
+multiple
+>
 
-  <div
-    id="bibliotecaSeleccionada"
-    class="library-selected">
-    No seleccionaste documentación complementaria.
-  </div>
+</div>
 
-  <div class="material-box">
+<div
+id="files-Primaria"
+class="library-files">
+</div>
 
-    <h3>👨‍🏫 Materiales que carga el docente</h3>
+</div>
 
-    <p class="small">
-      Podés agregar tus propios documentos para utilizarlos como referencia
-      al elaborar el trabajo.
-    </p>
 
-    <input
-      id="archivo"
-      type="file"
-      accept=".pdf,.docx,.txt,.md,.csv,.html,.htm"
-      multiple
-    >
+<!-- INICIAL -->
 
-    <div class="buttons">
+<div class="library-card">
 
-      <button
-        type="button"
-        class="secondary"
-        onclick="agregarMaterial()">
-        + Agregar material
-      </button>
+<div class="library-title">
+🟣 Inicial
+</div>
 
-    </div>
+<div class="library-description">
+Documentos curriculares correspondientes al Nivel Inicial.
+</div>
 
-    <div id="materialesLista">
+<div class="library-upload">
 
-      <p class="small">
-        Todavía no agregaste materiales.
-      </p>
+<input
+type="file"
+class="biblioteca-file-input"
+data-cat="Inicial"
+accept=".pdf,.docx,.txt,.md"
+multiple
+>
 
-    </div>
+</div>
 
-  </div>
+<div
+id="files-Inicial"
+class="library-files">
+</div>
 
-</section>
+</div>
+
+
+<!-- SECUNDARIA -->
+
+<div class="library-card">
+
+<div class="library-title">
+🟢 Secundaria
+</div>
+
+<div class="library-description">
+Diseños y documentos curriculares de Educación Secundaria.
+</div>
+
+<div class="library-upload">
+
+<input
+type="file"
+class="biblioteca-file-input"
+data-cat="Secundaria"
+accept=".pdf,.docx,.txt,.md"
+multiple
+>
+
+</div>
+
+<div
+id="files-Secundaria"
+class="library-files">
+</div>
+
+</div>
+
+
+<!-- SUPERIOR -->
+
+<div class="library-card">
+
+<div class="library-title">
+🟠 Superior
+</div>
+
+<div class="library-description">
+Documentación curricular para Educación Superior.
+</div>
+
+<div class="library-upload">
+
+<input
+type="file"
+class="biblioteca-file-input"
+data-cat="Superior"
+accept=".pdf,.docx,.txt,.md"
+multiple
+>
+
+</div>
+
+<div
+id="files-Superior"
+class="library-files">
+</div>
+
+</div>
+
+
+<!-- ESPECIAL -->
+
+<div class="library-card">
+
+<div class="library-title">
+🟡 Educación Especial
+</div>
+
+<div class="library-description">
+Documentación y orientaciones para Educación Especial.
+</div>
+
+<div class="library-upload">
+
+<input
+type="file"
+class="biblioteca-file-input"
+data-cat="Educación Especial"
+accept=".pdf,.docx,.txt,.md"
+multiple
+>
+
+</div>
+
+<div
+id="files-Educación Especial"
+class="library-files">
+</div>
+
+</div>
+
+
+<!-- JÓVENES Y ADULTOS -->
+
+<div class="library-card">
+
+<div class="library-title">
+🟤 Jóvenes y Adultos
+</div>
+
+<div class="library-description">
+Documentos curriculares para la modalidad de Jóvenes y Adultos.
+</div>
+
+<div class="library-upload">
+
+<input
+type="file"
+class="biblioteca-file-input"
+data-cat="Jóvenes y Adultos"
+accept=".pdf,.docx,.txt,.md"
+multiple
+>
+
+</div>
+
+<div
+id="files-Jóvenes y Adultos"
+class="library-files">
+</div>
+
+</div>
+
+
+<!-- RURAL -->
+
+<div class="library-card">
+
+<div class="library-title">
+🌾 Educación Rural
+</div>
+
+<div class="library-description">
+Orientaciones y documentación específica para Educación Rural.
+</div>
+
+<div class="library-upload">
+
+<input
+type="file"
+class="biblioteca-file-input"
+data-cat="Educación Rural"
+accept=".pdf,.docx,.txt,.md"
+multiple
+>
+
+</div>
+
+<div
+id="files-Educación Rural"
+class="library-files">
+</div>
+
+</div>
+
+
+<!-- TÉCNICO PROFESIONAL -->
+
+<div class="library-card">
+
+<div class="library-title">
+🔧 Técnico Profesional
+</div>
+
+<div class="library-description">
+Documentación curricular de Educación Técnico Profesional.
+</div>
+
+<div class="library-upload">
+
+<input
+type="file"
+class="biblioteca-file-input"
+data-cat="Técnico Profesional"
+accept=".pdf,.docx,.txt,.md"
+multiple
+>
+
+</div>
+
+<div
+id="files-Técnico Profesional"
+class="library-files">
+</div>
+
+</div>
+
+
+<!-- PROGRESIONES -->
+
+<div class="library-card">
+
+<div class="library-title">
+📈 Progresiones
+</div>
+
+<div class="library-description">
+Progresiones de aprendizaje y documentos asociados.
+</div>
+
+<div class="library-upload">
+
+<input
+type="file"
+class="biblioteca-file-input"
+data-cat="Progresiones"
+accept=".pdf,.docx,.txt,.md"
+multiple
+>
+
+</div>
+
+<div
+id="files-Progresiones"
+class="library-files">
+</div>
+
+</div>
+
+
+<!-- APRENDIZAJES -->
+
+<div class="library-card">
+
+<div class="library-title">
+🎯 Aprendizajes y Contenidos Fundamentales
+</div>
+
+<div class="library-description">
+Documentos sobre aprendizajes y contenidos fundamentales.
+</div>
+
+<div class="library-upload">
+
+<input
+type="file"
+class="biblioteca-file-input"
+data-cat="Aprendizajes y Contenidos Fundamentales"
+accept=".pdf,.docx,.txt,.md"
+multiple
+>
+
+</div>
+
+<div
+id="files-Aprendizajes y Contenidos Fundamentales"
+class="library-files">
+</div>
+
+</div>
+
+
+<!-- ACTUALIZACIÓN -->
+
+<div class="library-card">
+
+<div class="library-title">
+📘 Actualización curricular
+</div>
+
+<div class="library-description">
+Actualizaciones y documentos curriculares complementarios.
+</div>
+
+<div class="library-upload">
+
+<input
+type="file"
+class="biblioteca-file-input"
+data-cat="Actualización curricular"
+accept=".pdf,.docx,.txt,.md"
+multiple
+>
+
+</div>
+
+<div
+id="files-Actualización curricular"
+class="library-files">
+</div>
+
+</div>
+
+
+<!-- REFERENCIAS -->
+
+<div class="library-card">
+
+<div class="library-title">
+🏛️ Referencias 2026
+</div>
+
+<div class="library-description">
+Documentos y referencias que quieras incorporar para el ciclo 2026.
+</div>
+
+<div class="library-upload">
+
+<input
+type="file"
+class="biblioteca-file-input"
+data-cat="Referencias 2026"
+accept=".pdf,.docx,.txt,.md"
+multiple
+>
+
+</div>
+
+<div
+id="files-Referencias 2026"
+class="library-files">
+</div>
+
+</div>
+
+</div>
+
+
+<div class="library-info">
+
+📌 <strong>Importante:</strong>
+los documentos que cargues desde esta pantalla se usarán como material
+de referencia para la generación. No hace falta subirlos a GitHub.
+
+</div>
+
+
+<!-- =====================================================
+     MATERIALES DEL DOCENTE
+===================================================== -->
+
+<div class="material-box">
+
+<h3>👨‍🏫 Materiales que carga el docente</h3>
+
+<p class="small">
+Acá podés agregar tus propios diseños, planificaciones, secuencias,
+programas, ejemplos o documentos institucionales.
+</p>
+
+<input
+id="archivo"
+type="file"
+accept=".pdf,.docx,.txt,.md,.csv,.html,.htm"
+multiple
+>
+
+<div class="buttons">
+
+<button
+type="button"
+class="secondary"
+onclick="agregarMaterial()">
+
++ Agregar material
+
+</button>
+
+</div>
+
+<div id="materialesLista">
+
+<p class="small">
+Todavía no agregaste materiales.
+</p>
+
+</div>
+
+</div>
 
 </section>
 
@@ -502,21 +981,13 @@ Rúbrica
 
 <select id="nivel">
 
-<option>
-Inicial
-</option>
+<option>Inicial</option>
 
-<option selected>
-Primaria
-</option>
+<option selected>Primaria</option>
 
-<option>
-Secundaria
-</option>
+<option>Secundaria</option>
 
-<option>
-Superior
-</option>
+<option>Superior</option>
 
 </select>
 
@@ -692,62 +1163,27 @@ La estructura comercial queda preparada para la etapa de lanzamiento.
 <div class="plans">
 
 <div class="plan">
-
 <h3>Gratis</h3>
-
-<div class="price">
-5 / mes
+<div class="price">5 / mes</div>
+<p>Para conocer la herramienta.</p>
 </div>
-
-<p>
-Para conocer la herramienta.
-</p>
-
-</div>
-
 
 <div class="plan">
-
 <h3>Docente</h3>
-
-<div class="price">
-100 / mes
+<div class="price">100 / mes</div>
+<p>Para uso habitual.</p>
 </div>
-
-<p>
-Para uso habitual.
-</p>
-
-</div>
-
 
 <div class="plan">
-
 <h3>Profesional</h3>
-
-<div class="price">
-300 / mes
+<div class="price">300 / mes</div>
+<p>Para mayor volumen.</p>
 </div>
-
-<p>
-Para mayor volumen.
-</p>
-
-</div>
-
 
 <div class="plan">
-
 <h3>Institución</h3>
-
-<div class="price">
-1000 / mes
-</div>
-
-<p>
-Para equipos educativos.
-</p>
-
+<div class="price">1000 / mes</div>
+<p>Para equipos educativos.</p>
 </div>
 
 </div>
@@ -758,9 +1194,7 @@ Para equipos educativos.
 
 
 <footer>
-
 Edu.sistem Pro IA · Asistente inteligente para docentes
-
 </footer>
 
 
@@ -768,14 +1202,17 @@ Edu.sistem Pro IA · Asistente inteligente para docentes
 
 let materiales=[];
 
+let bibliotecaMateriales=[];
+
 let ultimo='';
 
-let bibliotecaCategoria='';
+
+const $=id=>document.getElementById(id);
 
 
-const $=id=>
-document.getElementById(id);
-
+/* =====================================================
+   ESCAPE HTML
+===================================================== */
 
 function esc(s){
 
@@ -793,14 +1230,28 @@ c=>({
 }
 
 
+/* =====================================================
+   SCROLL
+===================================================== */
+
 function ir(id){
 
-$(id).scrollIntoView({
+const elemento=$(id);
+
+if(elemento){
+
+elemento.scrollIntoView({
 behavior:'smooth'
 });
 
 }
 
+}
+
+
+/* =====================================================
+   ESTADO
+===================================================== */
 
 function setEstado(t,cl=''){
 
@@ -813,36 +1264,168 @@ $('estado').className=
 
 
 /* =====================================================
-   BIBLIOTECA
+   BIBLIOTECA CURRICULAR
 ===================================================== */
 
-function seleccionarBiblioteca(btn){
-
-bibliotecaCategoria=
-btn.dataset.cat;
-
 document
-.querySelectorAll('.library-btn')
-.forEach(b=>
-b.classList.remove('active')
+.querySelectorAll('.biblioteca-file-input')
+.forEach(input=>{
+
+input.addEventListener(
+'change',
+function(){
+
+const categoria=
+this.dataset.cat;
+
+const files=
+[...this.files];
+
+if(!files.length)return;
+
+for(const f of files){
+
+const existe=
+bibliotecaMateriales.some(
+x=>
+x.categoria===categoria &&
+x.name===f.name &&
+x.size===f.size
 );
 
-btn.classList.add('active');
+if(!existe){
 
-$('bibliotecaSeleccionada')
-.textContent=
-'✓ Referencia seleccionada: '
-+bibliotecaCategoria;
+bibliotecaMateriales.push({
+file:f,
+categoria:categoria,
+name:f.name,
+size:f.size
+});
 
-$('bibliotecaSeleccionada')
-.className=
-'library-selected ok';
+}
+
+}
+
+this.value='';
+
+renderBiblioteca();
+
+});
+
+});
+
+
+function idSeguroCategoria(cat){
+
+return cat
+.normalize('NFD')
+.replace(/[\u0300-\u036f]/g,'')
+.replace(/[^a-zA-Z0-9]+/g,'-')
+.replace(/^-|-$/g,'');
+
+}
+
+
+function renderBiblioteca(){
+
+const categorias=[
+'Primaria',
+'Inicial',
+'Secundaria',
+'Superior',
+'Educación Especial',
+'Jóvenes y Adultos',
+'Educación Rural',
+'Técnico Profesional',
+'Progresiones',
+'Aprendizajes y Contenidos Fundamentales',
+'Actualización curricular',
+'Referencias 2026'
+];
+
+categorias.forEach(cat=>{
+
+const id=
+'files-'+idSeguroCategoria(cat);
+
+const box=
+document.getElementById(id);
+
+if(!box)return;
+
+const lista=
+bibliotecaMateriales.filter(
+x=>x.categoria===cat
+);
+
+if(!lista.length){
+
+box.innerHTML='';
+
+return;
+
+}
+
+box.innerHTML=
+lista.map(
+x=>`
+
+<div class="library-file">
+
+<span
+class="library-file-name"
+title="${esc(x.name)}">
+
+📄 ${esc(x.name)}
+
+</span>
+
+<button
+type="button"
+class="danger"
+onclick="eliminarBiblioteca(
+'${esc(cat)}',
+'${esc(x.name)}',
+${x.size}
+)">
+
+Eliminar
+
+</button>
+
+</div>
+
+`
+).join('');
+
+});
+
+}
+
+
+function eliminarBiblioteca(
+categoria,
+nombre,
+size
+){
+
+bibliotecaMateriales=
+bibliotecaMateriales.filter(
+x=>
+!(
+x.categoria===categoria &&
+x.name===nombre &&
+x.size===size
+)
+);
+
+renderBiblioteca();
 
 }
 
 
 /* =====================================================
-   SALUD DE API
+   SALUD API
 ===================================================== */
 
 async function health(){
@@ -852,16 +1435,33 @@ try{
 const r=
 await fetch(
 '/api/health',
-{cache:'no-store'}
+{
+cache:'no-store'
+}
 );
+
+if(!r.ok){
+
+throw new Error(
+'HTTP '+r.status
+);
+
+}
 
 const j=
 await r.json();
 
+if(j.geminiConfigured){
+
 $('status').textContent=
-j.geminiConfigured
-?'✓ Gemini conectado'
-:'⚠ Falta GEMINI_API_KEY';
+'✓ Gemini conectado';
+
+}else{
+
+$('status').textContent=
+'⚠ Falta GEMINI_API_KEY';
+
+}
 
 }catch(e){
 
@@ -894,13 +1494,14 @@ return;
 
 for(const f of files){
 
-if(
-!materiales.some(
+const existe=
+materiales.some(
 x=>
 x.name===f.name &&
 x.size===f.size
-)
-){
+);
+
+if(!existe){
 
 materiales.push(f);
 
@@ -934,13 +1535,17 @@ materiales
 .map(
 (m,i)=>
 `
+
 <div class="material">
 
 <span>
+
 📄 ${esc(m.name)}
+
 <small>
 (${Math.round(m.size/1024)} KB)
 </small>
+
 </span>
 
 <button
@@ -953,6 +1558,7 @@ Eliminar
 </button>
 
 </div>
+
 `
 )
 .join('');
@@ -979,6 +1585,7 @@ const tema=
 $('tema')
 .value
 .trim();
+
 
 if(!tema){
 
@@ -1051,29 +1658,45 @@ $('indicaciones').value
 
 
 /*
-  Se envía la categoría seleccionada.
-  El servidor actual puede ignorarla si todavía
-  no la procesa, pero no rompe la generación.
+   ENVIAR DOCUMENTOS DE BIBLIOTECA
 */
 
-if(bibliotecaCategoria){
+bibliotecaMateriales.forEach(
+item=>{
 
 fd.append(
-'bibliotecaCategoria',
-bibliotecaCategoria
+'materiales',
+item.file,
+item.file.name
 );
 
-}
+fd.append(
+'bibliotecaCategorias',
+item.categoria
+);
 
+});
+
+
+/*
+   ENVIAR MATERIALES DEL DOCENTE
+*/
 
 materiales.forEach(
-f=>
+f=>{
+
 fd.append(
 'materiales',
 f,
 f.name
-)
 );
+
+fd.append(
+'bibliotecaCategorias',
+'Materiales del docente'
+);
+
+});
 
 
 try{
@@ -1113,7 +1736,7 @@ raw ||
 
 if(!r.ok){
 
-throw Error(
+throw new Error(
 j.error ||
 ('HTTP '+r.status)
 );
@@ -1131,30 +1754,40 @@ $('resultadoTexto')
 ultimo;
 
 
-const usados=
-j.materialesUsados?.length
-?
+let mensaje=
+'✓ Generado correctamente con '
++(j.modelo||'Gemini');
+
+
+if(
+bibliotecaMateriales.length ||
+materiales.length
+){
+
+mensaje+=
+' · Documentos de referencia: '
++(bibliotecaMateriales.length+
+materiales.length);
+
+}
+
+
+if(
+j.materialesUsados &&
+j.materialesUsados.length
+){
+
+mensaje+=
 ' · Materiales usados: '
-+j.materialesUsados.join(', ')
-:'';
++j.materialesUsados.join(', ');
 
-
-const categoria=
-bibliotecaCategoria
-?
-' · Biblioteca: '
-+bibliotecaCategoria
-:'';
+}
 
 
 setEstado(
-'✓ Generado correctamente con '
-+(j.modelo||'Gemini')
-+categoria
-+usados,
+mensaje,
 'ok'
 );
-
 
 ir('resultado');
 
@@ -1165,7 +1798,6 @@ setEstado(
 'Error: '+e.message,
 'err'
 );
-
 
 }finally{
 
@@ -1211,7 +1843,7 @@ setEstado(
 
 
 /* =====================================================
-   DESCARGAR TXT
+   TXT
 ===================================================== */
 
 function descargar(){
@@ -1240,8 +1872,9 @@ a.download=
 a.click();
 
 setTimeout(
-()=>
-URL.revokeObjectURL(u),
+()=>{
+URL.revokeObjectURL(u);
+},
 1000
 );
 
@@ -1249,7 +1882,7 @@ URL.revokeObjectURL(u),
 
 
 /* =====================================================
-   DESCARGAR WORD
+   WORD
 ===================================================== */
 
 function descargarWord(){
@@ -1277,8 +1910,7 @@ const blob=
 new Blob(
 ['\ufeff',html],
 {
-type:
-'application/msword'
+type:'application/msword'
 }
 );
 
@@ -1297,8 +1929,9 @@ a.download=
 a.click();
 
 setTimeout(
-()=>
-URL.revokeObjectURL(u),
+()=>{
+URL.revokeObjectURL(u);
+},
 1000
 );
 
@@ -1333,6 +1966,7 @@ return;
 
 
 w.document.write(
+
 '<html>'+
 '<head>'+
 '<title>Edu.sistem Pro IA</title>'+
@@ -1344,8 +1978,8 @@ w.document.write(
 esc(ultimo)+
 '</body>'+
 '</html>'
-);
 
+);
 
 w.document.close();
 
@@ -1410,24 +2044,11 @@ ultimo='';
 
 materiales=[];
 
+bibliotecaMateriales=[];
+
 renderMateriales();
 
-bibliotecaCategoria='';
-
-document
-.querySelectorAll('.library-btn')
-.forEach(
-b=>
-b.classList.remove('active')
-);
-
-$('bibliotecaSeleccionada')
-.textContent=
-'No seleccionaste una categoría curricular.';
-
-$('bibliotecaSeleccionada')
-.className=
-'library-selected';
+renderBiblioteca();
 
 setEstado(
 'Formulario limpiado.'
@@ -1442,10 +2063,13 @@ ir('crear');
    INICIO
 ===================================================== */
 
+renderMateriales();
+
+renderBiblioteca();
+
 health();
 
 </script>
 
 </body>
 </html>
-```
