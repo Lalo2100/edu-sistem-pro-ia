@@ -46,7 +46,6 @@ header{
   gap:12px;
 }
 
-/* LOGO INTEGRADO: NO DEPENDE DE logo.svg */
 .logo{
   width:48px;
   height:48px;
@@ -191,10 +190,6 @@ button.danger{
   font-size:12px;
 }
 
-/* =========================
-   BIBLIOTECA
-========================= */
-
 .library-grid{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
@@ -255,17 +250,6 @@ button.danger{
   white-space:nowrap;
 }
 
-.library-count{
-  display:inline-block;
-  margin-top:7px;
-  padding:4px 8px;
-  border-radius:12px;
-  background:var(--soft);
-  color:var(--primary-dark);
-  font-size:11px;
-  font-weight:700;
-}
-
 .library-info{
   margin-top:14px;
   padding:12px;
@@ -274,10 +258,6 @@ button.danger{
   color:#475467;
   font-size:13px;
 }
-
-/* =========================
-   MATERIALES DOCENTE
-========================= */
 
 .material-box{
   margin-top:18px;
@@ -300,10 +280,6 @@ button.danger{
   border-bottom:0;
 }
 
-/* =========================
-   RESULTADO
-========================= */
-
 .state{
   padding:12px;
   border-radius:10px;
@@ -325,10 +301,6 @@ button.danger{
   line-height:1.6;
   min-height:20px;
 }
-
-/* =========================
-   PLANES
-========================= */
 
 .plans{
   display:grid;
@@ -386,7 +358,8 @@ footer{
   }
 
   .badge{
-    display:none;
+    display:block;
+    font-size:10px;
   }
 
   .library-grid{
@@ -403,7 +376,6 @@ footer{
 
 <div class="logo-wrap">
 
-<!-- LOGO SVG INTEGRADO -->
 <svg class="logo"
      viewBox="0 0 100 100"
      xmlns="http://www.w3.org/2000/svg"
@@ -415,10 +387,8 @@ footer{
                     y1="0"
                     x2="1"
                     y2="1">
-
       <stop offset="0%" stop-color="#4f46e5"/>
       <stop offset="100%" stop-color="#7c3aed"/>
-
     </linearGradient>
   </defs>
 
@@ -466,7 +436,6 @@ Comprobando conexión…
 
 </header>
 
-
 <main>
 
 <section class="hero">
@@ -480,10 +449,6 @@ Simple, rápido y pensado para usar desde el celular.
 </section>
 
 
-<!-- =====================================================
-     BIBLIOTECA CURRICULAR CÓRDOBA
-===================================================== -->
-
 <section id="biblioteca" class="card">
 
 <h2>📚 Biblioteca Curricular Córdoba</h2>
@@ -496,391 +461,210 @@ Podés agregar varios documentos en cada categoría.
 <div class="library-grid">
 
 
-<!-- PRIMARIA -->
-
 <div class="library-card">
-
-<div class="library-title">
-🔵 Primaria
-</div>
-
+<div class="library-title">🔵 Primaria</div>
 <div class="library-description">
 Diseños, progresiones y actualizaciones curriculares de Educación Primaria.
 </div>
-
 <div class="library-upload">
-
 <input
 type="file"
 class="biblioteca-file-input"
 data-cat="Primaria"
 accept=".pdf,.docx,.txt,.md"
-multiple
->
-
+multiple>
+</div>
+<div id="files-Primaria" class="library-files"></div>
 </div>
 
-<div
-id="files-Primaria"
-class="library-files">
-</div>
-
-</div>
-
-
-<!-- INICIAL -->
 
 <div class="library-card">
-
-<div class="library-title">
-🟣 Inicial
-</div>
-
+<div class="library-title">🟣 Inicial</div>
 <div class="library-description">
 Documentos curriculares correspondientes al Nivel Inicial.
 </div>
-
 <div class="library-upload">
-
 <input
 type="file"
 class="biblioteca-file-input"
 data-cat="Inicial"
 accept=".pdf,.docx,.txt,.md"
-multiple
->
-
+multiple>
+</div>
+<div id="files-Inicial" class="library-files"></div>
 </div>
 
-<div
-id="files-Inicial"
-class="library-files">
-</div>
-
-</div>
-
-
-<!-- SECUNDARIA -->
 
 <div class="library-card">
-
-<div class="library-title">
-🟢 Secundaria
-</div>
-
+<div class="library-title">🟢 Secundaria</div>
 <div class="library-description">
 Diseños y documentos curriculares de Educación Secundaria.
 </div>
-
 <div class="library-upload">
-
 <input
 type="file"
 class="biblioteca-file-input"
 data-cat="Secundaria"
 accept=".pdf,.docx,.txt,.md"
-multiple
->
-
+multiple>
+</div>
+<div id="files-Secundaria" class="library-files"></div>
 </div>
 
-<div
-id="files-Secundaria"
-class="library-files">
-</div>
-
-</div>
-
-
-<!-- SUPERIOR -->
 
 <div class="library-card">
-
-<div class="library-title">
-🟠 Superior
-</div>
-
+<div class="library-title">🟠 Superior</div>
 <div class="library-description">
 Documentación curricular para Educación Superior.
 </div>
-
 <div class="library-upload">
-
 <input
 type="file"
 class="biblioteca-file-input"
 data-cat="Superior"
 accept=".pdf,.docx,.txt,.md"
-multiple
->
-
+multiple>
+</div>
+<div id="files-Superior" class="library-files"></div>
 </div>
 
-<div
-id="files-Superior"
-class="library-files">
-</div>
-
-</div>
-
-
-<!-- ESPECIAL -->
 
 <div class="library-card">
-
-<div class="library-title">
-🟡 Educación Especial
-</div>
-
+<div class="library-title">🟡 Educación Especial</div>
 <div class="library-description">
 Documentación y orientaciones para Educación Especial.
 </div>
-
 <div class="library-upload">
-
 <input
 type="file"
 class="biblioteca-file-input"
 data-cat="Educación Especial"
 accept=".pdf,.docx,.txt,.md"
-multiple
->
-
+multiple>
+</div>
+<div id="files-Educacion-Especial" class="library-files"></div>
 </div>
 
-<div
-id="files-Educación Especial"
-class="library-files">
-</div>
-
-</div>
-
-
-<!-- JÓVENES Y ADULTOS -->
 
 <div class="library-card">
-
-<div class="library-title">
-🟤 Jóvenes y Adultos
-</div>
-
+<div class="library-title">🟤 Jóvenes y Adultos</div>
 <div class="library-description">
 Documentos curriculares para la modalidad de Jóvenes y Adultos.
 </div>
-
 <div class="library-upload">
-
 <input
 type="file"
 class="biblioteca-file-input"
 data-cat="Jóvenes y Adultos"
 accept=".pdf,.docx,.txt,.md"
-multiple
->
-
+multiple>
+</div>
+<div id="files-Jovenes-y-Adultos" class="library-files"></div>
 </div>
 
-<div
-id="files-Jóvenes y Adultos"
-class="library-files">
-</div>
-
-</div>
-
-
-<!-- RURAL -->
 
 <div class="library-card">
-
-<div class="library-title">
-🌾 Educación Rural
-</div>
-
+<div class="library-title">🌾 Educación Rural</div>
 <div class="library-description">
 Orientaciones y documentación específica para Educación Rural.
 </div>
-
 <div class="library-upload">
-
 <input
 type="file"
 class="biblioteca-file-input"
 data-cat="Educación Rural"
 accept=".pdf,.docx,.txt,.md"
-multiple
->
-
+multiple>
+</div>
+<div id="files-Educacion-Rural" class="library-files"></div>
 </div>
 
-<div
-id="files-Educación Rural"
-class="library-files">
-</div>
-
-</div>
-
-
-<!-- TÉCNICO PROFESIONAL -->
 
 <div class="library-card">
-
-<div class="library-title">
-🔧 Técnico Profesional
-</div>
-
+<div class="library-title">🔧 Técnico Profesional</div>
 <div class="library-description">
 Documentación curricular de Educación Técnico Profesional.
 </div>
-
 <div class="library-upload">
-
 <input
 type="file"
 class="biblioteca-file-input"
 data-cat="Técnico Profesional"
 accept=".pdf,.docx,.txt,.md"
-multiple
->
-
+multiple>
+</div>
+<div id="files-Tecnico-Profesional" class="library-files"></div>
 </div>
 
-<div
-id="files-Técnico Profesional"
-class="library-files">
-</div>
-
-</div>
-
-
-<!-- PROGRESIONES -->
 
 <div class="library-card">
-
-<div class="library-title">
-📈 Progresiones
-</div>
-
+<div class="library-title">📈 Progresiones</div>
 <div class="library-description">
 Progresiones de aprendizaje y documentos asociados.
 </div>
-
 <div class="library-upload">
-
 <input
 type="file"
 class="biblioteca-file-input"
 data-cat="Progresiones"
 accept=".pdf,.docx,.txt,.md"
-multiple
->
-
+multiple>
+</div>
+<div id="files-Progresiones" class="library-files"></div>
 </div>
 
-<div
-id="files-Progresiones"
-class="library-files">
-</div>
-
-</div>
-
-
-<!-- APRENDIZAJES -->
 
 <div class="library-card">
-
-<div class="library-title">
-🎯 Aprendizajes y Contenidos Fundamentales
-</div>
-
+<div class="library-title">🎯 Aprendizajes y Contenidos Fundamentales</div>
 <div class="library-description">
 Documentos sobre aprendizajes y contenidos fundamentales.
 </div>
-
 <div class="library-upload">
-
 <input
 type="file"
 class="biblioteca-file-input"
 data-cat="Aprendizajes y Contenidos Fundamentales"
 accept=".pdf,.docx,.txt,.md"
-multiple
->
-
+multiple>
+</div>
+<div id="files-Aprendizajes-y-Contenidos-Fundamentales" class="library-files"></div>
 </div>
 
-<div
-id="files-Aprendizajes y Contenidos Fundamentales"
-class="library-files">
-</div>
-
-</div>
-
-
-<!-- ACTUALIZACIÓN -->
 
 <div class="library-card">
-
-<div class="library-title">
-📘 Actualización curricular
-</div>
-
+<div class="library-title">📘 Actualización curricular</div>
 <div class="library-description">
 Actualizaciones y documentos curriculares complementarios.
 </div>
-
 <div class="library-upload">
-
 <input
 type="file"
 class="biblioteca-file-input"
 data-cat="Actualización curricular"
 accept=".pdf,.docx,.txt,.md"
-multiple
->
-
+multiple>
+</div>
+<div id="files-Actualizacion-curricular" class="library-files"></div>
 </div>
 
-<div
-id="files-Actualización curricular"
-class="library-files">
-</div>
-
-</div>
-
-
-<!-- REFERENCIAS -->
 
 <div class="library-card">
-
-<div class="library-title">
-🏛️ Referencias 2026
-</div>
-
+<div class="library-title">🏛️ Referencias 2026</div>
 <div class="library-description">
 Documentos y referencias que quieras incorporar para el ciclo 2026.
 </div>
-
 <div class="library-upload">
-
 <input
 type="file"
 class="biblioteca-file-input"
 data-cat="Referencias 2026"
 accept=".pdf,.docx,.txt,.md"
-multiple
->
-
+multiple>
 </div>
-
-<div
-id="files-Referencias 2026"
-class="library-files">
+<div id="files-Referencias-2026" class="library-files"></div>
 </div>
 
 </div>
-
-</div>
-
 
 <div class="library-info">
 
@@ -890,10 +674,6 @@ de referencia para la generación. No hace falta subirlos a GitHub.
 
 </div>
 
-
-<!-- =====================================================
-     MATERIALES DEL DOCENTE
-===================================================== -->
 
 <div class="material-box">
 
@@ -908,8 +688,7 @@ programas, ejemplos o documentos institucionales.
 id="archivo"
 type="file"
 accept=".pdf,.docx,.txt,.md,.csv,.html,.htm"
-multiple
->
+multiple>
 
 <div class="buttons">
 
@@ -937,16 +716,11 @@ Todavía no agregaste materiales.
 </section>
 
 
-<!-- =====================================================
-     CREAR
-===================================================== -->
-
 <section id="crear" class="card">
 
 <h2>✨ ¿Qué querés crear?</h2>
 
 <div class="grid">
-
 
 <div>
 
@@ -982,11 +756,8 @@ Rúbrica
 <select id="nivel">
 
 <option>Inicial</option>
-
 <option selected>Primaria</option>
-
 <option>Secundaria</option>
-
 <option>Superior</option>
 
 </select>
@@ -1000,8 +771,7 @@ Rúbrica
 
 <input
 id="grado"
-placeholder="Ej.: 5.º grado"
->
+placeholder="Ej.: 5.º grado">
 
 </div>
 
@@ -1012,8 +782,7 @@ placeholder="Ej.: 5.º grado"
 
 <input
 id="area"
-placeholder="Ej.: Lengua"
->
+placeholder="Ej.: Lengua">
 
 </div>
 
@@ -1024,8 +793,7 @@ placeholder="Ej.: Lengua"
 
 <input
 id="tema"
-placeholder="¿Sobre qué necesitás trabajar?"
->
+placeholder="¿Sobre qué necesitás trabajar?">
 
 </div>
 
@@ -1036,8 +804,7 @@ placeholder="¿Sobre qué necesitás trabajar?"
 
 <input
 id="duracion"
-placeholder="Ej.: 4 semanas"
->
+placeholder="Ej.: 4 semanas">
 
 </div>
 
@@ -1050,8 +817,8 @@ placeholder="Ej.: 4 semanas"
 
 <textarea
 id="indicaciones"
-placeholder="Ej.: incluir fundamentación, objetivos, actividades y evaluación, organizado en tablas."
-></textarea>
+placeholder="Ej.: incluir fundamentación, objetivos, actividades y evaluación, organizado en tablas.">
+</textarea>
 
 <p class="small">
 Podés escribirlo con tus palabras.
@@ -1085,10 +852,6 @@ Limpiar
 </section>
 
 
-<!-- =====================================================
-     RESULTADO
-===================================================== -->
-
 <section id="resultado" class="card">
 
 <h2>📄 Resultado</h2>
@@ -1114,43 +877,31 @@ Copiar
 <button
 class="secondary"
 onclick="descargar()">
-
 Descargar .txt
-
 </button>
 
 <button
 class="secondary"
 onclick="descargarWord()">
-
 Descargar Word
-
 </button>
 
 <button
 class="ghost"
 onclick="imprimir()">
-
 Imprimir / PDF
-
 </button>
 
 <button
 class="ghost"
 onclick="compartir()">
-
 Compartir
-
 </button>
 
 </div>
 
 </section>
 
-
-<!-- =====================================================
-     PLANES
-===================================================== -->
 
 <section id="planes" class="card">
 
@@ -1200,317 +951,561 @@ Edu.sistem Pro IA · Asistente inteligente para docentes
 
 <script>
 
-let materiales=[];
+let materiales = [];
+let bibliotecaMateriales = [];
+let ultimo = '';
 
-let bibliotecaMateriales=[];
-
-let ultimo='';
-
-
-const $=id=>document.getElementById(id);
+const $ = id => document.getElementById(id);
 
 
-/* =====================================================
-   ESCAPE HTML
-===================================================== */
+/* ESCAPE */
 
 function esc(s){
 
-return String(s).replace(
-/[&<>"']/g,
-c=>({
-'&':'&amp;',
-'<':'&lt;',
-'>':'&gt;',
-'"':'&quot;',
-"'":'&#39;'
-}[c])
-);
+  return String(s).replace(
+    /[&<>"']/g,
+    c => ({
+      '&':'&amp;',
+      '<':'&lt;',
+      '>':'&gt;',
+      '"':'&quot;',
+      "'":'&#39;'
+    }[c])
+  );
 
 }
 
 
-/* =====================================================
-   SCROLL
-===================================================== */
+/* SCROLL */
 
 function ir(id){
 
-const elemento=$(id);
+  const elemento = $(id);
 
-if(elemento){
+  if(elemento){
 
-elemento.scrollIntoView({
-behavior:'smooth'
-});
+    elemento.scrollIntoView({
+      behavior:'smooth'
+    });
+
+  }
 
 }
 
-}
 
-
-/* =====================================================
-   ESTADO
-===================================================== */
+/* ESTADO */
 
 function setEstado(t,cl=''){
 
-$('estado').textContent=t;
+  const estado = $('estado');
 
-$('estado').className=
-'state '+cl;
+  if(!estado)return;
+
+  estado.textContent = t;
+
+  estado.className =
+    'state ' + cl;
 
 }
 
 
 /* =====================================================
-   BIBLIOTECA CURRICULAR
+   COMPROBAR CONEXIÓN
+===================================================== */
+
+async function health(){
+
+  const status =
+    $('status');
+
+  if(!status)return;
+
+  status.textContent =
+    'Comprobando conexión…';
+
+  try{
+
+    const r =
+      await fetch(
+        '/api/health',
+        {
+          method:'GET',
+          cache:'no-store'
+        }
+      );
+
+    if(!r.ok){
+
+      throw new Error(
+        'Servidor no disponible'
+      );
+
+    }
+
+    const data =
+      await r.json();
+
+    if(data && data.ok){
+
+      status.textContent =
+        '🟢 Servidor conectado';
+
+      status.style.background =
+        '#ecfdf3';
+
+      status.style.color =
+        '#067647';
+
+    }else{
+
+      status.textContent =
+        '🔴 Servidor con problemas';
+
+    }
+
+  }catch(e){
+
+    status.textContent =
+      '🔴 Error de conexión';
+
+    status.style.background =
+      '#fef3f2';
+
+    status.style.color =
+      '#b42318';
+
+  }
+
+}
+
+
+/* =====================================================
+   BIBLIOTECA
 ===================================================== */
 
 document
-.querySelectorAll('.biblioteca-file-input')
-.forEach(input=>{
+.querySelectorAll(
+  '.biblioteca-file-input'
+)
+.forEach(input => {
 
-input.addEventListener(
-'change',
-function(){
+  input.addEventListener(
+    'change',
+    function(){
 
-const categoria=
-this.dataset.cat;
+      const categoria =
+        this.dataset.cat;
 
-const files=
-[...this.files];
+      const files =
+        [...this.files];
 
-if(!files.length)return;
+      if(!files.length)return;
 
-for(const f of files){
+      for(const f of files){
 
-const existe=
-bibliotecaMateriales.some(
-x=>
-x.categoria===categoria &&
-x.name===f.name &&
-x.size===f.size
-);
+        const existe =
+          bibliotecaMateriales.some(
+            x =>
+              x.categoria === categoria &&
+              x.name === f.name &&
+              x.size === f.size
+          );
 
-if(!existe){
+        if(!existe){
 
-bibliotecaMateriales.push({
-file:f,
-categoria:categoria,
-name:f.name,
-size:f.size
-});
+          bibliotecaMateriales.push({
+            file:f,
+            categoria:categoria,
+            name:f.name,
+            size:f.size
+          });
 
-}
+        }
 
-}
+      }
 
-this.value='';
+      this.value = '';
 
-renderBiblioteca();
+      renderBiblioteca();
 
-});
+    }
+  );
 
 });
 
 
 function idSeguroCategoria(cat){
 
-return cat
-.normalize('NFD')
-.replace(/[\u0300-\u036f]/g,'')
-.replace(/[^a-zA-Z0-9]+/g,'-')
-.replace(/^-|-$/g,'');
+  return cat
+    .normalize('NFD')
+    .replace(
+      /[\u0300-\u036f]/g,
+      ''
+    )
+    .replace(
+      /[^a-zA-Z0-9]+/g,
+      '-'
+    )
+    .replace(
+      /^-|-$/g,
+      ''
+    );
 
 }
 
 
 function renderBiblioteca(){
 
-const categorias=[
-'Primaria',
-'Inicial',
-'Secundaria',
-'Superior',
-'Educación Especial',
-'Jóvenes y Adultos',
-'Educación Rural',
-'Técnico Profesional',
-'Progresiones',
-'Aprendizajes y Contenidos Fundamentales',
-'Actualización curricular',
-'Referencias 2026'
-];
+  const categorias = [
 
-categorias.forEach(cat=>{
+    'Primaria',
+    'Inicial',
+    'Secundaria',
+    'Superior',
+    'Educación Especial',
+    'Jóvenes y Adultos',
+    'Educación Rural',
+    'Técnico Profesional',
+    'Progresiones',
+    'Aprendizajes y Contenidos Fundamentales',
+    'Actualización curricular',
+    'Referencias 2026'
 
-const id=
-'files-'+idSeguroCategoria(cat);
+  ];
 
-const box=
-document.getElementById(id);
 
-if(!box)return;
+  categorias.forEach(cat => {
 
-const lista=
-bibliotecaMateriales.filter(
-x=>x.categoria===cat
-);
+    const id =
+      'files-' +
+      idSeguroCategoria(cat);
 
-if(!lista.length){
+    const box =
+      document.getElementById(id);
 
-box.innerHTML='';
+    if(!box)return;
 
-return;
 
-}
+    const lista =
+      bibliotecaMateriales.filter(
+        x =>
+          x.categoria === cat
+      );
 
-box.innerHTML=
-lista.map(
-x=>`
 
-<div class="library-file">
+    if(!lista.length){
 
-<span
-class="library-file-name"
-title="${esc(x.name)}">
+      box.innerHTML = '';
 
-📄 ${esc(x.name)}
+      return;
 
-</span>
+    }
 
-<button
-type="button"
-class="danger"
-onclick="eliminarBiblioteca(
-'${esc(cat)}',
-'${esc(x.name)}',
-${x.size}
-)">
 
-Eliminar
+    box.innerHTML =
+      lista.map(
+        x => `
 
-</button>
+          <div class="library-file">
 
-</div>
+            <span
+              class="library-file-name"
+              title="${esc(x.name)}">
 
-`
-).join('');
+              📄 ${esc(x.name)}
 
-});
+            </span>
+
+            <button
+              type="button"
+              class="danger"
+              onclick="eliminarBiblioteca(
+                '${esc(cat)}',
+                '${esc(x.name)}',
+                ${x.size}
+              )">
+
+              Eliminar
+
+            </button>
+
+          </div>
+
+        `
+      ).join('');
+
+  });
 
 }
 
 
 function eliminarBiblioteca(
-categoria,
-nombre,
-size
+  categoria,
+  nombre,
+  size
 ){
 
-bibliotecaMateriales=
-bibliotecaMateriales.filter(
-x=>
-!(
-x.categoria===categoria &&
-x.name===nombre &&
-x.size===size
-)
-);
+  bibliotecaMateriales =
+    bibliotecaMateriales.filter(
+      x =>
+        !(
+          x.categoria === categoria &&
+          x.name === nombre &&
+          x.size === size
+        )
+    );
 
-renderBiblioteca();
+  renderBiblioteca();
 
 }
 
 
 /* =====================================================
-   SALUD API
+   MATERIALES DEL DOCENTE
+===================================================== */
+
+function agregarMaterial(){
+
+  const input =
+    $('archivo');
+
+  const files =
+    [...input.files];
+
+  if(!files.length){
+
+    alert(
+      'Seleccioná uno o más archivos.'
+    );
+
+    return;
+
+  }
+
+
+  for(const f of files){
+
+    const existe =
+      materiales.some(
+        x =>
+          x.name === f.name &&
+          x.size === f.size
+      );
+
+    if(!existe){
+
+      materiales.push(f);
+
+    }
+
+  }
+
+
+  input.value = '';
+
+  renderMateriales();
+
+}
+
+
+function renderMateriales(){
+
+  const box =
+    $('materialesLista');
+
+  if(!box)return;
+
+
+  if(!materiales.length){
+
+    box.innerHTML =
+      '<p class="small">Todavía no agregaste materiales.</p>';
+
+    return;
+
+  }
+
+
+  box.innerHTML =
+    materiales
+      .map(
+        (m,i) => `
+
+          <div class="material">
+
+            <span>
+
+              📄 ${esc(m.name)}
+
+              <small>
+                (${Math.round(m.size / 1024)} KB)
+              </small>
+
+            </span>
+
+            <button
+              type="button"
+              class="danger"
+              onclick="eliminarMaterial(${i})">
+
+              Eliminar
+
+            </button>
+
+          </div>
+
+        `
+      )
+      .join('');
+
+}
+
+
+function eliminarMaterial(i){
+
+  materiales.splice(i,1);
+
+  renderMateriales();
+
+}
+
+
+/* =====================================================
+   GENERAR
 ===================================================== */
 
 async function generar(){
 
-  const tema = $('tema').value.trim();
+  const tema =
+    $('tema')
+      .value
+      .trim();
+
 
   if(!tema){
+
     setEstado(
       'Escribí el tema que necesitás trabajar.',
       'err'
     );
+
     ir('crear');
+
     return;
+
   }
 
-  const btn = $('btnGenerar');
+
+  const btn =
+    $('btnGenerar');
+
 
   btn.disabled = true;
-  btn.textContent = '⏳ Generando…';
 
-  $('resultadoTexto').textContent = '';
+  btn.textContent =
+    '⏳ Generando…';
+
+
+  $('resultadoTexto')
+    .textContent = '';
+
 
   setEstado(
     'Preparando la solicitud…'
   );
 
-  /*
-   * VERCEL:
-   * La función admite como máximo 4,5 MB.
-   * Dejamos margen de seguridad y limitamos
-   * los archivos enviados a 3 MB totales.
-   */
 
-  const MAX_TOTAL = 3 * 1024 * 1024;
+  /*
+    Vercel tiene un límite de payload.
+    Dejamos margen de seguridad.
+  */
+
+  const MAX_TOTAL =
+    3 * 1024 * 1024;
+
   const MAX_ARCHIVOS = 2;
 
+
   const todosLosMateriales = [
+
     ...bibliotecaMateriales,
-    ...materiales.map(f => ({
-      file: f,
-      categoria: 'Materiales del docente',
-      name: f.name,
-      size: f.size
-    }))
+
+    ...materiales.map(
+      f => ({
+        file:f,
+        categoria:
+          'Materiales del docente',
+        name:f.name,
+        size:f.size
+      })
+    )
+
   ];
 
-  if(todosLosMateriales.length > MAX_ARCHIVOS){
+
+  if(
+    todosLosMateriales.length >
+    MAX_ARCHIVOS
+  ){
 
     setEstado(
-      'Para esta versión podés enviar hasta 2 documentos por generación. Eliminá algún archivo de referencia y volvé a intentar.',
+      'Podés enviar hasta 2 documentos por generación. Eliminá algún archivo y volvé a intentar.',
       'err'
     );
 
     btn.disabled = false;
-    btn.textContent = '✨ Crear con Gemini';
+
+    btn.textContent =
+      '✨ Crear con Gemini';
 
     return;
+
   }
+
 
   let totalBytes = 0;
 
-  for(const item of todosLosMateriales){
-    totalBytes += item.file.size;
+
+  for(
+    const item of todosLosMateriales
+  ){
+
+    totalBytes +=
+      item.file.size;
+
   }
+
 
   if(totalBytes > MAX_TOTAL){
 
-    const totalMB = (
-      totalBytes / (1024 * 1024)
-    ).toFixed(2);
+    const totalMB =
+      (
+        totalBytes /
+        (1024 * 1024)
+      ).toFixed(2);
+
 
     setEstado(
       'Los documentos seleccionados ocupan ' +
       totalMB +
-      ' MB. El máximo permitido para una generación es 3 MB. Quitá algún archivo y volvé a intentar.',
+      ' MB. El máximo permitido es 3 MB.',
       'err'
     );
 
+
     btn.disabled = false;
-    btn.textContent = '✨ Crear con Gemini';
+
+    btn.textContent =
+      '✨ Crear con Gemini';
 
     return;
+
   }
 
-  const fd = new FormData();
+
+  const fd =
+    new FormData();
+
 
   fd.append(
     'tipo',
@@ -1547,24 +1542,24 @@ async function generar(){
     $('indicaciones').value
   );
 
-  /*
-   * ENVIAR DOCUMENTOS
-   */
 
-  todosLosMateriales.forEach(item => {
+  todosLosMateriales.forEach(
+    item => {
 
-    fd.append(
-      'materiales',
-      item.file,
-      item.file.name
-    );
+      fd.append(
+        'materiales',
+        item.file,
+        item.file.name
+      );
 
-    fd.append(
-      'bibliotecaCategorias',
-      item.categoria
-    );
+      fd.append(
+        'bibliotecaCategorias',
+        item.categoria
+      );
 
-  });
+    }
+  );
+
 
   try{
 
@@ -1572,23 +1567,30 @@ async function generar(){
       'Consultando Gemini y preparando el documento…'
     );
 
-    const r = await fetch(
-      '/api/generar',
-      {
-        method:'POST',
-        body:fd
-      }
-    );
 
-    const raw = await r.text();
+    const r =
+      await fetch(
+        '/api/generar',
+        {
+          method:'POST',
+          body:fd
+        }
+      );
+
+
+    const raw =
+      await r.text();
+
 
     let j = {};
 
+
     try{
 
-      j = JSON.parse(raw);
+      j =
+        JSON.parse(raw);
 
-    }catch(_){
+    }catch(e){
 
       j = {
         error:
@@ -1597,6 +1599,7 @@ async function generar(){
       };
 
     }
+
 
     if(!r.ok){
 
@@ -1607,21 +1610,31 @@ async function generar(){
 
     }
 
-    ultimo = j.texto || '';
 
-    $('resultadoTexto').textContent = ultimo;
+    ultimo =
+      j.texto || '';
+
+
+    $('resultadoTexto')
+      .textContent =
+      ultimo;
+
 
     let mensaje =
       '✓ Generado correctamente con ' +
       (j.modelo || 'Gemini');
 
-    if(todosLosMateriales.length){
+
+    if(
+      todosLosMateriales.length
+    ){
 
       mensaje +=
         ' · Documentos enviados: ' +
         todosLosMateriales.length;
 
     }
+
 
     if(
       j.materialesUsados &&
@@ -1634,17 +1647,21 @@ async function generar(){
 
     }
 
+
     setEstado(
       mensaje,
       'ok'
     );
 
+
     ir('resultado');
+
 
   }catch(e){
 
     setEstado(
-      'Error: ' + e.message,
+      'Error: ' +
+      e.message,
       'err'
     );
 
@@ -1659,353 +1676,6 @@ async function generar(){
 
 }
 
-}catch(e){
-
-$('status').textContent=
-'⚠ Servidor no disponible';
-
-}
-
-}
-
-
-/* =====================================================
-   MATERIALES DEL DOCENTE
-===================================================== */
-
-function agregarMaterial(){
-
-const files=
-[...$('archivo').files];
-
-if(!files.length){
-
-alert(
-'Seleccioná uno o más archivos.'
-);
-
-return;
-
-}
-
-for(const f of files){
-
-const existe=
-materiales.some(
-x=>
-x.name===f.name &&
-x.size===f.size
-);
-
-if(!existe){
-
-materiales.push(f);
-
-}
-
-}
-
-$('archivo').value='';
-
-renderMateriales();
-
-}
-
-
-function renderMateriales(){
-
-const box=
-$('materialesLista');
-
-if(!materiales.length){
-
-box.innerHTML=
-'<p class="small">Todavía no agregaste materiales.</p>';
-
-return;
-
-}
-
-box.innerHTML=
-materiales
-.map(
-(m,i)=>
-`
-
-<div class="material">
-
-<span>
-
-📄 ${esc(m.name)}
-
-<small>
-(${Math.round(m.size/1024)} KB)
-</small>
-
-</span>
-
-<button
-type="button"
-class="danger"
-onclick="eliminarMaterial(${i})">
-
-Eliminar
-
-</button>
-
-</div>
-
-`
-)
-.join('');
-
-}
-
-
-function eliminarMaterial(i){
-
-materiales.splice(i,1);
-
-renderMateriales();
-
-}
-
-
-/* =====================================================
-   GENERACIÓN
-===================================================== */
-
-async function generar(){
-
-const tema=
-$('tema')
-.value
-.trim();
-
-
-if(!tema){
-
-setEstado(
-'Escribí el tema que necesitás trabajar.',
-'err'
-);
-
-ir('crear');
-
-return;
-
-}
-
-
-const btn=
-$('btnGenerar');
-
-btn.disabled=true;
-
-btn.textContent=
-'⏳ Generando…';
-
-$('resultadoTexto')
-.textContent='';
-
-setEstado(
-'Consultando Gemini y preparando el documento…'
-);
-
-
-const fd=
-new FormData();
-
-
-fd.append(
-'tipo',
-$('tipo').value
-);
-
-fd.append(
-'nivel',
-$('nivel').value
-);
-
-fd.append(
-'grado',
-$('grado').value
-);
-
-fd.append(
-'area',
-$('area').value
-);
-
-fd.append(
-'tema',
-tema
-);
-
-fd.append(
-'duracion',
-$('duracion').value
-);
-
-fd.append(
-'indicaciones',
-$('indicaciones').value
-);
-
-
-/*
-   ENVIAR DOCUMENTOS DE BIBLIOTECA
-*/
-
-bibliotecaMateriales.forEach(
-item=>{
-
-fd.append(
-'materiales',
-item.file,
-item.file.name
-);
-
-fd.append(
-'bibliotecaCategorias',
-item.categoria
-);
-
-});
-
-
-/*
-   ENVIAR MATERIALES DEL DOCENTE
-*/
-
-materiales.forEach(
-f=>{
-
-fd.append(
-'materiales',
-f,
-f.name
-);
-
-fd.append(
-'bibliotecaCategorias',
-'Materiales del docente'
-);
-
-});
-
-
-try{
-
-const r=
-await fetch(
-'/api/generar',
-{
-method:'POST',
-body:fd
-}
-);
-
-
-const raw=
-await r.text();
-
-
-let j={};
-
-
-try{
-
-j=
-JSON.parse(raw);
-
-}catch(_){
-
-j={
-error:
-raw ||
-('HTTP '+r.status)
-};
-
-}
-
-
-if(!r.ok){
-
-throw new Error(
-j.error ||
-('HTTP '+r.status)
-);
-
-}
-
-
-ultimo=
-j.texto ||
-'';
-
-
-$('resultadoTexto')
-.textContent=
-ultimo;
-
-
-let mensaje=
-'✓ Generado correctamente con '
-+(j.modelo||'Gemini');
-
-
-if(
-bibliotecaMateriales.length ||
-materiales.length
-){
-
-mensaje+=
-' · Documentos de referencia: '
-+(bibliotecaMateriales.length+
-materiales.length);
-
-}
-
-
-if(
-j.materialesUsados &&
-j.materialesUsados.length
-){
-
-mensaje+=
-' · Materiales usados: '
-+j.materialesUsados.join(', ');
-
-}
-
-
-setEstado(
-mensaje,
-'ok'
-);
-
-ir('resultado');
-
-
-}catch(e){
-
-setEstado(
-'Error: '+e.message,
-'err'
-);
-
-}finally{
-
-btn.disabled=false;
-
-btn.textContent=
-'✨ Crear con Gemini';
-
-}
-
-}
-
 
 /* =====================================================
    COPIAR
@@ -2013,27 +1683,27 @@ btn.textContent=
 
 async function copiar(){
 
-if(!ultimo)return;
+  if(!ultimo)return;
 
-try{
+  try{
 
-await navigator
-.clipboard
-.writeText(ultimo);
+    await navigator
+      .clipboard
+      .writeText(ultimo);
 
-setEstado(
-'✓ Copiado al portapapeles.',
-'ok'
-);
+    setEstado(
+      '✓ Copiado al portapapeles.',
+      'ok'
+    );
 
-}catch(e){
+  }catch(e){
 
-setEstado(
-'No se pudo copiar automáticamente.',
-'err'
-);
+    setEstado(
+      'No se pudo copiar automáticamente.',
+      'err'
+    );
 
-}
+  }
 
 }
 
@@ -2044,35 +1714,42 @@ setEstado(
 
 function descargar(){
 
-if(!ultimo)return;
+  if(!ultimo)return;
 
-const a=
-document.createElement('a');
 
-const u=
-URL.createObjectURL(
-new Blob(
-[ultimo],
-{
-type:
-'text/plain;charset=utf-8'
-}
-)
-);
+  const blob =
+    new Blob(
+      [ultimo],
+      {
+        type:
+          'text/plain;charset=utf-8'
+      }
+    );
 
-a.href=u;
 
-a.download=
-'Edu.sistem_Pro_IA_resultado.txt';
+  const u =
+    URL.createObjectURL(blob);
 
-a.click();
 
-setTimeout(
-()=>{
-URL.revokeObjectURL(u);
-},
-1000
-);
+  const a =
+    document.createElement('a');
+
+
+  a.href = u;
+
+
+  a.download =
+    'Edu.sistem_Pro_IA_resultado.txt';
+
+
+  a.click();
+
+
+  setTimeout(
+    () =>
+      URL.revokeObjectURL(u),
+    1000
+  );
 
 }
 
@@ -2083,53 +1760,59 @@ URL.revokeObjectURL(u);
 
 function descargarWord(){
 
-if(!ultimo)return;
-
-const html=
-'<!doctype html>'+
-'<html>'+
-'<head>'+
-'<meta charset="utf-8">'+
-'<title>Edu.sistem Pro IA</title>'+
-'</head>'+
-'<body style="font-family:Arial;line-height:1.55">'+
-'<h1>Edu.sistem Pro IA</h1>'+
-'<div>'+
-esc(ultimo)
-.replace(/\n/g,'<br>')+
-'</div>'+
-'</body>'+
-'</html>';
+  if(!ultimo)return;
 
 
-const blob=
-new Blob(
-['\ufeff',html],
-{
-type:'application/msword'
-}
-);
+  const html =
+    '<!doctype html>' +
+    '<html>' +
+    '<head>' +
+    '<meta charset="utf-8">' +
+    '<title>Edu.sistem Pro IA</title>' +
+    '</head>' +
+    '<body style="font-family:Arial;line-height:1.55">' +
+    '<h1>Edu.sistem Pro IA</h1>' +
+    '<div>' +
+    esc(ultimo)
+      .replace(/\n/g,'<br>') +
+    '</div>' +
+    '</body>' +
+    '</html>';
 
 
-const u=
-URL.createObjectURL(blob);
+  const blob =
+    new Blob(
+      ['\ufeff',html],
+      {
+        type:
+          'application/msword'
+      }
+    );
 
-const a=
-document.createElement('a');
 
-a.href=u;
+  const u =
+    URL.createObjectURL(blob);
 
-a.download=
-'Edu.sistem_Pro_IA_resultado.doc';
 
-a.click();
+  const a =
+    document.createElement('a');
 
-setTimeout(
-()=>{
-URL.revokeObjectURL(u);
-},
-1000
-);
+
+  a.href = u;
+
+
+  a.download =
+    'Edu.sistem_Pro_IA_resultado.doc';
+
+
+  a.click();
+
+
+  setTimeout(
+    () =>
+      URL.revokeObjectURL(u),
+    1000
+  );
 
 }
 
@@ -2140,46 +1823,50 @@ URL.revokeObjectURL(u);
 
 function imprimir(){
 
-if(!ultimo)return;
-
-const w=
-window.open(
-'',
-'_blank'
-);
+  if(!ultimo)return;
 
 
-if(!w){
-
-setEstado(
-'El navegador bloqueó la ventana de impresión. Permitila para descargar PDF.',
-'err'
-);
-
-return;
-
-}
+  const w =
+    window.open(
+      '',
+      '_blank'
+    );
 
 
-w.document.write(
+  if(!w){
 
-'<html>'+
-'<head>'+
-'<title>Edu.sistem Pro IA</title>'+
-'<style>'+
-'body{font-family:Arial;line-height:1.55;padding:35px;white-space:pre-wrap}'+
-'</style>'+
-'</head>'+
-'<body>'+
-esc(ultimo)+
-'</body>'+
-'</html>'
+    setEstado(
+      'El navegador bloqueó la ventana de impresión. Permitila para descargar PDF.',
+      'err'
+    );
 
-);
+    return;
 
-w.document.close();
+  }
 
-w.print();
+
+  w.document.write(
+
+    '<html>' +
+    '<head>' +
+    '<title>Edu.sistem Pro IA</title>' +
+    '<style>' +
+    'body{font-family:Arial;line-height:1.55;padding:35px;white-space:pre-wrap}' +
+    '</style>' +
+    '</head>' +
+    '<body>' +
+    esc(ultimo) +
+    '</body>' +
+    '</html>'
+
+  );
+
+
+  w.document.close();
+
+  w.focus();
+
+  w.print();
 
 }
 
@@ -2190,29 +1877,30 @@ w.print();
 
 async function compartir(){
 
-if(!ultimo)return;
+  if(!ultimo)return;
 
-if(navigator.share){
 
-try{
+  if(navigator.share){
 
-await navigator.share({
+    try{
 
-title:
-'Edu.sistem Pro IA',
+      await navigator.share({
 
-text:
-ultimo
+        title:
+          'Edu.sistem Pro IA',
 
-});
+        text:
+          ultimo
 
-}catch(e){}
+      });
 
-}else{
+    }catch(e){}
 
-copiar();
+  }else{
 
-}
+    copiar();
+
+  }
 
 }
 
@@ -2223,34 +1911,34 @@ copiar();
 
 function limpiar(){
 
-$('tema').value='';
+  $('tema').value = '';
 
-$('grado').value='';
+  $('grado').value = '';
 
-$('area').value='';
+  $('area').value = '';
 
-$('duracion').value='';
+  $('duracion').value = '';
 
-$('indicaciones').value='';
+  $('indicaciones').value = '';
 
-$('resultadoTexto')
-.textContent='';
+  $('resultadoTexto')
+    .textContent = '';
 
-ultimo='';
+  ultimo = '';
 
-materiales=[];
+  materiales = [];
 
-bibliotecaMateriales=[];
+  bibliotecaMateriales = [];
 
-renderMateriales();
+  renderMateriales();
 
-renderBiblioteca();
+  renderBiblioteca();
 
-setEstado(
-'Formulario limpiado.'
-);
+  setEstado(
+    'Formulario limpiado.'
+  );
 
-ir('crear');
+  ir('crear');
 
 }
 
