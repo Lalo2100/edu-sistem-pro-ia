@@ -357,167 +357,103 @@ Simple, rápido y pensado para usar desde el celular.
 
 <section id="biblioteca" class="card">
 
-<h2>📚 Biblioteca Curricular Córdoba</h2>
+<section id="biblioteca" class="card">
 
-<p class="small">
-Seleccioná la categoría curricular que querés tener en cuenta
-para elaborar tu trabajo docente.
-</p>
+  <h2>📚 Biblioteca Curricular Córdoba</h2>
 
+  <p class="small">
+    Seleccioná los documentos complementarios que querés tener en cuenta
+    para elaborar tu trabajo docente.
+  </p>
 
-<div class="library-grid">
+  <div class="library-grid">
 
-<button
-type="button"
-class="library-btn"
-data-cat="Inicial"
-onclick="seleccionarBiblioteca(this)">
-🟣 Inicial
-</button>
+    <button
+      type="button"
+      class="library-btn"
+      data-cat="Progresiones"
+      onclick="seleccionarBiblioteca(this)">
+      📈 Progresiones
+    </button>
 
-<button
-type="button"
-class="library-btn"
-data-cat="Primaria"
-onclick="seleccionarBiblioteca(this)">
-🔵 Primaria
-</button>
+    <button
+      type="button"
+      class="library-btn"
+      data-cat="Aprendizajes y Contenidos Fundamentales"
+      onclick="seleccionarBiblioteca(this)">
+      🎯 Aprendizajes y Contenidos Fundamentales
+    </button>
 
-<button
-type="button"
-class="library-btn"
-data-cat="Secundaria"
-onclick="seleccionarBiblioteca(this)">
-🟢 Secundaria
-</button>
+    <button
+      type="button"
+      class="library-btn"
+      data-cat="Actualización curricular"
+      onclick="seleccionarBiblioteca(this)">
+      📘 Actualización curricular
+    </button>
 
-<button
-type="button"
-class="library-btn"
-data-cat="Superior"
-onclick="seleccionarBiblioteca(this)">
-🟠 Superior
-</button>
+    <button
+      type="button"
+      class="library-btn"
+      data-cat="Diseños Curriculares"
+      onclick="seleccionarBiblioteca(this)">
+      📚 Diseños Curriculares
+    </button>
 
-<button
-type="button"
-class="library-btn"
-data-cat="Educación Especial"
-onclick="seleccionarBiblioteca(this)">
-🟡 Educación Especial
-</button>
+    <button
+      type="button"
+      class="library-btn"
+      data-cat="Referencias 2026"
+      onclick="seleccionarBiblioteca(this)">
+      🏛️ Referencias 2026
+    </button>
 
-<button
-type="button"
-class="library-btn"
-data-cat="Jóvenes y Adultos"
-onclick="seleccionarBiblioteca(this)">
-🟤 Jóvenes y Adultos
-</button>
+  </div>
 
-<button
-type="button"
-class="library-btn"
-data-cat="Educación Rural"
-onclick="seleccionarBiblioteca(this)">
-🌾 Educación Rural
-</button>
+  <div
+    id="bibliotecaSeleccionada"
+    class="library-selected">
+    No seleccionaste documentación complementaria.
+  </div>
 
-<button
-type="button"
-class="library-btn"
-data-cat="Educación Técnico Profesional"
-onclick="seleccionarBiblioteca(this)">
-🔧 Educación Técnico Profesional
-</button>
+  <div class="material-box">
 
-<button
-type="button"
-class="library-btn"
-data-cat="Progresiones"
-onclick="seleccionarBiblioteca(this)">
-📈 Progresiones
-</button>
+    <h3>👨‍🏫 Materiales que carga el docente</h3>
 
-<button
-type="button"
-class="library-btn"
-data-cat="Aprendizajes y Contenidos Fundamentales"
-onclick="seleccionarBiblioteca(this)">
-🎯 Aprendizajes y Contenidos Fundamentales
-</button>
+    <p class="small">
+      Podés agregar tus propios documentos para utilizarlos como referencia
+      al elaborar el trabajo.
+    </p>
 
-<button
-type="button"
-class="library-btn"
-data-cat="Actualización curricular"
-onclick="seleccionarBiblioteca(this)">
-📘 Actualización curricular
-</button>
+    <input
+      id="archivo"
+      type="file"
+      accept=".pdf,.docx,.txt,.md,.csv,.html,.htm"
+      multiple
+    >
 
-<button
-type="button"
-class="library-btn"
-data-cat="Referencias 2026"
-onclick="seleccionarBiblioteca(this)">
-🏛️ Referencias 2026
-</button>
+    <div class="buttons">
 
-</div>
+      <button
+        type="button"
+        class="secondary"
+        onclick="agregarMaterial()">
+        + Agregar material
+      </button>
 
+    </div>
 
-<div
-id="bibliotecaSeleccionada"
-class="library-selected">
+    <div id="materialesLista">
 
-No seleccionaste una categoría curricular.
+      <p class="small">
+        Todavía no agregaste materiales.
+      </p>
 
-</div>
+    </div>
 
+  </div>
 
-<!-- ÚNICA SECCIÓN DE CARGA DE MATERIALES -->
-
-<div class="material-box">
-
-<h3>
-👨‍🏫 Materiales que carga el docente
-</h3>
-
-<p class="small">
-Subí materiales propios para que Edu.sistem Pro IA
-pueda utilizarlos como referencia al elaborar tu trabajo.
-Podés seleccionar PDF, Word, TXT, MD, CSV o HTML.
-</p>
-
-<input
-id="archivo"
-type="file"
-accept=".pdf,.docx,.txt,.md,.csv,.html,.htm"
-multiple
->
-
-<div class="buttons">
-
-<button
-type="button"
-class="secondary"
-onclick="agregarMaterial()">
-
-+ Agregar material
-
-</button>
-
-</div>
-
-<div id="materialesLista">
-
-<p class="small">
-Todavía no agregaste materiales.
-</p>
-
-</div>
-
-</div>
+</section>
 
 </section>
 
