@@ -1,63 +1,114 @@
+const multer = require("multer");
+const pdfParse = require("pdf-parse");
+const mammoth = require("mammoth");
+
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    files: 2,
+    fileSize: 2 * 1024 * 1024
+  }
+});
+
 const MODELS = (
   process.env.GEMINI_MODEL ||
-  'gemini-2.5-flash,gemini-2.5-flash-lite'
+  "gemini-3.5-flash-lite,gemini-3.5-flash"
 )
-  .split(',')
+  .split(",")
   .map(x => x.trim())
   .filter(Boolean);
 
-function cleanText(text) {
-  return String(text || '')
-    .replace(/\u0000/g, '')
-    .replace(/\r/g, '')
-    .replace(/[ \t]+\n/g, '\n')
-    .replace(/\n{4,}/g, '\n\n')
-    .trim();
+function runUpload(req, res) {
+  return new Promise((resolve, reject) => {
+    upload.array("materiales", 2)(req, res, err => {
+      if (err) reject(err);
+      else resolve();
+    });
+  });
 }
 
-function buildPrompt(d, materials) {
-  return `Sos Edu.sistem pro ia, asistente especializado en planificación educativa para docentes argentinos.
+async function extract(file) {
+  const name = (file.originalname || "").toLowerCase();
+  const buffer = file.buffer;
+
+  if (name.endsWith(".pdf")) {
+    const result = await pdfParse(buffer);
+    return result.text || "";
+  }
+
+  if (name.endsWith(".docx")) {
+    const result = await mammoth.extractRawText({ buffer });
+    return result.value || "";
+  }
+
+  if (/\.(txt|md|csv|html|htm)$/.test(name)) {
+    return buffer
+      .toString("utf8")
+      .replace(/<script[\s\S]*?<\/script>/gi, " ")
+      .replace(/<style[\s\S]*?<\/style>/gi, " ")
+      .replace(/<[^>]+>/g, " ");
+  }
+
+  throw new Error("Formato no compatible: " + file.originalname);
+}
+
+function buildPrompt(data, materials) {
+  return `
+Sos Edu.sistem pro ia, asistente especializado en planificación educativa para docentes argentinos.
 
 Generá solamente el documento final, profesional y listo para copiar a Word.
 
-DATOS DEL TRABAJO
-Tipo: ${d.tipo || ''}
-Nivel: ${d.nivel || ''}
-Grado/Curso: ${d.grado || ''}
-Área/Materia: ${d.area || ''}
-Tema: ${d.tema || ''}
-Duración: ${d.duracion || ''}
+TIPO DE TRABAJO:
+${data.tipo || ""}
+
+NIVEL:
+${data.nivel || ""}
+
+GRADO / CURSO:
+${data.grado || ""}
+
+ÁREA / MATERIA:
+${data.area || ""}
+
+TEMA:
+${data.tema || ""}
+
+DURACIÓN:
+${data.duracion || ""}
 
 INDICACIONES DEL DOCENTE:
-${d.indicaciones || 'Propuesta completa y adecuada al nivel.'}
+${data.indicaciones || "Propuesta completa y adecuada al nivel."}
+
+Usá los materiales enviados como contexto cuando sean pertinentes.
+No inventes normativa oficial.
+No menciones que sos una IA.
+No agregues explicaciones sobre el proceso.
+Entregá directamente el documento terminado.
 
 MATERIALES DE REFERENCIA:
-Utilizá los materiales proporcionados como contexto cuando sean pertinentes.
-No inventes normativa oficial.
-No afirmes que algo pertenece a un diseño curricular si no aparece en los materiales.
-
-${materials || '(No se enviaron materiales.)'}
-
-IMPORTANTE:
-- Adaptá el contenido al nivel, grado/curso y área indicados.
-- Mantené una estructura clara y profesional.
-- No agregues explicaciones sobre cómo generaste el documento.
-- Entregá directamente el documento final.`;
+${materials || "(No se enviaron materiales.)"}
+`;
 }
 
-module.exports = async (req, res) => {
-  res.setHeader('Cache-Control', 'no-store');
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  res.setHeader('Access-Control-Allow-Methods', 'POST,OPTIONS');
+module.exports = async function handler(req, res) {
+  res.setHeader("Cache-Control", "no-store");
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Content-Type"
+  );
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "POST,OPTIONS"
+  );
 
-  if (req.method === 'OPTIONS') {
+  if (req.method === "OPTIONS") {
     return res.status(204).end();
   }
 
-  if (req.method !== 'POST') {
+  if (req.method !== "POST") {
     return res.status(405).json({
-      error: 'Método no permitido.'
+      error: "Método no permitido."
     });
   }
 
@@ -65,123 +116,122 @@ module.exports = async (req, res) => {
 
   if (!key) {
     return res.status(503).json({
-      error: 'GEMINI_API_KEY no está configurada en Vercel.'
+      error: "GEMINI_API_KEY no está configurada en Vercel."
     });
   }
 
   try {
-    const d = req.body || {};
+    await runUpload(req, res);
 
-    if (typeof d.tipo === 'string') d.tipo = d.tipo.trim();
+    const data = req.body || {};
 
-    if (!d.tipo || !String(d.tema || '').trim()) {
+    if (typeof data.tipo === "string") {
+      data.tipo = data.tipo.trim();
+    }
+
+    if (!data.tipo || !String(data.tema || "").trim()) {
       return res.status(400).json({
-        error: 'Indicá el tipo de trabajo y el tema.'
+        error: "Indicá el tipo de trabajo y el tema."
       });
     }
 
-    let materials = '';
+    let materials = "";
+    const used = [];
 
-    /*
-     * Los materiales ahora llegan como TEXTO.
-     * Ya no recibimos PDF/DOCX completos en esta función.
-     */
-    if (Array.isArray(d.materiales)) {
-      for (const material of d.materiales) {
-        if (!material) continue;
+    for (const file of req.files || []) {
+      try {
+        const text = await extract(file);
 
-        const nombre = material.nombre || 'Material';
-        const categoria = material.categoria || '';
-        const texto = cleanText(material.texto);
+        if (text.trim()) {
+          materials +=
+            `\n--- ${file.originalname} ---\n` +
+            text.slice(0, 25000);
 
-        if (!texto) continue;
-
-        materials += `
-
---- ${nombre}${categoria ? ` | ${categoria}` : ''} ---
-${texto}`;
+          used.push(file.originalname);
+        }
+      } catch (error) {
+        // Se ignora un archivo que no pueda procesarse.
       }
     }
 
-    /*
-     * También aceptamos un único bloque de texto,
-     * por compatibilidad.
-     */
-    if (!materials && d.materialesTexto) {
-      materials = cleanText(d.materialesTexto);
-    }
+    const prompt = buildPrompt(
+      data,
+      materials.slice(0, 60000)
+    );
 
-    /*
-     * Protección para que el prompt no crezca indefinidamente.
-     */
-    materials = materials.slice(0, 90000);
-
-    let last = '';
+    let lastError = "";
 
     for (const model of MODELS) {
       try {
         const response = await fetch(
           `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(key)}`,
           {
-            method: 'POST',
+            method: "POST",
             headers: {
-              'Content-Type': 'application/json'
+              "Content-Type": "application/json"
             },
             body: JSON.stringify({
               contents: [
                 {
-                  role: 'user',
+                  role: "user",
                   parts: [
                     {
-                      text: buildPrompt(d, materials)
+                      text: prompt
                     }
                   ]
                 }
               ],
               generationConfig: {
-                maxOutputTokens: 12000
+                maxOutputTokens: 10000
               }
             })
           }
         );
 
-        const data = await response.json().catch(() => ({}));
+        const result = await response
+          .json()
+          .catch(() => ({}));
 
         if (!response.ok) {
-          last =
-            data?.error?.message ||
+          lastError =
+            result?.error?.message ||
             `HTTP ${response.status}`;
           continue;
         }
 
-        const texto = (
-          data?.candidates?.[0]?.content?.parts || []
-        )
-          .map(p => p.text || '')
-          .join('\n')
-          .trim();
+        const text =
+          (result?.candidates?.[0]?.content?.parts || [])
+            .map(part => part.text || "")
+            .join("\n")
+            .trim();
 
-        if (texto) {
+        if (text) {
           return res.json({
             ok: true,
-            texto,
-            modelo: model
+            texto: text,
+            modelo: model,
+            materialesUsados: used
           });
         }
 
-        last = 'Gemini no devolvió contenido.';
-      } catch (e) {
-        last = e.message || 'Error de conexión con Gemini.';
+        lastError =
+          "Gemini no devolvió contenido.";
+      } catch (error) {
+        lastError = error.message;
       }
     }
 
     return res.status(502).json({
-      error: `Gemini no pudo generar el documento. ${last}`
+      error:
+        "Gemini no pudo generar el documento. " +
+        lastError
     });
 
-  } catch (e) {
+  } catch (error) {
     return res.status(400).json({
-      error: e.message || 'No se pudo procesar la solicitud.'
+      error:
+        error.message ||
+        "No se pudo procesar la solicitud."
     });
   }
 };
