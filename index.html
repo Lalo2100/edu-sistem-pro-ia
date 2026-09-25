@@ -1428,38 +1428,234 @@ renderBiblioteca();
    SALUD API
 ===================================================== */
 
-async function health(){
+async function generar(){
 
-try{
+  const tema = $('tema').value.trim();
 
-const r=
-await fetch(
-'/api/health',
-{
-cache:'no-store'
-}
-);
+  if(!tema){
+    setEstado(
+      'Escribí el tema que necesitás trabajar.',
+      'err'
+    );
+    ir('crear');
+    return;
+  }
 
-if(!r.ok){
+  const btn = $('btnGenerar');
 
-throw new Error(
-'HTTP '+r.status
-);
+  btn.disabled = true;
+  btn.textContent = '⏳ Generando…';
 
-}
+  $('resultadoTexto').textContent = '';
 
-const j=
-await r.json();
+  setEstado(
+    'Preparando la solicitud…'
+  );
 
-if(j.geminiConfigured){
+  /*
+   * VERCEL:
+   * La función admite como máximo 4,5 MB.
+   * Dejamos margen de seguridad y limitamos
+   * los archivos enviados a 3 MB totales.
+   */
 
-$('status').textContent=
-'✓ Gemini conectado';
+  const MAX_TOTAL = 3 * 1024 * 1024;
+  const MAX_ARCHIVOS = 2;
 
-}else{
+  const todosLosMateriales = [
+    ...bibliotecaMateriales,
+    ...materiales.map(f => ({
+      file: f,
+      categoria: 'Materiales del docente',
+      name: f.name,
+      size: f.size
+    }))
+  ];
 
-$('status').textContent=
-'⚠ Falta GEMINI_API_KEY';
+  if(todosLosMateriales.length > MAX_ARCHIVOS){
+
+    setEstado(
+      'Para esta versión podés enviar hasta 2 documentos por generación. Eliminá algún archivo de referencia y volvé a intentar.',
+      'err'
+    );
+
+    btn.disabled = false;
+    btn.textContent = '✨ Crear con Gemini';
+
+    return;
+  }
+
+  let totalBytes = 0;
+
+  for(const item of todosLosMateriales){
+    totalBytes += item.file.size;
+  }
+
+  if(totalBytes > MAX_TOTAL){
+
+    const totalMB = (
+      totalBytes / (1024 * 1024)
+    ).toFixed(2);
+
+    setEstado(
+      'Los documentos seleccionados ocupan ' +
+      totalMB +
+      ' MB. El máximo permitido para una generación es 3 MB. Quitá algún archivo y volvé a intentar.',
+      'err'
+    );
+
+    btn.disabled = false;
+    btn.textContent = '✨ Crear con Gemini';
+
+    return;
+  }
+
+  const fd = new FormData();
+
+  fd.append(
+    'tipo',
+    $('tipo').value
+  );
+
+  fd.append(
+    'nivel',
+    $('nivel').value
+  );
+
+  fd.append(
+    'grado',
+    $('grado').value
+  );
+
+  fd.append(
+    'area',
+    $('area').value
+  );
+
+  fd.append(
+    'tema',
+    tema
+  );
+
+  fd.append(
+    'duracion',
+    $('duracion').value
+  );
+
+  fd.append(
+    'indicaciones',
+    $('indicaciones').value
+  );
+
+  /*
+   * ENVIAR DOCUMENTOS
+   */
+
+  todosLosMateriales.forEach(item => {
+
+    fd.append(
+      'materiales',
+      item.file,
+      item.file.name
+    );
+
+    fd.append(
+      'bibliotecaCategorias',
+      item.categoria
+    );
+
+  });
+
+  try{
+
+    setEstado(
+      'Consultando Gemini y preparando el documento…'
+    );
+
+    const r = await fetch(
+      '/api/generar',
+      {
+        method:'POST',
+        body:fd
+      }
+    );
+
+    const raw = await r.text();
+
+    let j = {};
+
+    try{
+
+      j = JSON.parse(raw);
+
+    }catch(_){
+
+      j = {
+        error:
+          raw ||
+          ('HTTP ' + r.status)
+      };
+
+    }
+
+    if(!r.ok){
+
+      throw new Error(
+        j.error ||
+        ('HTTP ' + r.status)
+      );
+
+    }
+
+    ultimo = j.texto || '';
+
+    $('resultadoTexto').textContent = ultimo;
+
+    let mensaje =
+      '✓ Generado correctamente con ' +
+      (j.modelo || 'Gemini');
+
+    if(todosLosMateriales.length){
+
+      mensaje +=
+        ' · Documentos enviados: ' +
+        todosLosMateriales.length;
+
+    }
+
+    if(
+      j.materialesUsados &&
+      j.materialesUsados.length
+    ){
+
+      mensaje +=
+        ' · Materiales usados: ' +
+        j.materialesUsados.join(', ');
+
+    }
+
+    setEstado(
+      mensaje,
+      'ok'
+    );
+
+    ir('resultado');
+
+  }catch(e){
+
+    setEstado(
+      'Error: ' + e.message,
+      'err'
+    );
+
+  }finally{
+
+    btn.disabled = false;
+
+    btn.textContent =
+      '✨ Crear con Gemini';
+
+  }
 
 }
 
