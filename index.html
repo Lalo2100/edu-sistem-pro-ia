@@ -401,7 +401,7 @@ footer{
 <svg class="logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-label="Logo Edu.sistem Pro IA">
 
   <defs>
-    <lineargradient id="eduGradient" x1="0" y1="0" x2="1" y2="1">
+    <linearGradient id="eduGradient" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0%" stop-color="#4f46e5"></stop>
       <stop offset="100%" stop-color="#7c3aed"></stop>
     </lineargradient>
@@ -503,7 +503,7 @@ Elegí el plan que querés utilizar.
 
 </section>
 
-<section id="crear" class="card">
+
 
 <h2>✨ ¿Qué querés crear?</h2>
 
@@ -665,43 +665,183 @@ Compartir
 </section>
 
 
-<section id="planes" class="card">
 
-<h2>💳 Planes</h2>
+<section id="biblioteca" class="card">
+
+<h2>📚 Biblioteca Curricular Córdoba</h2>
 
 <p class="small">
-La estructura comercial queda preparada para la etapa de lanzamiento.
+Seleccioná las referencias curriculares que querés que Gemini tenga en cuenta para elaborar el trabajo.
 </p>
 
-<div class="plans">
+<div class="library-grid">
 
-<div class="plan">
-<h3>Gratis</h3>
-<div class="price">5 / mes</div>
-<p>Para conocer la herramienta.</p>
+<div class="library-card">
+<label class="library-select">
+<input type="checkbox" class="biblioteca-check" value="Inicial">
+<span>🟣 Inicial</span>
+</label>
+<div class="library-description">
+Documentos y referencias curriculares para Educación Inicial.
+</div>
 </div>
 
-<div class="plan">
-<h3>Docente</h3>
-<div class="price">100 / mes</div>
-<p>Para uso habitual.</p>
+<div class="library-card">
+<label class="library-select">
+<input type="checkbox" class="biblioteca-check" value="Primaria">
+<span>🔵 Primaria</span>
+</label>
+<div class="library-description">
+Diseños, contenidos y referencias para Educación Primaria.
+</div>
 </div>
 
-<div class="plan">
-<h3>Profesional</h3>
-<div class="price">300 / mes</div>
-<p>Para mayor volumen.</p>
+<div class="library-card">
+<label class="library-select">
+<input type="checkbox" class="biblioteca-check" value="Secundaria">
+<span>🟢 Secundaria</span>
+</label>
+<div class="library-description">
+Referencias curriculares para Educación Secundaria.
+</div>
 </div>
 
-<div class="plan">
-<h3>Institución</h3>
-<div class="price">1000 / mes</div>
-<p>Para equipos educativos.</p>
+<div class="library-card">
+<label class="library-select">
+<input type="checkbox" class="biblioteca-check" value="Superior">
+<span>🟠 Superior</span>
+</label>
+<div class="library-description">
+Material curricular para Educación Superior.
+</div>
+</div>
+
+<div class="library-card">
+<label class="library-select">
+<input type="checkbox" class="biblioteca-check" value="Educación Especial">
+<span>🟡 Educación Especial</span>
+</label>
+<div class="library-description">
+Referencias para Educación Especial.
+</div>
+</div>
+
+<div class="library-card">
+<label class="library-select">
+<input type="checkbox" class="biblioteca-check" value="Jóvenes y Adultos">
+<span>🟤 Jóvenes y Adultos</span>
+</label>
+<div class="library-description">
+Material curricular para la modalidad de Jóvenes y Adultos.
+</div>
+</div>
+
+<div class="library-card">
+<label class="library-select">
+<input type="checkbox" class="biblioteca-check" value="Educación Rural">
+<span>🌾 Educación Rural</span>
+</label>
+<div class="library-description">
+Referencias y materiales para Educación Rural.
+</div>
+</div>
+
+<div class="library-card">
+<label class="library-select">
+<input type="checkbox" class="biblioteca-check" value="Educación Técnico Profesional">
+<span>🔧 Educación Técnico Profesional</span>
+</label>
+<div class="library-description">
+Material curricular de Educación Técnico Profesional.
+</div>
+</div>
+
+<div class="library-card">
+<label class="library-select">
+<input type="checkbox" class="biblioteca-check" value="Progresiones">
+<span>📈 Progresiones</span>
+</label>
+<div class="library-description">
+Progresiones de aprendizajes y referencias para la enseñanza.
+</div>
+</div>
+
+<div class="library-card">
+<label class="library-select">
+<input type="checkbox" class="biblioteca-check" value="Aprendizajes y Contenidos Fundamentales">
+<span>📘 Aprendizajes y Contenidos Fundamentales</span>
+</label>
+<div class="library-description">
+Aprendizajes y contenidos fundamentales de referencia.
+</div>
+</div>
+
+<div class="library-card">
+<label class="library-select">
+<input type="checkbox" class="biblioteca-check" value="Actualización curricular">
+<span>🔄 Actualización curricular</span>
+</label>
+<div class="library-description">
+Documentos de actualización y orientaciones curriculares.
+</div>
+</div>
+
+<div class="library-card">
+<label class="library-select">
+<input type="checkbox" class="biblioteca-check" value="Referencias 2026">
+<span>📅 Referencias 2026</span>
+</label>
+<div class="library-description">
+Referencias y documentos correspondientes al ciclo 2026.
+</div>
+</div>
+
+</div>
+
+<div id="bibliotecaSeleccionadas" class="library-info">
+📚 No seleccionaste referencias todavía.
+</div>
+
+<div class="material-box">
+
+<h3>📎 Materiales de referencia</h3>
+
+<p class="small">
+Podés agregar documentos propios para que Gemini los tome como referencia.
+Se aceptan PDF, Word, TXT, MD, CSV y HTML.
+</p>
+
+<input
+id="archivo"
+type="file"
+multiple
+accept=".pdf,.docx,.txt,.md,.csv,.html,.htm"
+>
+
+<div class="buttons">
+
+<button
+type="button"
+class="secondary"
+onclick="agregarMaterial()"
+>
+➕ Agregar material
+</button>
+
+</div>
+
+<div id="materialesLista">
+
+<p class="small">
+Todavía no agregaste materiales.
+</p>
+
 </div>
 
 </div>
 
 </section>
+
 
 </main>
 
