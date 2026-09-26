@@ -1,7 +1,7 @@
-<!doctype html>
-<html lang="es">
-<head>
-<meta charset="utf-8">
+<!DOCTYPE html>
+<!-- saved from url=(0042)https://edu-sistem-pro-ia-zyjj.vercel.app/ -->
+<html lang="es"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Edu.sistem Pro IA</title>
 
@@ -210,6 +210,28 @@ button.danger{
   margin-bottom:5px;
 }
 
+.library-select{
+  display:flex;
+  align-items:flex-start;
+  gap:9px;
+  margin:0 0 7px;
+  cursor:pointer;
+}
+
+.library-select input{
+  width:20px;
+  height:20px;
+  margin:0;
+  flex:none;
+  accent-color:var(--primary);
+}
+
+.library-select span{
+  font-weight:800;
+  font-size:15px;
+  line-height:1.3;
+}
+
 .library-description{
   font-size:12px;
   color:var(--muted);
@@ -376,50 +398,22 @@ footer{
 
 <div class="logo-wrap">
 
-<svg class="logo"
-     viewBox="0 0 100 100"
-     xmlns="http://www.w3.org/2000/svg"
-     aria-label="Logo Edu.sistem Pro IA">
+<svg class="logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-label="Logo Edu.sistem Pro IA">
 
   <defs>
-    <linearGradient id="eduGradient"
-                    x1="0"
-                    y1="0"
-                    x2="1"
-                    y2="1">
-      <stop offset="0%" stop-color="#4f46e5"/>
-      <stop offset="100%" stop-color="#7c3aed"/>
-    </linearGradient>
+    <lineargradient id="eduGradient" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#4f46e5"></stop>
+      <stop offset="100%" stop-color="#7c3aed"></stop>
+    </lineargradient>
   </defs>
 
-  <rect
-    x="4"
-    y="4"
-    width="92"
-    height="92"
-    rx="24"
-    fill="url(#eduGradient)"
-  />
+  <rect x="4" y="4" width="92" height="92" rx="24" fill="url(#eduGradient)"></rect>
 
-  <path
-    d="M20 34 L50 20 L80 34 L50 48 Z"
-    fill="#ffffff"
-  />
+  <path d="M20 34 L50 20 L80 34 L50 48 Z" fill="#ffffff"></path>
 
-  <path
-    d="M30 43 V61 C30 69 39 76 50 76 C61 76 70 69 70 61 V43"
-    fill="none"
-    stroke="#ffffff"
-    stroke-width="6"
-    stroke-linecap="round"
-  />
+  <path d="M30 43 V61 C30 69 39 76 50 76 C61 76 70 69 70 61 V43" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round"></path>
 
-  <circle
-    cx="50"
-    cy="60"
-    r="5"
-    fill="#ffffff"
-  />
+  <circle cx="50" cy="60" r="5" fill="#ffffff"></circle>
 
 </svg>
 
@@ -430,9 +424,7 @@ footer{
 
 </div>
 
-<div id="status" class="badge">
-Comprobando conexión…
-</div>
+<div id="status" class="badge" style="background: rgb(236, 253, 243); color: rgb(6, 118, 71);">🟢 Servidor conectado</div>
 
 </header>
 
@@ -450,269 +442,79 @@ Simple, rápido y pensado para usar desde el celular.
 
 
 <section id="biblioteca" class="card">
-
 <h2>📚 Biblioteca Curricular Córdoba</h2>
-
-<p class="small">
-Cargá los documentos curriculares en la categoría correspondiente.
-Podés agregar varios documentos en cada categoría.
-</p>
-
+<p class="small"><strong>🟢 Biblioteca local:</strong> las referencias curriculares se encuentran dentro de la aplicación.</p>
+<p class="small">Elegí las referencias curriculares que querés usar. Estas referencias forman parte de la biblioteca local de Edu.sistem Pro IA y no requieren subir archivos ni consultar Internet.</p>
 <div class="library-grid">
-
-
-<div class="library-card">
-<div class="library-title">🔵 Primaria</div>
-<div class="library-description">
-Diseños, progresiones y actualizaciones curriculares de Educación Primaria.
+<label class="library-card library-select" style="cursor:pointer;display:block">
+<input type="checkbox" class="biblioteca-check" value="Primaria" style="width:auto;margin-right:8px;vertical-align:middle">
+<span class="library-title">🔵 Primaria</span>
+<div class="library-description">Orientaciones Pedagógicas y Didácticas para Educación Primaria.</div>
+</label>
+<label class="library-card library-select" style="cursor:pointer;display:block">
+<input type="checkbox" class="biblioteca-check" value="Inicial" style="width:auto;margin-right:8px;vertical-align:middle">
+<span class="library-title">🟣 Inicial</span>
+<div class="library-description">Orientaciones Pedagógicas y Didácticas para Educación Inicial.</div>
+</label>
+<label class="library-card library-select" style="cursor:pointer;display:block">
+<input type="checkbox" class="biblioteca-check" value="Secundaria" style="width:auto;margin-right:8px;vertical-align:middle">
+<span class="library-title">🟢 Secundaria</span>
+<div class="library-description">Orientaciones Pedagógicas y Didácticas para Educación Secundaria.</div>
+</label>
+<label class="library-card library-select" style="cursor:pointer;display:block">
+<input type="checkbox" class="biblioteca-check" value="Superior" style="width:auto;margin-right:8px;vertical-align:middle">
+<span class="library-title">🟠 Superior</span>
+<div class="library-description">Referencia general del Marco Curricular Común. No se presenta como diseño específico de Superior.</div>
+</label>
+<label class="library-card library-select" style="cursor:pointer;display:block">
+<input type="checkbox" class="biblioteca-check" value="Educación Especial" style="width:auto;margin-right:8px;vertical-align:middle">
+<span class="library-title">🟡 Educación Especial</span>
+<div class="library-description">Referencia general del Marco Curricular Común para trabajo situado e inclusivo.</div>
+</label>
+<label class="library-card library-select" style="cursor:pointer;display:block">
+<input type="checkbox" class="biblioteca-check" value="Jóvenes y Adultos" style="width:auto;margin-right:8px;vertical-align:middle">
+<span class="library-title">🟤 Jóvenes y Adultos</span>
+<div class="library-description">Referencia curricular general; el Marco contempla módulos para esta modalidad.</div>
+</label>
+<label class="library-card library-select" style="cursor:pointer;display:block">
+<input type="checkbox" class="biblioteca-check" value="Educación Rural" style="width:auto;margin-right:8px;vertical-align:middle">
+<span class="library-title">🌾 Educación Rural</span>
+<div class="library-description">Referencia general del Marco Curricular Común para contextualización institucional.</div>
+</label>
+<label class="library-card library-select" style="cursor:pointer;display:block">
+<input type="checkbox" class="biblioteca-check" value="Educación Técnico Profesional" style="width:auto;margin-right:8px;vertical-align:middle">
+<span class="library-title">🔧 Educación Técnico Profesional</span>
+<div class="library-description">Referencia general del Marco Curricular Común. Material específico se incorporará cuando esté disponible localmente.</div>
+</label>
+<label class="library-card library-select" style="cursor:pointer;display:block">
+<input type="checkbox" class="biblioteca-check" value="Progresiones" style="width:auto;margin-right:8px;vertical-align:middle">
+<span class="library-title">📈 Progresiones</span>
+<div class="library-description">Progresiones de aprendizaje y sus componentes: metas por ciclo, aprendizajes y contenidos e indicadores de logro.</div>
+</label>
+<label class="library-card library-select" style="cursor:pointer;display:block">
+<input type="checkbox" class="biblioteca-check" value="Aprendizajes y Contenidos Fundamentales" style="width:auto;margin-right:8px;vertical-align:middle">
+<span class="library-title">🎯 Aprendizajes y Contenidos Fundamentales</span>
+<div class="library-description">Componente curricular de aprendizajes y contenidos del currículum provincial.</div>
+</label>
+<label class="library-card library-select" style="cursor:pointer;display:block">
+<input type="checkbox" class="biblioteca-check" value="Actualización curricular" style="width:auto;margin-right:8px;vertical-align:middle">
+<span class="library-title">📘 Actualización curricular</span>
+<div class="library-description">Referencia al proceso de renovación y actualización curricular provincial.</div>
+</label>
+<label class="library-card library-select" style="cursor:pointer;display:block">
+<input type="checkbox" class="biblioteca-check" value="Referencias 2026" style="width:auto;margin-right:8px;vertical-align:middle">
+<span class="library-title">🏛️ Referencias 2026</span>
+<div class="library-description">Referencia general a materiales curriculares disponibles para el ciclo 2026; no inventa normativa.</div>
+</label>
 </div>
-<div class="library-upload">
-<input
-type="file"
-class="biblioteca-file-input"
-data-cat="Primaria"
-accept=".pdf,.docx,.txt,.md"
-multiple>
-</div>
-<div id="files-Primaria" class="library-files"></div>
-</div>
-
-
-<div class="library-card">
-<div class="library-title">🟣 Inicial</div>
-<div class="library-description">
-Documentos curriculares correspondientes al Nivel Inicial.
-</div>
-<div class="library-upload">
-<input
-type="file"
-class="biblioteca-file-input"
-data-cat="Inicial"
-accept=".pdf,.docx,.txt,.md"
-multiple>
-</div>
-<div id="files-Inicial" class="library-files"></div>
-</div>
-
-
-<div class="library-card">
-<div class="library-title">🟢 Secundaria</div>
-<div class="library-description">
-Diseños y documentos curriculares de Educación Secundaria.
-</div>
-<div class="library-upload">
-<input
-type="file"
-class="biblioteca-file-input"
-data-cat="Secundaria"
-accept=".pdf,.docx,.txt,.md"
-multiple>
-</div>
-<div id="files-Secundaria" class="library-files"></div>
-</div>
-
-
-<div class="library-card">
-<div class="library-title">🟠 Superior</div>
-<div class="library-description">
-Documentación curricular para Educación Superior.
-</div>
-<div class="library-upload">
-<input
-type="file"
-class="biblioteca-file-input"
-data-cat="Superior"
-accept=".pdf,.docx,.txt,.md"
-multiple>
-</div>
-<div id="files-Superior" class="library-files"></div>
-</div>
-
-
-<div class="library-card">
-<div class="library-title">🟡 Educación Especial</div>
-<div class="library-description">
-Documentación y orientaciones para Educación Especial.
-</div>
-<div class="library-upload">
-<input
-type="file"
-class="biblioteca-file-input"
-data-cat="Educación Especial"
-accept=".pdf,.docx,.txt,.md"
-multiple>
-</div>
-<div id="files-Educacion-Especial" class="library-files"></div>
-</div>
-
-
-<div class="library-card">
-<div class="library-title">🟤 Jóvenes y Adultos</div>
-<div class="library-description">
-Documentos curriculares para la modalidad de Jóvenes y Adultos.
-</div>
-<div class="library-upload">
-<input
-type="file"
-class="biblioteca-file-input"
-data-cat="Jóvenes y Adultos"
-accept=".pdf,.docx,.txt,.md"
-multiple>
-</div>
-<div id="files-Jovenes-y-Adultos" class="library-files"></div>
-</div>
-
-
-<div class="library-card">
-<div class="library-title">🌾 Educación Rural</div>
-<div class="library-description">
-Orientaciones y documentación específica para Educación Rural.
-</div>
-<div class="library-upload">
-<input
-type="file"
-class="biblioteca-file-input"
-data-cat="Educación Rural"
-accept=".pdf,.docx,.txt,.md"
-multiple>
-</div>
-<div id="files-Educacion-Rural" class="library-files"></div>
-</div>
-
-
-<div class="library-card">
-<div class="library-title">🔧 Técnico Profesional</div>
-<div class="library-description">
-Documentación curricular de Educación Técnico Profesional.
-</div>
-<div class="library-upload">
-<input
-type="file"
-class="biblioteca-file-input"
-data-cat="Técnico Profesional"
-accept=".pdf,.docx,.txt,.md"
-multiple>
-</div>
-<div id="files-Tecnico-Profesional" class="library-files"></div>
-</div>
-
-
-<div class="library-card">
-<div class="library-title">📈 Progresiones</div>
-<div class="library-description">
-Progresiones de aprendizaje y documentos asociados.
-</div>
-<div class="library-upload">
-<input
-type="file"
-class="biblioteca-file-input"
-data-cat="Progresiones"
-accept=".pdf,.docx,.txt,.md"
-multiple>
-</div>
-<div id="files-Progresiones" class="library-files"></div>
-</div>
-
-
-<div class="library-card">
-<div class="library-title">🎯 Aprendizajes y Contenidos Fundamentales</div>
-<div class="library-description">
-Documentos sobre aprendizajes y contenidos fundamentales.
-</div>
-<div class="library-upload">
-<input
-type="file"
-class="biblioteca-file-input"
-data-cat="Aprendizajes y Contenidos Fundamentales"
-accept=".pdf,.docx,.txt,.md"
-multiple>
-</div>
-<div id="files-Aprendizajes-y-Contenidos-Fundamentales" class="library-files"></div>
-</div>
-
-
-<div class="library-card">
-<div class="library-title">📘 Actualización curricular</div>
-<div class="library-description">
-Actualizaciones y documentos curriculares complementarios.
-</div>
-<div class="library-upload">
-<input
-type="file"
-class="biblioteca-file-input"
-data-cat="Actualización curricular"
-accept=".pdf,.docx,.txt,.md"
-multiple>
-</div>
-<div id="files-Actualizacion-curricular" class="library-files"></div>
-</div>
-
-
-<div class="library-card">
-<div class="library-title">🏛️ Referencias 2026</div>
-<div class="library-description">
-Documentos y referencias que quieras incorporar para el ciclo 2026.
-</div>
-<div class="library-upload">
-<input
-type="file"
-class="biblioteca-file-input"
-data-cat="Referencias 2026"
-accept=".pdf,.docx,.txt,.md"
-multiple>
-</div>
-<div id="files-Referencias-2026" class="library-files"></div>
-</div>
-
-</div>
-
-<div class="library-info">
-
-📌 <strong>Importante:</strong>
-los documentos que cargues desde esta pantalla se usarán como material
-de referencia para la generación. No hace falta subirlos a GitHub.
-
-</div>
-
-
+<div class="library-info">📌 <strong>Biblioteca local:</strong> la selección se envía al servidor junto con tu pedido. No se descargan documentos desde Internet durante la generación.</div>
 <div class="material-box">
-
 <h3>👨‍🏫 Materiales que carga el docente</h3>
-
-<p class="small">
-Acá podés agregar tus propios diseños, planificaciones, secuencias,
-programas, ejemplos o documentos institucionales.
-</p>
-
-<input
-id="archivo"
-type="file"
-accept=".pdf,.docx,.txt,.md,.csv,.html,.htm"
-multiple>
-
-<div class="buttons">
-
-<button
-type="button"
-class="secondary"
-onclick="agregarMaterial()">
-
-+ Agregar material
-
-</button>
-
+<p class="small">Podés agregar tus propios diseños, planificaciones, secuencias, programas, ejemplos o documentos institucionales.</p>
+<input id="archivo" type="file" accept=".pdf,.docx,.txt,.md,.csv,.html,.htm" multiple>
+<div class="buttons"><button type="button" class="secondary" onclick="agregarMaterial()">+ Agregar material</button></div>
+<div id="materialesLista"><p class="small">Todavía no agregaste materiales.</p></div>
 </div>
-
-<div id="materialesLista">
-
-<p class="small">
-Todavía no agregaste materiales.
-</p>
-
-</div>
-
-</div>
-
 </section>
 
 
@@ -756,7 +558,7 @@ Rúbrica
 <select id="nivel">
 
 <option>Inicial</option>
-<option selected>Primaria</option>
+<option selected="">Primaria</option>
 <option>Secundaria</option>
 <option>Superior</option>
 
@@ -769,9 +571,7 @@ Rúbrica
 
 <label>Grado / Curso</label>
 
-<input
-id="grado"
-placeholder="Ej.: 5.º grado">
+<input id="grado" placeholder="Ej.: 5.º grado">
 
 </div>
 
@@ -780,9 +580,7 @@ placeholder="Ej.: 5.º grado">
 
 <label>Área / Materia</label>
 
-<input
-id="area"
-placeholder="Ej.: Lengua">
+<input id="area" placeholder="Ej.: Lengua">
 
 </div>
 
@@ -791,9 +589,7 @@ placeholder="Ej.: Lengua">
 
 <label>Tema</label>
 
-<input
-id="tema"
-placeholder="¿Sobre qué necesitás trabajar?">
+<input id="tema" placeholder="¿Sobre qué necesitás trabajar?">
 
 </div>
 
@@ -802,9 +598,7 @@ placeholder="¿Sobre qué necesitás trabajar?">
 
 <label>Duración</label>
 
-<input
-id="duracion"
-placeholder="Ej.: 4 semanas">
+<input id="duracion" placeholder="Ej.: 4 semanas">
 
 </div>
 
@@ -815,10 +609,7 @@ placeholder="Ej.: 4 semanas">
 ¿Cómo querés que lo realice?
 </label>
 
-<textarea
-id="indicaciones"
-placeholder="Ej.: incluir fundamentación, objetivos, actividades y evaluación, organizado en tablas.">
-</textarea>
+<textarea id="indicaciones" placeholder="Ej.: incluir fundamentación, objetivos, actividades y evaluación, organizado en tablas."></textarea>
 
 <p class="small">
 Podés escribirlo con tus palabras.
@@ -831,17 +622,13 @@ Podés escribirlo con tus palabras.
 
 <div class="buttons">
 
-<button
-id="btnGenerar"
-onclick="generar()">
+<button id="btnGenerar" onclick="generar()">
 
 ✨ Crear con Gemini
 
 </button>
 
-<button
-class="secondary"
-onclick="limpiar()">
+<button class="secondary" onclick="limpiar()">
 
 Limpiar
 
@@ -856,9 +643,7 @@ Limpiar
 
 <h2>📄 Resultado</h2>
 
-<div
-id="estado"
-class="state">
+<div id="estado" class="state">
 
 Todavía no generaste un trabajo.
 
@@ -874,27 +659,19 @@ Todavía no generaste un trabajo.
 Copiar
 </button>
 
-<button
-class="secondary"
-onclick="descargar()">
+<button class="secondary" onclick="descargar()">
 Descargar .txt
 </button>
 
-<button
-class="secondary"
-onclick="descargarWord()">
+<button class="secondary" onclick="descargarWord()">
 Descargar Word
 </button>
 
-<button
-class="ghost"
-onclick="imprimir()">
+<button class="ghost" onclick="imprimir()">
 Imprimir / PDF
 </button>
 
-<button
-class="ghost"
-onclick="compartir()">
+<button class="ghost" onclick="compartir()">
 Compartir
 </button>
 
@@ -952,7 +729,7 @@ Edu.sistem Pro IA · Asistente inteligente para docentes
 <script>
 
 let materiales = [];
-let bibliotecaMateriales = [];
+let bibliotecaCategoriasSeleccionadas = [];
 let ultimo = '';
 
 const $ = id => document.getElementById(id);
@@ -1080,183 +857,34 @@ async function health(){
 
 
 /* =====================================================
-   BIBLIOTECA
+   BIBLIOTECA CURRICULAR CÓRDOBA
 ===================================================== */
 
-document
-.querySelectorAll(
-  '.biblioteca-file-input'
-)
-.forEach(input => {
-
-  input.addEventListener(
-    'change',
-    function(){
-
-      const categoria =
-        this.dataset.cat;
-
-      const files =
-        [...this.files];
-
-      if(!files.length)return;
-
-      for(const f of files){
-
-        const existe =
-          bibliotecaMateriales.some(
-            x =>
-              x.categoria === categoria &&
-              x.name === f.name &&
-              x.size === f.size
-          );
-
-        if(!existe){
-
-          bibliotecaMateriales.push({
-            file:f,
-            categoria:categoria,
-            name:f.name,
-            size:f.size
-          });
-
-        }
-
+document.querySelectorAll('.biblioteca-check').forEach(check => {
+  check.addEventListener('change', function(){
+    const categoria = this.value;
+    if(this.checked){
+      if(!bibliotecaCategoriasSeleccionadas.includes(categoria)){
+        bibliotecaCategoriasSeleccionadas.push(categoria);
       }
-
-      this.value = '';
-
-      renderBiblioteca();
-
+    }else{
+      bibliotecaCategoriasSeleccionadas = bibliotecaCategoriasSeleccionadas.filter(x => x !== categoria);
     }
-  );
-
+    renderBiblioteca();
+  });
 });
 
-
-function idSeguroCategoria(cat){
-
-  return cat
-    .normalize('NFD')
-    .replace(
-      /[\u0300-\u036f]/g,
-      ''
-    )
-    .replace(
-      /[^a-zA-Z0-9]+/g,
-      '-'
-    )
-    .replace(
-      /^-|-$/g,
-      ''
-    );
-
-}
-
-
 function renderBiblioteca(){
+  const box = $('bibliotecaSeleccionadas');
+  if(!box)return;
 
-  const categorias = [
+  if(!bibliotecaCategoriasSeleccionadas.length){
+    box.innerHTML = '📚 No seleccionaste referencias todavía.';
+    return;
+  }
 
-    'Primaria',
-    'Inicial',
-    'Secundaria',
-    'Superior',
-    'Educación Especial',
-    'Jóvenes y Adultos',
-    'Educación Rural',
-    'Técnico Profesional',
-    'Progresiones',
-    'Aprendizajes y Contenidos Fundamentales',
-    'Actualización curricular',
-    'Referencias 2026'
-
-  ];
-
-
-  categorias.forEach(cat => {
-
-    const id =
-      'files-' +
-      idSeguroCategoria(cat);
-
-    const box =
-      document.getElementById(id);
-
-    if(!box)return;
-
-
-    const lista =
-      bibliotecaMateriales.filter(
-        x =>
-          x.categoria === cat
-      );
-
-
-    if(!lista.length){
-
-      box.innerHTML = '';
-
-      return;
-
-    }
-
-
-    box.innerHTML =
-      lista.map(
-        x => `
-
-          <div class="library-file">
-
-            <span
-              class="library-file-name"
-              title="${esc(x.name)}">
-
-              📄 ${esc(x.name)}
-
-            </span>
-
-            <button
-              type="button"
-              class="danger"
-              onclick="eliminarBiblioteca(
-                '${esc(cat)}',
-                '${esc(x.name)}',
-                ${x.size}
-              )">
-
-              Eliminar
-
-            </button>
-
-          </div>
-
-        `
-      ).join('');
-
-  });
-
-}
-
-
-function eliminarBiblioteca(
-  categoria,
-  nombre,
-  size
-){
-
-  bibliotecaMateriales =
-    bibliotecaMateriales.filter(
-      x =>
-        !(
-          x.categoria === categoria &&
-          x.name === nombre &&
-          x.size === size
-        )
-    );
-
-  renderBiblioteca();
-
+  box.innerHTML = '<strong>📚 Referencias seleccionadas:</strong> ' +
+    bibliotecaCategoriasSeleccionadas.map(esc).join(' · ');
 }
 
 
@@ -1426,21 +1054,14 @@ async function generar(){
   const MAX_ARCHIVOS = 2;
 
 
-  const todosLosMateriales = [
-
-    ...bibliotecaMateriales,
-
-    ...materiales.map(
-      f => ({
-        file:f,
-        categoria:
-          'Materiales del docente',
-        name:f.name,
-        size:f.size
-      })
-    )
-
-  ];
+  const todosLosMateriales = materiales.map(
+    f => ({
+      file:f,
+      categoria:'Materiales del docente',
+      name:f.name,
+      size:f.size
+    })
+  );
 
 
   if(
@@ -1543,22 +1164,20 @@ async function generar(){
   );
 
 
-  todosLosMateriales.forEach(
-    item => {
+  todosLosMateriales.forEach(item => {
+    fd.append(
+      'materiales',
+      item.file,
+      item.file.name
+    );
+  });
 
-      fd.append(
-        'materiales',
-        item.file,
-        item.file.name
-      );
-
-      fd.append(
-        'bibliotecaCategorias',
-        item.categoria
-      );
-
-    }
-  );
+  bibliotecaCategoriasSeleccionadas.forEach(categoria => {
+    fd.append(
+      'bibliotecaCategorias',
+      categoria
+    );
+  });
 
 
   try{
@@ -1633,6 +1252,13 @@ async function generar(){
         ' · Documentos enviados: ' +
         todosLosMateriales.length;
 
+    }
+
+
+    if(bibliotecaCategoriasSeleccionadas.length){
+      mensaje +=
+        ' · Biblioteca: ' +
+        bibliotecaCategoriasSeleccionadas.join(', ');
     }
 
 
@@ -1928,7 +1554,9 @@ function limpiar(){
 
   materiales = [];
 
-  bibliotecaMateriales = [];
+  bibliotecaCategoriasSeleccionadas = [];
+
+  document.querySelectorAll('.biblioteca-check').forEach(c => c.checked = false);
 
   renderMateriales();
 
@@ -1955,5 +1583,6 @@ health();
 
 </script>
 
-</body>
-</html>
+
+
+</body></html>

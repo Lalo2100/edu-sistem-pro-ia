@@ -1,7 +1,18 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 180" role="img" aria-labelledby="title desc">
-<title>Edu.sistem Pro IA</title><desc>Logo de Edu.sistem Pro IA</desc>
-<defs><linearGradient id="g" x1="0" x2="1"><stop stop-color="#1769aa"/><stop offset="1" stop-color="#18a999"/></linearGradient></defs>
-<rect width="640" height="180" rx="34" fill="#f5f9ff"/>
-<g transform="translate(30 25)"><path d="M65 6 118 25v48c0 34-22 56-53 70C34 129 12 107 12 73V25L65 6Z" fill="url(#g)"/><path d="m30 49 35-18 35 18-35 18-35-18Z" fill="white" opacity=".96"/><path d="M40 61v24c14 9 36 9 50 0V61L65 74 40 61Z" fill="white" opacity=".9"/><circle cx="111" cy="24" r="11" fill="#f5b942"/></g>
-<text x="165" y="78" font-family="Arial,Helvetica,sans-serif" font-size="48" font-weight="800" fill="#173b67">Edu.sistem</text><text x="166" y="128" font-family="Arial,Helvetica,sans-serif" font-size="38" font-weight="700" fill="#1769aa">Pro IA</text>
+<svg class="logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-label="Logo Edu.sistem Pro IA">
+
+  <defs>
+    <lineargradient id="eduGradient" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#4f46e5"></stop>
+      <stop offset="100%" stop-color="#7c3aed"></stop>
+    </lineargradient>
+  </defs>
+
+  <rect x="4" y="4" width="92" height="92" rx="24" fill="url(#eduGradient)"></rect>
+
+  <path d="M20 34 L50 20 L80 34 L50 48 Z" fill="#ffffff"></path>
+
+  <path d="M30 43 V61 C30 69 39 76 50 76 C61 76 70 69 70 61 V43" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round"></path>
+
+  <circle cx="50" cy="60" r="5" fill="#ffffff"></circle>
+
 </svg>

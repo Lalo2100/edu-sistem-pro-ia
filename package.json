@@ -1,6 +1,6 @@
 {
   "name": "edu-sistem-pro-ia",
-  "version": "2.4.0",
+  "version": "3.1.0",
   "private": true,
   "dependencies": {
     "express": "^4.21.2",

@@ -1,0 +1,99 @@
+{
+  "version": "2.0-local",
+  "modo": "local",
+  "nombre": "Biblioteca Curricular Córdoba",
+  "fuente_general": "Currículum Córdoba — Ministerio de Educación de la Provincia de Córdoba",
+  "nota": "Base local resumida y parafraseada para orientar la generación. No reproduce los documentos oficiales completos. Las fuentes URL se conservan como referencia documental; el servidor NO las consulta durante la generación.",
+  "ultima_revision": "2026-09-26",
+  "categorias": {
+    "Inicial": {
+      "estado": "referencia_oficial",
+      "fuentes": [
+        "https://curriculumcordoba.ar/orientaciones_pedagogicas_didacticas.html"
+      ],
+      "contenido": "Las Orientaciones Pedagógicas y Didácticas para Educación Inicial retoman la perspectiva del Marco Curricular Común y plantean finalidades formativas y claves para una enseñanza y aprendizaje situado y con sentido, considerando a los sujetos del aprendizaje y las comunidades educativas. Para planificar, priorizar propuestas contextualizadas, experiencias significativas, integración de saberes y evaluación mediante evidencias de aprendizaje, sin presentar esta síntesis como sustituto del documento oficial."
+    },
+    "Primaria": {
+      "estado": "referencia_oficial",
+      "fuentes": [
+        "https://curriculumcordoba.ar/orientaciones_pedagogicas_didacticas.html",
+        "https://www.curriculumcordoba.ar/downloads/EDUCACION%20PRIMARIA%20-%20ORIENTACIONES%20PEDAGOGICAS%20Y%20DIDACTICAS.pdf"
+      ],
+      "contenido": "Las Orientaciones Pedagógicas y Didácticas para Educación Primaria retoman el Marco Curricular Común y orientan finalidades formativas y decisiones de enseñanza situadas. La estructura curricular contempla campos y espacios como Lengua y Literatura, Matemática, Ciencias Naturales, Ciencias Sociales, Ciudadanía y Participación, Educación Tecnológica y Ciencias de la Computación, Educación Artística, Educación Física y Lengua Extranjera, con diferencias según ciclos y grados. La planificación debe contextualizar y articular saberes y capacidades."
+    },
+    "Secundaria": {
+      "estado": "referencia_oficial",
+      "fuentes": [
+        "https://curriculumcordoba.ar/orientaciones_educacion_secundaria.html",
+        "https://www.curriculumcordoba.ar/downloads/PdA-EDUCACION%20SECUNDARIA.pdf"
+      ],
+      "contenido": "Las Orientaciones Pedagógicas y Didácticas para Educación Secundaria presentan la enseñanza como una práctica situada, interpretada y coconstruida por las comunidades educativas. Las Progresiones de Aprendizaje organizan recorridos con metas por ciclo, aprendizajes y contenidos e indicadores de logro, para acompañar decisiones didácticas y pedagógicas."
+    },
+    "Superior": {
+      "estado": "referencia_general",
+      "fuentes": [
+        "https://curriculumcordoba.ar/marco_curricular.html"
+      ],
+      "contenido": "Referencia general del Marco Curricular Común provincial. No se presenta como Diseño Curricular específico de Educación Superior ni sustituye normativa o diseños propios del nivel."
+    },
+    "Educación Especial": {
+      "estado": "referencia_general",
+      "fuentes": [
+        "https://curriculumcordoba.ar/marco_curricular.html"
+      ],
+      "contenido": "Referencia general para sostener una perspectiva de derechos, trayectorias educativas y decisiones curriculares situadas e inclusivas. No se presenta como normativa ni diseño curricular específico de Educación Especial."
+    },
+    "Jóvenes y Adultos": {
+      "estado": "referencia_general",
+      "fuentes": [
+        "https://curriculumcordoba.ar/marco_curricular.html"
+      ],
+      "contenido": "Referencia general para contextualizar propuestas de enseñanza en trayectorias diversas. No se presenta como documento específico de la modalidad de Jóvenes y Adultos ni sustituye su normativa o diseños correspondientes."
+    },
+    "Educación Rural": {
+      "estado": "referencia_general",
+      "fuentes": [
+        "https://curriculumcordoba.ar/marco_curricular.html"
+      ],
+      "contenido": "Referencia general para contextualización institucional y enseñanza situada en comunidades y territorios diversos. No se presenta como diseño curricular específico de Educación Rural."
+    },
+    "Educación Técnico Profesional": {
+      "estado": "referencia_oficial_2026_consulta",
+      "fuentes": [
+        "https://curriculumcordoba.ar/orientaciones_tecnicaturas.html"
+      ],
+      "contenido": "Los documentos de Orientaciones y Tecnicaturas para la Educación Secundaria se encuentran en un proceso de renovación curricular. Según Currículum Córdoba, retoman los Diseños Curriculares Jurisdiccionales de cada orientación de 2012, aportes de la Consulta Provincial 2024, mesas de consulta por orientación desarrolladas durante 2025 y experiencias de instituciones del territorio. El sitio indica que estos materiales se ponen a disposición durante 2026 para consulta y coconstrucción. No presentarlos como versión definitiva."
+    },
+    "Progresiones": {
+      "estado": "referencia_oficial",
+      "fuentes": [
+        "https://curriculumcordoba.ar/marco_curricular.html",
+        "https://curriculumcordoba.ar/progresiones_matematica.html",
+        "https://curriculumcordoba.ar/progresiones_vida_trabajo.html"
+      ],
+      "contenido": "Las Progresiones de Aprendizaje para cada campo o espacio curricular presentan un recorrido posible de aprendizajes con complejidad creciente a lo largo de la escolaridad. Integran tres componentes: metas por ciclo; aprendizajes y contenidos por sala, grado o año; e indicadores de logro. Se utilizan como herramienta para orientar la planificación, desarrollo y evaluación de propuestas de enseñanza."
+    },
+    "Aprendizajes y Contenidos Fundamentales": {
+      "estado": "referencia_oficial",
+      "fuentes": [
+        "https://www.curriculumcordoba.ar/downloads/MARCO%20CURRICULAR%20COMUN.pdf"
+      ],
+      "contenido": "Los aprendizajes y contenidos son uno de los componentes de las Progresiones y señalan lo que las y los estudiantes aprenden durante el año en cada sala, grado o curso y campo o espacio curricular. Se entienden junto con metas por ciclo e indicadores de logro, y sirven para orientar la planificación y la enseñanza. La base local no reproduce listados completos de aprendizajes y contenidos por área."
+    },
+    "Actualización curricular": {
+      "estado": "referencia_oficial",
+      "fuentes": [
+        "https://curriculumcordoba.ar/marco_curricular.html"
+      ],
+      "contenido": "El proceso curricular provincial plantea una renovación gradual y progresiva. El Marco Curricular Común recupera la historia curricular cordobesa y señala tres grandes ejes de transformación: integración de saberes y trabajo por proyectos o situaciones problemáticas; desarrollo de capacidades fundamentales en diálogo con saberes escolares; e incorporación de temáticas emergentes y de la agenda contemporánea."
+    },
+    "Referencias 2026": {
+      "estado": "referencia_oficial_2026",
+      "fuentes": [
+        "https://curriculumcordoba.ar/",
+        "https://curriculumcordoba.ar/orientaciones_tecnicaturas.html"
+      ],
+      "contenido": "Referencia temporal para materiales curriculares publicados o puestos en consulta durante 2026. Incluye el proceso de renovación de Orientaciones y Tecnicaturas señalado por Currículum Córdoba. Debe utilizarse como referencia de actualidad, sin afirmar que todo material de consulta sea definitivo."
+    }
+  }
+}
