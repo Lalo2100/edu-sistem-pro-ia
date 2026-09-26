@@ -1,6 +1,5 @@
 const express = require("express");
 const path = require("path");
-const fs = require("fs");
 const multer = require("multer");
 const pdfParse = require("pdf-parse");
 const mammoth = require("mammoth");
@@ -30,7 +29,7 @@ app.get("/api/health", (_req, res) => {
   res.json({
     ok: true,
     app: "Edu.sistem pro ia",
-    version: "2.5",
+    version: "2.6",
     geminiConfigured: Boolean(process.env.GEMINI_API_KEY),
     bibliotecaCordoba: true
   });
@@ -38,211 +37,379 @@ app.get("/api/health", (_req, res) => {
 
 /* =========================================================
    BIBLIOTECA CURRICULAR CÓRDOBA
+   FUENTES OFICIALES
    ========================================================= */
 
-const BIBLIOTECA = {
-  inicial: "inicial",
-  primaria: "primaria",
-  secundaria: "secundaria",
-  superior: "superior",
-  especial: "especial",
-  "jovenes-adultos": "jovenes-adultos",
-  rural: "rural",
-  "tecnico-profesional": "tecnico-profesional",
-  progresiones: "progresiones",
-  "aprendizajes-contenidos": "aprendizajes-contenidos",
-  actualizacion: "actualizacion",
-  "referencias-2026": "referencias-2026"
+const BIBLIOTECA_CORDOBA = {
+
+  "marco-curricular": {
+    nombre: "Marco Curricular Común",
+    urls: [
+      "https://www.curriculumcordoba.ar/downloads/MARCO%20CURRICULAR%20COMUN.pdf"
+    ]
+  },
+
+  "inicial": {
+    nombre: "Educación Inicial",
+    urls: [
+      "https://www.curriculumcordoba.ar/downloads/ORIENTACIONES%20PEDAGOGICAS%20Y%20DIDACTICAS%20%20EDUCACION%20INICIAL.pdf"
+    ]
+  },
+
+  "primaria": {
+    nombre: "Educación Primaria",
+    urls: [
+      "https://www.curriculumcordoba.ar/downloads/EDUCACION%20PRIMARIA%20-%20ORIENTACIONES%20PEDAGOGICAS%20Y%20DIDACTICAS.pdf"
+    ]
+  },
+
+  "secundaria": {
+    nombre: "Educación Secundaria",
+    urls: [
+      "https://www.curriculumcordoba.ar/downloads/EDUCACION%20SECUNDARIA%20-%20ORIENTACIONES%20PEDAGOGICAS%20Y%20DIDACTICAS.pdf"
+    ]
+  },
+
+  "progresiones-inicial": {
+    nombre: "Progresiones de Aprendizaje — Educación Inicial",
+    urls: [
+      "https://www.curriculumcordoba.ar/downloads/PdA-EDUCACION%20INICIAL.pdf"
+    ]
+  },
+
+  "progresiones-primaria": {
+    nombre: "Progresiones de Aprendizaje — Educación Primaria",
+    urls: [
+      "https://www.curriculumcordoba.ar/downloads/PdA-EDUCACION%20PRIMARIA.pdf"
+    ]
+  },
+
+  "progresiones-secundaria": {
+    nombre: "Progresiones de Aprendizaje — Educación Secundaria",
+    urls: [
+      "https://www.curriculumcordoba.ar/downloads/PdA-EDUCACION%20SECUNDARIA.pdf"
+    ]
+  },
+
+  "progresiones-lengua": {
+    nombre: "Progresiones — Lenguaje/Lengua y Literatura",
+    urls: [
+      "https://www.curriculumcordoba.ar/downloads/PROGRESIONES%20DE%20APRENDIZAJE%20DE%20LENGUAJE-LENGUA%20Y%20LITERATURA.pdf"
+    ]
+  }
+
 };
 
 /* =========================================================
-   LECTURA DE DOCUMENTOS DE LA BIBLIOTECA
+   NORMALIZACIÓN DE CATEGORÍAS
    ========================================================= */
 
-async function leerDocumentoBiblioteca(rutaArchivo) {
-  try {
-    const extension =
-      path.extname(rutaArchivo).toLowerCase();
+function normalizarCategoria(valor) {
 
-    const buffer =
-      fs.readFileSync(rutaArchivo);
+  if (!valor) return "";
 
-    if (extension === ".pdf") {
-      const resultado =
-        await pdfParse(buffer);
+  const texto =
+    String(valor)
+      .trim()
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/_/g, "-")
+      .replace(/\s+/g, "-");
 
-      return resultado.text || "";
-    }
+  const equivalencias = {
 
-    if (extension === ".docx") {
-      const resultado =
-        await mammoth.extractRawText({
-          buffer
-        });
+    "inicial":
+      "inicial",
 
-      return resultado.value || "";
-    }
+    "educacion-inicial":
+      "inicial",
 
-    return buffer.toString("utf8");
+    "primaria":
+      "primaria",
 
-  } catch (error) {
-    console.error(
-      "Error leyendo documento de biblioteca:",
-      rutaArchivo,
-      error
-    );
+    "educacion-primaria":
+      "primaria",
 
-    return "";
-  }
+    "secundaria":
+      "secundaria",
+
+    "educacion-secundaria":
+      "secundaria",
+
+    "superior":
+      "superior",
+
+    "especial":
+      "especial",
+
+    "educacion-especial":
+      "especial",
+
+    "jovenes-adultos":
+      "jovenes-adultos",
+
+    "jovenes-y-adultos":
+      "jovenes-adultos",
+
+    "rural":
+      "rural",
+
+    "educacion-rural":
+      "rural",
+
+    "tecnico-profesional":
+      "tecnico-profesional",
+
+    "tecnico-profesional":
+      "tecnico-profesional",
+
+    "progresiones":
+      "progresiones-inicial",
+
+    "progresiones-inicial":
+      "progresiones-inicial",
+
+    "progresiones-primaria":
+      "progresiones-primaria",
+
+    "progresiones-secundaria":
+      "progresiones-secundaria",
+
+    "aprendizajes-contenidos":
+      "progresiones-inicial",
+
+    "actualizacion":
+      "marco-curricular",
+
+    "referencias-2026":
+      "marco-curricular",
+
+    "marco-curricular":
+      "marco-curricular",
+
+    "marco-curricular-comun":
+      "marco-curricular"
+  };
+
+  return equivalencias[texto] || texto;
 }
 
 /* =========================================================
-   CARGAR CATEGORÍAS SELECCIONADAS
+   OBTENER CATEGORÍAS SELECCIONADAS
    ========================================================= */
 
-async function cargarBiblioteca(categorias) {
+function obtenerCategorias(valor) {
 
-  if (!categorias) {
-    return {
-      texto: "",
-      documentos: []
-    };
+  if (!valor) return [];
+
+  if (Array.isArray(valor)) {
+    return valor
+      .map(normalizarCategoria)
+      .filter(Boolean);
   }
 
-  let seleccionadas = [];
-
-  try {
-
-    if (Array.isArray(categorias)) {
-      seleccionadas = categorias;
-    } else if (typeof categorias === "string") {
-
-      try {
-        seleccionadas =
-          JSON.parse(categorias);
-      } catch {
-        seleccionadas =
-          categorias
-            .split(",")
-            .map(x => x.trim())
-            .filter(Boolean);
-      }
-    }
-
-  } catch {
-    seleccionadas = [];
-  }
-
-  let textoTotal = "";
-  const documentos = [];
-
-  for (const categoria of seleccionadas) {
-
-    const carpeta =
-      BIBLIOTECA[categoria];
-
-    if (!carpeta) {
-      continue;
-    }
-
-    const rutaCarpeta =
-      path.join(
-        __dirname,
-        "biblioteca",
-        carpeta
-      );
-
-    if (!fs.existsSync(rutaCarpeta)) {
-      continue;
-    }
-
-    let archivos = [];
+  if (typeof valor === "string") {
 
     try {
-      archivos =
-        fs.readdirSync(rutaCarpeta);
-    } catch {
+
+      const parsed =
+        JSON.parse(valor);
+
+      if (Array.isArray(parsed)) {
+        return parsed
+          .map(normalizarCategoria)
+          .filter(Boolean);
+      }
+
+    } catch (_) {}
+
+    return valor
+      .split(",")
+      .map(normalizarCategoria)
+      .filter(Boolean);
+  }
+
+  return [];
+}
+
+/* =========================================================
+   DESCARGAR DOCUMENTO OFICIAL
+   ========================================================= */
+
+async function descargarPDF(url) {
+
+  const respuesta =
+    await fetch(url, {
+      method: "GET",
+      headers: {
+        "User-Agent":
+          "Edu.sistem Pro IA"
+      }
+    });
+
+  if (!respuesta.ok) {
+
+    throw new Error(
+      `No se pudo obtener el documento (${respuesta.status})`
+    );
+  }
+
+  const buffer =
+    Buffer.from(
+      await respuesta.arrayBuffer()
+    );
+
+  return buffer;
+}
+
+/* =========================================================
+   EXTRAER TEXTO DEL PDF OFICIAL
+   ========================================================= */
+
+async function extraerPDFRemoto(url) {
+
+  const buffer =
+    await descargarPDF(url);
+
+  const resultado =
+    await pdfParse(buffer);
+
+  return resultado.text || "";
+}
+
+/* =========================================================
+   CARGAR BIBLIOTECA CURRICULAR
+   ========================================================= */
+
+async function cargarBibliotecaCordoba(
+  categorias
+) {
+
+  const seleccionadas =
+    obtenerCategorias(categorias);
+
+  let textoTotal = "";
+
+  const documentosUsados = [];
+
+  const categoriasNoDisponibles = [];
+
+  for (
+    const categoria
+    of seleccionadas
+  ) {
+
+    const documento =
+      BIBLIOTECA_CORDOBA[
+        categoria
+      ];
+
+    if (!documento) {
+
+      categoriasNoDisponibles.push(
+        categoria
+      );
+
       continue;
     }
 
-    for (const archivo of archivos) {
+    for (
+      const url
+      of documento.urls
+    ) {
 
-      const extension =
-        path.extname(archivo).toLowerCase();
+      try {
 
-      if (
-        ![
-          ".txt",
-          ".md",
-          ".pdf",
-          ".docx"
-        ].includes(extension)
-      ) {
-        continue;
-      }
+        const texto =
+          await extraerPDFRemoto(
+            url
+          );
 
-      const rutaArchivo =
-        path.join(
-          rutaCarpeta,
-          archivo
-        );
+        if (!texto.trim()) {
+          continue;
+        }
 
-      const contenido =
-        await leerDocumentoBiblioteca(
-          rutaArchivo
-        );
+        /*
+         * Límite por documento.
+         * Evita prompts gigantes.
+         */
 
-      if (!contenido.trim()) {
-        continue;
-      }
+        const contenido =
+          texto.slice(
+            0,
+            35000
+          );
 
-      /*
-       * Para evitar que una biblioteca demasiado
-       * grande supere el límite del prompt.
-       */
-
-      const contenidoLimitado =
-        contenido.slice(0, 30000);
-
-      textoTotal += `
+        textoTotal += `
 
 ==================================================
-DOCUMENTO DE BIBLIOTECA CURRICULAR CÓRDOBA
+BIBLIOTECA CURRICULAR CÓRDOBA
 ==================================================
-
-Categoría:
-${categoria}
 
 Documento:
-${archivo}
+${documento.nombre}
 
-Contenido:
+Fuente oficial:
+Currículum Córdoba
 
-${contenidoLimitado}
+Contenido de referencia:
 
+${contenido}
+
+==================================================
 `;
 
-      documentos.push(
-        `${categoria} / ${archivo}`
-      );
+        documentosUsados.push(
+          documento.nombre
+        );
 
-      /*
-       * Límite global de seguridad.
-       */
+        /*
+         * Límite global de seguridad.
+         */
 
-      if (textoTotal.length >= 100000) {
-        return {
-          texto:
-            textoTotal.slice(0, 100000),
-          documentos
-        };
+        if (
+          textoTotal.length >= 90000
+        ) {
+
+          return {
+            texto:
+              textoTotal.slice(
+                0,
+                90000
+              ),
+
+            documentos:
+              [...new Set(
+                documentosUsados
+              )],
+
+            categoriasNoDisponibles
+          };
+        }
+
+      } catch (error) {
+
+        console.error(
+          "Error obteniendo documento curricular:",
+          documento.nombre,
+          error.message
+        );
+
       }
     }
   }
 
   return {
-    texto: textoTotal,
-    documentos
+    texto:
+      textoTotal,
+
+    documentos:
+      [...new Set(
+        documentosUsados
+      )],
+
+    categoriasNoDisponibles
   };
 }
 
@@ -250,15 +417,24 @@ ${contenidoLimitado}
    LECTURA DE MATERIALES DEL DOCENTE
    ========================================================= */
 
-async function extraerTextoArchivo(file) {
+async function extraerTextoArchivo(
+  file
+) {
 
   const nombre =
-    (file.originalname || "").toLowerCase();
+    (
+      file.originalname ||
+      ""
+    ).toLowerCase();
 
-  if (nombre.endsWith(".pdf")) {
+  if (
+    nombre.endsWith(".pdf")
+  ) {
 
     const resultado =
-      await pdfParse(file.buffer);
+      await pdfParse(
+        file.buffer
+      );
 
     return resultado.text || "";
   }
@@ -270,24 +446,27 @@ async function extraerTextoArchivo(file) {
 
     const resultado =
       await mammoth.extractRawText({
-        buffer: file.buffer
+        buffer:
+          file.buffer
       });
 
     return resultado.value || "";
   }
 
-  return file.buffer.toString("utf8");
+  return file.buffer.toString(
+    "utf8"
+  );
 }
 
 /* =========================================================
    LIMPIEZA DEL RESULTADO
    ========================================================= */
 
-function limpiarResultado(texto) {
+function limpiarResultado(
+  texto
+) {
 
-  if (!texto) {
-    return "";
-  }
+  if (!texto) return "";
 
   let salida = texto;
 
@@ -341,6 +520,7 @@ function limpiarResultado(texto) {
    ========================================================= */
 
 function buildPrompt({
+
   tipo,
   nivel,
   grado,
@@ -350,6 +530,7 @@ function buildPrompt({
   indicaciones,
   materialesTexto,
   bibliotecaTexto
+
 }) {
 
   const nombres = {
@@ -380,28 +561,38 @@ Tu tarea es elaborar directamente un documento pedagógico completo, claro, prof
 Utilizá español argentino.
 
 ==================================================
-REGLA PRIORITARIA: RESPETAR LA DURACIÓN
+REGLA PRIORITARIA: DURACIÓN
 ==================================================
 
-La duración indicada por el docente es una RESTRICCIÓN OBLIGATORIA.
+La duración indicada por el docente es obligatoria.
 
-No cambies, reduzcas ni aumentes la cantidad de semanas, clases, módulos, horas o encuentros indicados.
+No cambies, reduzcas ni aumentes la cantidad de semanas, clases, módulos, horas o encuentros.
 
-Si el docente indica una cantidad concreta de semanas y una cantidad concreta de módulos por semana, debés generar exactamente esa cantidad.
+Si el docente indica:
 
-Si indica solamente una cantidad de semanas pero no indica cantidad de clases o módulos, organizá la propuesta de manera razonable y explicitá la cantidad utilizada.
+4 semanas
+4 módulos por semana
 
-Si la duración está expresada en horas cátedra, respetá esa cantidad.
+deben aparecer exactamente:
 
-Si la duración aparece dentro de las indicaciones del docente, también debe respetarse.
+Semana 1: 4 módulos
+Semana 2: 4 módulos
+Semana 3: 4 módulos
+Semana 4: 4 módulos
+
+TOTAL: 16 módulos.
+
+No agregues encuentros que el docente no solicitó.
 
 ==================================================
 BIBLIOTECA CURRICULAR CÓRDOBA
 ==================================================
 
-Los documentos incluidos en la Biblioteca Curricular Córdoba son materiales de referencia.
+Los documentos incluidos en esta sección provienen de las fuentes oficiales publicadas por Currículum Córdoba.
 
-Utilizalos cuando sean pertinentes para seleccionar:
+Utilizalos como material de referencia.
+
+Cuando sea pertinente, utilizalos para seleccionar:
 
 • aprendizajes
 • contenidos
@@ -410,27 +601,44 @@ Utilizalos cuando sean pertinentes para seleccionar:
 • propósitos
 • orientaciones pedagógicas
 • criterios de evaluación
+• indicadores de logro
 • organización de la enseñanza
 
-No inventes normativa oficial.
+No inventes normativa.
 
-No inventes resoluciones, citas, páginas ni documentos.
+No inventes resoluciones.
 
-No atribuyas a un documento información que no aparece en su contenido.
+No inventes citas.
 
-La biblioteca es una fuente de referencia y no debe reemplazar las indicaciones específicas del docente.
+No atribuyas a los documentos información que no aparece en ellos.
+
+La biblioteca debe complementar las indicaciones del docente.
+
+==================================================
+CONTENIDO CURRICULAR SELECCIONADO
+==================================================
+
+${bibliotecaTexto || "No se seleccionó documentación curricular."}
 
 ==================================================
 MATERIALES DEL DOCENTE
 ==================================================
 
-Los materiales proporcionados por el docente también son fuentes de referencia.
+Los materiales que cargue el docente también son fuentes de referencia.
 
-Analizalos y utilizalos cuando sean pertinentes.
+Analizalos cuando sean pertinentes.
 
-No te limites a copiar los materiales.
+No te limites a copiarlos.
 
-Transformá sus contenidos en objetivos, actividades, estrategias y criterios de evaluación cuando corresponda.
+Transformá la información relevante en:
+
+• objetivos
+• aprendizajes
+• contenidos
+• actividades
+• estrategias
+• evaluación
+• criterios
 
 ==================================================
 DATOS DEL TRABAJO
@@ -459,24 +667,20 @@ INDICACIONES DEL DOCENTE:
 ${indicaciones || "Sin indicaciones adicionales."}
 
 ==================================================
-BIBLIOTECA CURRICULAR SELECCIONADA
-==================================================
-
-${bibliotecaTexto || "No se seleccionaron documentos de la Biblioteca Curricular Córdoba."}
-
-==================================================
 MATERIALES DE REFERENCIA DEL DOCENTE
 ==================================================
 
-${materialesTexto || "No se adjuntaron materiales de referencia."}
+${materialesTexto || "No se adjuntaron materiales."}
 
 ==================================================
-REGLAS DE PRESENTACIÓN
+PRESENTACIÓN
 ==================================================
 
 Entregá directamente el documento final.
 
-No expliques cómo funciona la inteligencia artificial.
+No expliques cómo funciona la IA.
+
+No menciones este prompt.
 
 No utilices Markdown.
 
@@ -488,34 +692,33 @@ No utilices:
 **
 ***
 
-ni otros símbolos Markdown para organizar el documento.
-
 Usá títulos claros escritos normalmente.
 
 Usá subtítulos claros.
 
-Cuando corresponda, utilizá listas con viñetas.
+Usá viñetas cuando corresponda.
 
-El documento debe ser cómodo para copiar y pegar en Word.
+El documento debe poder copiarse directamente a Word.
 
 ==================================================
 CONTROL FINAL
 ==================================================
 
-Antes de entregar verificá internamente:
+Antes de entregar verificá:
 
 1. Tipo de trabajo.
 2. Nivel.
 3. Grado o curso.
-4. Área o materia.
+4. Área.
 5. Tema.
 6. Duración.
 7. Cantidad de semanas.
-8. Cantidad de clases o módulos.
-9. Integración pertinente de los materiales.
-10. Coherencia entre cronograma y desarrollo.
-11. Ausencia de clases adicionales.
+8. Cantidad de clases.
+9. Cantidad de módulos.
+10. Integración de los materiales pertinentes.
+11. Coherencia del cronograma.
 12. Ausencia de clases faltantes.
+13. Ausencia de clases adicionales.
 
 No muestres este control.
 
@@ -525,7 +728,7 @@ Entregá solamente el documento final.
 TIPO DE DOCUMENTO
 ==================================================
 
-Si es PLANIFICACIÓN ANUAL, incluí cuando corresponda:
+PLANIFICACIÓN ANUAL:
 
 Fundamentación
 Propósitos
@@ -543,7 +746,7 @@ Evaluación
 Criterios de evaluación
 Bibliografía o fuentes
 
-Si es SECUENCIA DIDÁCTICA, incluí cuando corresponda:
+SECUENCIA DIDÁCTICA:
 
 Fundamentación
 Propósitos
@@ -559,11 +762,9 @@ Evaluación
 Criterios de evaluación
 Cronograma
 
-Cada clase o módulo debe aparecer identificado claramente.
+Cada clase o módulo debe estar identificado claramente.
 
-Si se solicita una cantidad exacta de módulos, desarrollá todos los módulos individualmente.
-
-Si es PROYECTO, incluí cuando corresponda:
+PROYECTO:
 
 Fundamentación
 Propósitos
@@ -580,20 +781,18 @@ Articulaciones
 Evaluación
 Cronograma
 
-Si es RÚBRICA:
+RÚBRICA:
 
-Presentá criterios de evaluación claros y niveles de logro.
+Presentá criterios claros y niveles de logro.
 
-La rúbrica debe ser fácil de copiar a Word y utilizar con estudiantes.
-
-Respetá las indicaciones específicas del docente.
+Debe ser fácil de copiar a Word y utilizar con estudiantes.
 
 Entregá únicamente el documento final.
 `;
 }
 
 /* =========================================================
-   GEMINI
+   LLAMADA A GEMINI
    ========================================================= */
 
 async function llamarGemini(
@@ -611,8 +810,11 @@ async function llamarGemini(
       method: "POST",
 
       headers: {
-        "Content-Type": "application/json",
-        "x-goog-api-key": apiKey
+        "Content-Type":
+          "application/json",
+
+        "x-goog-api-key":
+          apiKey
       },
 
       body: JSON.stringify({
@@ -628,7 +830,8 @@ async function llamarGemini(
         ],
 
         generationConfig: {
-          maxOutputTokens: 10000
+          maxOutputTokens:
+            10000
         }
 
       })
@@ -637,7 +840,7 @@ async function llamarGemini(
 }
 
 /* =========================================================
-   GEMINI CON REINTENTOS
+   GENERACIÓN CON GEMINI
    ========================================================= */
 
 async function generarConGemini(
@@ -654,10 +857,12 @@ async function generarConGemini(
 
   ];
 
-  let ultimoError = null;
+  let ultimoError =
+    null;
 
   for (
-    const modelo of modelos
+    const modelo
+    of modelos
   ) {
 
     for (
@@ -678,7 +883,9 @@ async function generarConGemini(
         const datos =
           await respuesta.json();
 
-        if (respuesta.ok) {
+        if (
+          respuesta.ok
+        ) {
 
           const texto =
             (
@@ -717,18 +924,17 @@ async function generarConGemini(
             datos?.error?.message ||
             "El modelo está temporalmente saturado.";
 
-          if (intento < 2) {
-
-            const espera =
-              intento === 1
-                ? 2000
-                : 4000;
+          if (
+            intento < 2
+          ) {
 
             await new Promise(
               resolve =>
                 setTimeout(
                   resolve,
-                  espera
+                  intento === 1
+                    ? 2000
+                    : 4000
                 )
             );
 
@@ -750,7 +956,9 @@ async function generarConGemini(
           error?.message ||
           "No se pudo conectar con Gemini.";
 
-        if (intento < 2) {
+        if (
+          intento < 2
+        ) {
 
           await new Promise(
             resolve =>
@@ -766,6 +974,7 @@ async function generarConGemini(
 
   return {
     ok: false,
+
     error:
       ultimoError ||
       "Los modelos de Gemini no pudieron responder."
@@ -773,7 +982,7 @@ async function generarConGemini(
 }
 
 /* =========================================================
-   GENERAR DOCUMENTO
+   API GENERAR
    ========================================================= */
 
 app.post(
@@ -793,7 +1002,6 @@ app.post(
         error:
           "Indicá al menos el tipo de trabajo y el tema."
       });
-
     }
 
     const apiKey =
@@ -805,7 +1013,6 @@ app.post(
         error:
           "La IA no está configurada. Agregá GEMINI_API_KEY en Vercel."
       });
-
     }
 
     try {
@@ -821,7 +1028,8 @@ app.post(
         [];
 
       for (
-        const file of materiales
+        const file
+        of materiales
       ) {
 
         try {
@@ -837,13 +1045,14 @@ app.post(
           ) {
 
             materialesProcesados.push({
+
               nombre:
                 file.originalname,
 
               texto:
                 texto.trim()
-            });
 
+            });
           }
 
         } catch (error) {
@@ -853,7 +1062,6 @@ app.post(
             file.originalname,
             error
           );
-
         }
       }
 
@@ -861,13 +1069,17 @@ app.post(
         materialesProcesados
           .map(
             material => `
+
 --- MATERIAL DEL DOCENTE: ${material.nombre} ---
 
 ${material.texto}
 `
           )
           .join("\n\n")
-          .slice(0, 60000);
+          .slice(
+            0,
+            60000
+          );
 
       /* -----------------------------------------------------
          BIBLIOTECA
@@ -878,7 +1090,7 @@ ${material.texto}
         data.biblioteca;
 
       const biblioteca =
-        await cargarBiblioteca(
+        await cargarBibliotecaCordoba(
           categorias
         );
 
@@ -908,7 +1120,9 @@ ${material.texto}
           apiKey
         );
 
-      if (!resultado.ok) {
+      if (
+        !resultado.ok
+      ) {
 
         console.error(
           "Gemini final error:",
@@ -921,7 +1135,6 @@ ${material.texto}
             "La IA está temporalmente ocupada. La aplicación está funcionando. Esperá unos segundos y probá nuevamente."
 
         });
-
       }
 
       const textoFinal =
@@ -946,7 +1159,10 @@ ${material.texto}
           materialesProcesados.map(
             material =>
               material.nombre
-          )
+          ),
+
+        categoriasBibliotecaNoDisponibles:
+          biblioteca.categoriasNoDisponibles
 
       });
 
@@ -963,7 +1179,6 @@ ${material.texto}
           "No se pudo generar el trabajo. Revisá la configuración del servidor."
 
       });
-
     }
   }
 );
@@ -982,7 +1197,6 @@ app.get(
         "index.html"
       )
     );
-
   }
 );
 
@@ -1000,7 +1214,6 @@ app.get(
         "index.html"
       )
     );
-
   }
 );
 
@@ -1031,5 +1244,4 @@ if (
 
     }
   );
-
 }
