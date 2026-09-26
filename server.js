@@ -36,7 +36,10 @@ try {
   biblioteca = JSON.parse(
     fs.readFileSync(bibliotecaPath, "utf8")
   );
-  console.log("Biblioteca Córdoba cargada.");
+
+  console.log(
+    "Biblioteca Córdoba cargada."
+  );
 } catch (error) {
   console.error(
     "Error cargando biblioteca-cordoba.json:",
@@ -109,7 +112,10 @@ async function extraerTextoArchivo(file) {
         /<style[\s\S]*?<\/style>/gi,
         " "
       )
-      .replace(/<[^>]+>/g, " ");
+      .replace(
+        /<[^>]+>/g,
+        " "
+      );
   }
 
   throw new Error(
@@ -134,11 +140,15 @@ function buscarCategoria(categoria) {
   }
 
   if (
-    categoria === "Técnico Profesional" &&
-    categorias["Educación Técnico Profesional"]
+    categoria ===
+      "Técnico Profesional" &&
+    categorias[
+      "Educación Técnico Profesional"
+    ]
   ) {
     return {
-      nombre: "Educación Técnico Profesional",
+      nombre:
+        "Educación Técnico Profesional",
       item:
         categorias[
           "Educación Técnico Profesional"
@@ -149,12 +159,17 @@ function buscarCategoria(categoria) {
   if (
     categoria ===
       "Educación Técnico Profesional" &&
-    categorias["Técnico Profesional"]
+    categorias[
+      "Técnico Profesional"
+    ]
   ) {
     return {
-      nombre: "Técnico Profesional",
+      nombre:
+        "Técnico Profesional",
       item:
-        categorias["Técnico Profesional"]
+        categorias[
+          "Técnico Profesional"
+        ]
     };
   }
 
@@ -168,22 +183,25 @@ function buscarCategoria(categoria) {
 function obtenerBibliotecaLocal(
   categorias
 ) {
-  const seleccionadas = Array.isArray(
-    categorias
-  )
-    ? categorias
-    : [];
+  const seleccionadas =
+    Array.isArray(categorias)
+      ? categorias
+      : [];
 
   const usadas = [];
   const noEncontradas = [];
   const bloques = [];
 
-  for (const categoria of seleccionadas) {
+  for (
+    const categoria of seleccionadas
+  ) {
     const encontrado =
       buscarCategoria(categoria);
 
     if (!encontrado) {
-      noEncontradas.push(categoria);
+      noEncontradas.push(
+        categoria
+      );
       continue;
     }
 
@@ -199,7 +217,8 @@ function obtenerBibliotecaLocal(
         "Nombre en biblioteca:",
         encontrado.nombre,
         "Estado:",
-        item.estado || "referencia",
+        item.estado ||
+          "referencia",
         "Contenido:",
         item.contenido || ""
       ].join("\n")
@@ -210,7 +229,8 @@ function obtenerBibliotecaLocal(
     seleccionadas,
     usadas,
     noEncontradas,
-    texto: bloques.join("\n\n")
+    texto:
+      bloques.join("\n\n")
   };
 }
 
@@ -224,22 +244,34 @@ function buildPrompt(
   bibliotecaInfo
 ) {
   const tipo =
-    String(data.tipo || "").trim();
+    String(
+      data.tipo || ""
+    ).trim();
 
   const nivel =
-    String(data.nivel || "").trim();
+    String(
+      data.nivel || ""
+    ).trim();
 
   const grado =
-    String(data.grado || "").trim();
+    String(
+      data.grado || ""
+    ).trim();
 
   const area =
-    String(data.area || "").trim();
+    String(
+      data.area || ""
+    ).trim();
 
   const tema =
-    String(data.tema || "").trim();
+    String(
+      data.tema || ""
+    ).trim();
 
   const duracion =
-    String(data.duracion || "").trim();
+    String(
+      data.duracion || ""
+    ).trim();
 
   const indicaciones =
     String(
@@ -247,7 +279,8 @@ function buildPrompt(
     ).trim();
 
   const seleccionadas =
-    bibliotecaInfo.seleccionadas || [];
+    bibliotecaInfo
+      .seleccionadas || [];
 
   const bibliotecaTexto =
     bibliotecaInfo.texto || "";
@@ -281,7 +314,10 @@ AÑO DE REFERENCIA:
 2026
 
 INDICACIONES DEL DOCENTE:
-${indicaciones || "Propuesta completa y adecuada al nivel indicado."}
+${
+  indicaciones ||
+  "Propuesta completa y adecuada al nivel indicado."
+}
 
 
 BIBLIOTECA CURRICULAR CÓRDOBA
@@ -353,7 +389,7 @@ REGLAS OBLIGATORIAS
 
 18. No utilices Markdown visible.
 
-19. No uses símbolos como **, # o ```.
+19. No uses símbolos como **, # o \`\`\`.
 
 20. El resultado debe quedar limpio y listo para copiar a Word.
 
@@ -401,31 +437,36 @@ async function llamarGemini(
     ":generateContent";
 
   const response =
-    await fetch(url, {
-      method: "POST",
+    await fetch(
+      url,
+      {
+        method: "POST",
 
-      headers: {
-        "Content-Type":
-          "application/json",
-        "x-goog-api-key": key
-      },
+        headers: {
+          "Content-Type":
+            "application/json",
 
-      body: JSON.stringify({
-        contents: [
-          {
-            parts: [
-              {
-                text: prompt
-              }
-            ]
+          "x-goog-api-key":
+            key
+        },
+
+        body: JSON.stringify({
+          contents: [
+            {
+              parts: [
+                {
+                  text: prompt
+                }
+              ]
+            }
+          ],
+
+          generationConfig: {
+            temperature: 0.2
           }
-        ],
-
-        generationConfig: {
-          temperature: 0.2
-        }
-      })
-    });
+        })
+      }
+    );
 
   const raw =
     await response.text();
@@ -433,7 +474,8 @@ async function llamarGemini(
   let json = {};
 
   try {
-    json = JSON.parse(raw);
+    json =
+      JSON.parse(raw);
   } catch (_) {}
 
   if (!response.ok) {
@@ -453,7 +495,8 @@ async function llamarGemini(
     json?.candidates?.[0]
       ?.content?.parts
       ?.map(
-        part => part.text || ""
+        part =>
+          part.text || ""
       )
       .join("") || ""
   );
@@ -485,17 +528,23 @@ async function generarConGemini(
 
       return {
         texto:
-          limpiarResultado(texto),
+          limpiarResultado(
+            texto
+          ),
+
         modelo
       };
+
     } catch (error) {
+
       console.error(
         "Error con modelo:",
         modelo,
         error.message
       );
 
-      ultimoError = error;
+      ultimoError =
+        error;
     }
   }
 
@@ -514,17 +563,30 @@ async function generarConGemini(
 app.get(
   "/api/health",
   (req, res) => {
+
     res.json({
+
       ok: true,
-      app: "Edu.sistem pro ia",
-      version: "3.2-local",
+
+      app:
+        "Edu.sistem pro ia",
+
+      version:
+        "3.2-local",
+
       geminiConfigured:
         !!process.env.GEMINI_API_KEY,
-      bibliotecaCordoba: true,
-      bibliotecaModo: "local",
+
+      bibliotecaCordoba:
+        true,
+
+      bibliotecaModo:
+        "local",
+
       categoriasBiblioteca:
         Object.keys(
-          biblioteca.categorias || {}
+          biblioteca.categorias ||
+            {}
         )
     });
   }
@@ -536,14 +598,27 @@ app.get(
 
 app.post(
   "/api/generar",
-  upload.array("materiales", 2),
-  async (req, res) => {
+
+  upload.array(
+    "materiales",
+    2
+  ),
+
+  async (
+    req,
+    res
+  ) => {
+
     try {
+
       const categoriasRaw =
-        req.body.bibliotecaCategorias;
+        req.body
+          .bibliotecaCategorias;
 
       const categorias =
-        Array.isArray(categoriasRaw)
+        Array.isArray(
+          categoriasRaw
+        )
           ? categoriasRaw
           : categoriasRaw
             ? [categoriasRaw]
@@ -554,18 +629,26 @@ app.post(
           categorias
         );
 
-      const partesMateriales = [];
-      const materialesUsados = [];
+      const partesMateriales =
+        [];
+
+      const materialesUsados =
+        [];
 
       for (
-        const file of req.files || []
+        const file of
+          req.files || []
       ) {
+
         const texto =
           (
             await extraerTextoArchivo(
               file
             )
-          ).slice(0, 20000);
+          ).slice(
+            0,
+            20000
+          );
 
         partesMateriales.push(
           `MATERIAL DEL DOCENTE — ${file.originalname}\n${texto}`
@@ -579,9 +662,11 @@ app.post(
       const prompt =
         buildPrompt(
           req.body,
+
           partesMateriales.join(
             "\n\n"
           ),
+
           bibliotecaLocal
         );
 
@@ -591,31 +676,50 @@ app.post(
         );
 
       res.json({
+
         ok: true,
-        texto: resultado.texto,
-        modelo: resultado.modelo,
+
+        texto:
+          resultado.texto,
+
+        modelo:
+          resultado.modelo,
+
         materialesUsados,
+
         bibliotecaSeleccionada:
-          bibliotecaLocal.seleccionadas,
+          bibliotecaLocal
+            .seleccionadas,
+
         bibliotecaUsada:
           bibliotecaLocal.usadas,
+
         bibliotecaNoEncontrada:
-          bibliotecaLocal.noEncontradas,
-        bibliotecaModo: "local",
-        anioReferencia: 2026
+          bibliotecaLocal
+            .noEncontradas,
+
+        bibliotecaModo:
+          "local",
+
+        anioReferencia:
+          2026
       });
 
     } catch (error) {
+
       console.error(
         "Error /api/generar:",
         error
       );
 
       res.status(500).json({
+
         ok: false,
+
         error:
           error.message ||
           "Error de generación"
+
       });
     }
   }
@@ -626,8 +730,33 @@ app.post(
 ================================ */
 
 app.get(
-  "*",
+  "/",
   (req, res) => {
+
+    res.sendFile(
+      path.join(
+        __dirname,
+        "index.html"
+      )
+    );
+  }
+);
+
+/* ================================
+   RUTA GENERAL
+================================ */
+
+app.use(
+  (req, res, next) => {
+
+    if (
+      req.path.startsWith(
+        "/api/"
+      )
+    ) {
+      return next();
+    }
+
     res.sendFile(
       path.join(
         __dirname,
@@ -644,12 +773,15 @@ app.get(
 if (
   require.main === module
 ) {
+
   app.listen(
     PORT,
     () => {
+
       console.log(
         `Edu.sistem Pro IA en puerto ${PORT}`
       );
+
     }
   );
 }
