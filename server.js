@@ -19,11 +19,14 @@ const upload = multer({
   }
 });
 
-/* =========================================================
-   BIBLIOTECA CURRICULAR CÓRDOBA
-   ========================================================= */
+/* ================================
+   BIBLIOTECA CÓRDOBA
+================================ */
 
-const bibliotecaPath = path.join(__dirname, "biblioteca-cordoba.json");
+const bibliotecaPath = path.join(
+  __dirname,
+  "biblioteca-cordoba.json"
+);
 
 let biblioteca = {
   categorias: {}
@@ -33,109 +36,17 @@ try {
   biblioteca = JSON.parse(
     fs.readFileSync(bibliotecaPath, "utf8")
   );
-
-  console.log(
-    "Biblioteca Córdoba cargada:",
-    Object.keys(biblioteca.categorias || {})
-  );
-} catch (e) {
+  console.log("Biblioteca Córdoba cargada.");
+} catch (error) {
   console.error(
-    "No se pudo cargar biblioteca-cordoba.json:",
-    e.message
+    "Error cargando biblioteca-cordoba.json:",
+    error.message
   );
 }
 
-/*
-  Algunas versiones del HTML pueden enviar
-  "Técnico Profesional", mientras que la biblioteca
-  puede tener "Educación Técnico Profesional".
-
-  Se contemplan ambas formas sin modificar el HTML.
-*/
-const ALIAS_CATEGORIAS = {
-  "Técnico Profesional": [
-    "Técnico Profesional",
-    "Educación Técnico Profesional"
-  ],
-
-  "Educación Técnico Profesional": [
-    "Educación Técnico Profesional",
-    "Técnico Profesional"
-  ],
-
-  "Referencias 2026": [
-    "Referencias 2026"
-  ],
-
-  "Aprendizajes y Contenidos Fundamentales": [
-    "Aprendizajes y Contenidos Fundamentales"
-  ],
-
-  "Actualización curricular": [
-    "Actualización curricular"
-  ],
-
-  "Educación Especial": [
-    "Educación Especial"
-  ],
-
-  "Jóvenes y Adultos": [
-    "Jóvenes y Adultos"
-  ],
-
-  "Educación Rural": [
-    "Educación Rural"
-  ],
-
-  "Progresiones": [
-    "Progresiones"
-  ],
-
-  "Inicial": [
-    "Inicial"
-  ],
-
-  "Primaria": [
-    "Primaria"
-  ],
-
-  "Secundaria": [
-    "Secundaria"
-  ],
-
-  "Superior": [
-    "Superior"
-  ]
-};
-
-function buscarCategoriaBiblioteca(categoria) {
-  const categorias = biblioteca.categorias || {};
-
-  if (categorias[categoria]) {
-    return {
-      nombreEncontrado: categoria,
-      item: categorias[categoria]
-    };
-  }
-
-  const alternativas =
-    ALIAS_CATEGORIAS[categoria] || [categoria];
-
-  for (const alternativa of alternativas) {
-    if (categorias[alternativa]) {
-      return {
-        nombreEncontrado: alternativa,
-        item: categorias[alternativa]
-      };
-    }
-  }
-
-  return null;
-}
-
-/* =========================================================
+/* ================================
    MODELOS GEMINI
-   ========================================================= */
+================================ */
 
 const MODELS = (
   process.env.GEMINI_MODEL ||
@@ -145,9 +56,9 @@ const MODELS = (
   .map(x => x.trim())
   .filter(Boolean);
 
-/* =========================================================
-   LIMPIEZA DEL RESULTADO
-   ========================================================= */
+/* ================================
+   LIMPIAR RESULTADO
+================================ */
 
 function limpiarResultado(texto) {
   return String(texto || "")
@@ -160,29 +71,34 @@ function limpiarResultado(texto) {
     .trim();
 }
 
-/* =========================================================
-   EXTRACCIÓN DE ARCHIVOS
-   ========================================================= */
+/* ================================
+   LEER ARCHIVOS
+================================ */
 
 async function extraerTextoArchivo(file) {
-  const name = (file.originalname || "").toLowerCase();
+  const name = (
+    file.originalname || ""
+  ).toLowerCase();
 
   if (name.endsWith(".pdf")) {
-    return (
-      (await pdfParse(file.buffer)).text ||
-      ""
-    );
+    const resultado =
+      await pdfParse(file.buffer);
+
+    return resultado.text || "";
   }
 
   if (name.endsWith(".docx")) {
-    return (
-      (await mammoth.extractRawText({
+    const resultado =
+      await mammoth.extractRawText({
         buffer: file.buffer
-      })).value || ""
-    );
+      });
+
+    return resultado.value || "";
   }
 
-  if (/\.(txt|md|csv|html|htm)$/.test(name)) {
+  if (
+    /\.(txt|md|csv|html|htm)$/.test(name)
+  ) {
     return file.buffer
       .toString("utf8")
       .replace(
@@ -198,16 +114,63 @@ async function extraerTextoArchivo(file) {
 
   throw new Error(
     "Formato no compatible: " +
-    file.originalname
+      file.originalname
   );
 }
 
-/* =========================================================
-   OBTENER REFERENCIAS DE LA BIBLIOTECA
-   ========================================================= */
+/* ================================
+   BUSCAR CATEGORÍA
+================================ */
 
-function obtenerBibliotecaLocal(categorias) {
-  const seleccionadas = Array.isArray(categorias)
+function buscarCategoria(categoria) {
+  const categorias =
+    biblioteca.categorias || {};
+
+  if (categorias[categoria]) {
+    return {
+      nombre: categoria,
+      item: categorias[categoria]
+    };
+  }
+
+  if (
+    categoria === "Técnico Profesional" &&
+    categorias["Educación Técnico Profesional"]
+  ) {
+    return {
+      nombre: "Educación Técnico Profesional",
+      item:
+        categorias[
+          "Educación Técnico Profesional"
+        ]
+    };
+  }
+
+  if (
+    categoria ===
+      "Educación Técnico Profesional" &&
+    categorias["Técnico Profesional"]
+  ) {
+    return {
+      nombre: "Técnico Profesional",
+      item:
+        categorias["Técnico Profesional"]
+    };
+  }
+
+  return null;
+}
+
+/* ================================
+   OBTENER BIBLIOTECA
+================================ */
+
+function obtenerBibliotecaLocal(
+  categorias
+) {
+  const seleccionadas = Array.isArray(
+    categorias
+  )
     ? categorias
     : [];
 
@@ -217,7 +180,7 @@ function obtenerBibliotecaLocal(categorias) {
 
   for (const categoria of seleccionadas) {
     const encontrado =
-      buscarCategoriaBiblioteca(categoria);
+      buscarCategoria(categoria);
 
     if (!encontrado) {
       noEncontradas.push(categoria);
@@ -226,14 +189,20 @@ function obtenerBibliotecaLocal(categorias) {
 
     usadas.push(categoria);
 
-    const item = encontrado.item || {};
+    const item =
+      encontrado.item || {};
 
     bloques.push(
-      `REFERENCIA LOCAL — ${categoria}
-Nombre en biblioteca: ${encontrado.nombreEncontrado}
-Estado: ${item.estado || "referencia"}
-Contenido:
-${item.contenido || ""}`
+      [
+        "REFERENCIA LOCAL:",
+        categoria,
+        "Nombre en biblioteca:",
+        encontrado.nombre,
+        "Estado:",
+        item.estado || "referencia",
+        "Contenido:",
+        item.contenido || ""
+      ].join("\n")
     );
   }
 
@@ -245,53 +214,55 @@ ${item.contenido || ""}`
   };
 }
 
-/* =========================================================
-   CONSTRUCCIÓN DEL PROMPT
-   ========================================================= */
+/* ================================
+   PROMPT
+================================ */
 
 function buildPrompt(
   data,
   materiales,
   bibliotecaInfo
 ) {
-  const tipo = String(data.tipo || "").trim();
-  const nivel = String(data.nivel || "").trim();
-  const grado = String(data.grado || "").trim();
-  const area = String(data.area || "").trim();
-  const tema = String(data.tema || "").trim();
-  const duracion = String(data.duracion || "").trim();
-  const indicaciones = String(
-    data.indicaciones || ""
-  ).trim();
+  const tipo =
+    String(data.tipo || "").trim();
 
-  const categoriasSeleccionadas =
-    bibliotecaInfo?.seleccionadas || [];
+  const nivel =
+    String(data.nivel || "").trim();
 
-  const categoriasUsadas =
-    bibliotecaInfo?.usadas || [];
+  const grado =
+    String(data.grado || "").trim();
 
-  const categoriasNoEncontradas =
-    bibliotecaInfo?.noEncontradas || [];
+  const area =
+    String(data.area || "").trim();
+
+  const tema =
+    String(data.tema || "").trim();
+
+  const duracion =
+    String(data.duracion || "").trim();
+
+  const indicaciones =
+    String(
+      data.indicaciones || ""
+    ).trim();
+
+  const seleccionadas =
+    bibliotecaInfo.seleccionadas || [];
 
   const bibliotecaTexto =
-    bibliotecaInfo?.texto || "";
+    bibliotecaInfo.texto || "";
 
   return `
-SOS EDU.SISTEM PRO IA.
+EDU.SISTEM PRO IA
 
-Tu función es generar documentación educativa profesional para docentes argentinos.
+Generá un documento educativo profesional para docentes argentinos.
 
-IMPORTANTE:
-El documento debe construirse respetando estrictamente los datos proporcionados por el docente.
-
-==================================================
-DATOS OBLIGATORIOS DEL TRABAJO
-==================================================
+DATOS FIJOS DEL DOCENTE
 
 TIPO DE TRABAJO:
 ${tipo || "No indicado"}
 
-NIVEL EDUCATIVO:
+NIVEL:
 ${nivel || "No indicado"}
 
 GRADO / CURSO:
@@ -306,236 +277,381 @@ ${tema || "No indicado"}
 DURACIÓN:
 ${duracion || "No indicada"}
 
-AÑO CURRICULAR DE REFERENCIA:
+AÑO DE REFERENCIA:
 2026
 
-INDICACIONES ESPECÍFICAS DEL DOCENTE:
-${indicaciones || "Propuesta completa, clara y adecuada al nivel indicado."}
+INDICACIONES DEL DOCENTE:
+${indicaciones || "Propuesta completa y adecuada al nivel indicado."}
 
-==================================================
+
 BIBLIOTECA CURRICULAR CÓRDOBA
-==================================================
 
-Las siguientes categorías fueron seleccionadas por el docente:
-
-${
-  categoriasSeleccionadas.length
-    ? categoriasSeleccionadas
-        .map((c, i) => `${i + 1}. ${c}`)
-        .join("\n")
-    : "No se seleccionaron categorías."
-}
-
-Categorías encontradas en la biblioteca local:
+CATEGORÍAS SELECCIONADAS:
 
 ${
-  categoriasUsadas.length
-    ? categoriasUsadas
-        .map((c, i) => `${i + 1}. ${c}`)
+  seleccionadas.length
+    ? seleccionadas
+        .map(
+          (c, i) =>
+            `${i + 1}. ${c}`
+        )
         .join("\n")
-    : "Ninguna."
+    : "Ninguna"
 }
 
-Categorías seleccionadas pero sin contenido local disponible:
-
-${
-  categoriasNoEncontradas.length
-    ? categoriasNoEncontradas
-        .map((c, i) => `${i + 1}. ${c}`)
-        .join("\n")
-    : "Ninguna."
-}
-
-CONTENIDO LOCAL DE LA BIBLIOTECA:
+CONTENIDO DE LA BIBLIOTECA:
 
 ${
   bibliotecaTexto ||
-  "(No hay contenido local disponible para las categorías seleccionadas.)"
+  "No hay contenido local para las categorías seleccionadas."
 }
 
-==================================================
-MATERIALES APORTADOS POR EL DOCENTE
-==================================================
+
+MATERIALES DEL DOCENTE:
 
 ${
   materiales ||
-  "(No se enviaron materiales adicionales.)"
+  "No se enviaron materiales adicionales."
 }
 
-==================================================
-REGLAS OBLIGATORIAS DE GENERACIÓN
-==================================================
 
-1. RESPETÁ EL NIVEL.
+REGLAS OBLIGATORIAS
 
-El nivel indicado por el docente es obligatorio.
+1. Respetá exactamente el nivel indicado.
 
-No reemplaces el nivel por otro.
+2. Respetá exactamente el grado o curso indicado.
 
-No mezcles contenidos propios de otros niveles salvo que sea necesario y esté expresamente indicado.
+3. Respetá exactamente el área o materia indicada.
 
---------------------------------------------------
+4. Respetá exactamente el tema indicado.
 
-2. RESPETÁ EL GRADO O CURSO.
+5. Respetá la duración indicada.
 
-El grado o curso indicado es obligatorio.
+6. Respetá el tipo de trabajo solicitado.
 
-La propuesta debe ser apropiada específicamente para ese grado o curso.
+7. Usá 2026 como año de referencia.
 
-No generes una propuesta genérica si el grado o curso está indicado.
+8. Utilizá las categorías de la Biblioteca Curricular Córdoba seleccionadas por el docente cuando exista contenido disponible.
 
---------------------------------------------------
+9. No inventes documentos oficiales, resoluciones, leyes ni contenidos curriculares que no estén presentes en las referencias recibidas.
 
-3. RESPETÁ EL ÁREA O MATERIA.
+10. Si el docente aportó materiales, utilizalos como referencia cuando sean pertinentes.
 
-El área o materia indicada es obligatoria.
+11. No cambies el nivel, grado, área, tema, duración o tipo de trabajo.
 
-Los objetivos, contenidos, actividades y evaluación deben guardar relación con esa área.
+12. No mezcles niveles educativos innecesariamente.
 
---------------------------------------------------
+13. Los objetivos, contenidos, actividades y evaluación deben ser coherentes con el nivel, grado, área y tema.
 
-4. RESPETÁ EL TEMA.
+14. No consultes Internet para completar la Biblioteca Curricular Córdoba.
 
-El tema indicado debe ser el eje central del documento.
+15. No digas que sos una IA.
 
-No cambies el tema por otro.
+16. No expliques el proceso de generación.
 
-Podés desarrollar subtemas solamente cuando ayuden a trabajar el tema indicado.
+17. Entregá directamente el documento terminado.
 
---------------------------------------------------
+18. No utilices Markdown visible.
 
-5. RESPETÁ LA DURACIÓN.
+19. No uses símbolos como **, # o ```.
 
-La duración indicada debe determinar la extensión y organización de la propuesta.
+20. El resultado debe quedar limpio y listo para copiar a Word.
 
-No agregues una cantidad de clases incompatible con la duración proporcionada.
 
---------------------------------------------------
+VERIFICACIÓN FINAL
 
-6. RESPETÁ EL TIPO DE TRABAJO.
+Antes de entregar el documento comprobá:
 
-Si se solicita:
+Nivel correcto.
+Grado o curso correcto.
+Área correcta.
+Tema correcto.
+Duración correcta.
+Tipo de trabajo correcto.
+Año 2026.
+Categorías de biblioteca respetadas.
+Materiales del docente considerados.
+Sin normativa inventada.
 
-Planificación anual:
-generá una planificación anual.
 
-Secuencia didáctica:
-generá una secuencia didáctica organizada.
+GENERÁ AHORA EL DOCUMENTO FINAL.
+`;
+}
 
-Proyecto:
-generá un proyecto educativo.
+/* ================================
+   LLAMAR GEMINI
+================================ */
 
-Rúbrica:
-generá una rúbrica con criterios e indicadores claros.
+async function llamarGemini(
+  modelo,
+  prompt
+) {
+  const key =
+    process.env.GEMINI_API_KEY;
 
-No reemplaces un tipo de trabajo por otro.
+  if (!key) {
+    throw new Error(
+      "GEMINI_API_KEY no configurada."
+    );
+  }
 
---------------------------------------------------
+  const url =
+    "https://generativelanguage.googleapis.com/v1beta/models/" +
+    encodeURIComponent(modelo) +
+    ":generateContent";
 
-7. AÑO 2026.
+  const response =
+    await fetch(url, {
+      method: "POST",
 
-La propuesta debe utilizar 2026 como año de referencia solicitado por el docente.
+      headers: {
+        "Content-Type":
+          "application/json",
+        "x-goog-api-key": key
+      },
 
-No inventes leyes, resoluciones, diseños curriculares, documentos oficiales ni normativa de 2026.
-
-Cuando una referencia oficial no esté presente en la información recibida, no la inventes.
-
---------------------------------------------------
-
-8. BIBLIOTECA CURRICULAR CÓRDOBA.
-
-Utilizá únicamente como referencia curricular local el contenido recibido desde la Biblioteca Curricular Córdoba.
-
-Prestá especial atención a las categorías seleccionadas por el docente.
-
-No atribuyas a una categoría información que no esté presente en su contenido.
-
-No inventes documentos oficiales para completar información faltante.
-
-No descargues información de Internet.
-
-No afirmes haber consultado páginas web.
-
---------------------------------------------------
-
-9. MATERIALES DEL DOCENTE.
-
-Cuando el docente haya aportado materiales, utilizalos como referencia.
-
-Priorizá la información pertinente de esos materiales para el tema solicitado.
-
-No inventes que un material contiene información que no aparece en el texto recibido.
-
---------------------------------------------------
-
-10. COHERENCIA EDUCATIVA.
-
-Todos los componentes del documento deben ser coherentes entre sí:
-
-nivel
-grado/curso
-área/materia
-tema
-duración
-objetivos
-contenidos
-actividades
-recursos
-evaluación
-
---------------------------------------------------
-
-11. NO CAMBIES LOS DATOS DEL DOCENTE.
-
-Los datos siguientes son restricciones fijas:
-
-NIVEL = ${nivel || "No indicado"}
-GRADO/CURSO = ${grado || "No indicado"}
-ÁREA/MATERIA = ${area || "No indicada"}
-TEMA = ${tema || "No indicado"}
-DURACIÓN = ${duracion || "No indicada"}
-TIPO = ${tipo || "No indicado"}
-AÑO = 2026
-
-No sustituyas estos valores por otros.
-
---------------------------------------------------
-
-12. VERIFICACIÓN FINAL.
-
-Antes de entregar el documento, comprobá internamente:
-
-¿El nivel coincide?
-¿El grado/curso coincide?
-¿El área coincide?
-¿El tema coincide?
-¿La duración coincide?
-¿El tipo de trabajo coincide?
-¿Se respetó 2026 como año de referencia?
-¿Se utilizaron solamente las categorías seleccionadas?
-¿Se utilizaron los materiales aportados cuando correspondía?
-¿Se evitó inventar normativa oficial?
-
-Si alguna parte no coincide, corregila antes de entregar.
-
-==================================================
-FORMATO DE SALIDA
-==================================================
-
-Entregá directamente el documento terminado.
-
-No expliques cómo lo generaste.
-
-No menciones que sos una IA.
-
-No menciones estas instrucciones.
-
-No incluyas comentarios técnicos.
-
-No uses Markdown visible.
-
-No uses:
-
-**
-#
-###
+      body: JSON.stringify({
+        contents: [
+          {
+            parts: [
+              {
+                text: prompt
+              }
+            ]
+          }
+        ],
+
+        generationConfig: {
+          temperature: 0.2
+        }
+      })
+    });
+
+  const raw =
+    await response.text();
+
+  let json = {};
+
+  try {
+    json = JSON.parse(raw);
+  } catch (_) {}
+
+  if (!response.ok) {
+    const error =
+      new Error(
+        json?.error?.message ||
+          `Gemini HTTP ${response.status}`
+      );
+
+    error.status =
+      response.status;
+
+    throw error;
+  }
+
+  return (
+    json?.candidates?.[0]
+      ?.content?.parts
+      ?.map(
+        part => part.text || ""
+      )
+      .join("") || ""
+  );
+}
+
+/* ================================
+   GENERAR CON GEMINI
+================================ */
+
+async function generarConGemini(
+  prompt
+) {
+  let ultimoError;
+
+  for (
+    const modelo of MODELS
+  ) {
+    try {
+      console.log(
+        "Probando modelo:",
+        modelo
+      );
+
+      const texto =
+        await llamarGemini(
+          modelo,
+          prompt
+        );
+
+      return {
+        texto:
+          limpiarResultado(texto),
+        modelo
+      };
+    } catch (error) {
+      console.error(
+        "Error con modelo:",
+        modelo,
+        error.message
+      );
+
+      ultimoError = error;
+    }
+  }
+
+  throw (
+    ultimoError ||
+    new Error(
+      "No fue posible generar el documento."
+    )
+  );
+}
+
+/* ================================
+   HEALTH
+================================ */
+
+app.get(
+  "/api/health",
+  (req, res) => {
+    res.json({
+      ok: true,
+      app: "Edu.sistem pro ia",
+      version: "3.2-local",
+      geminiConfigured:
+        !!process.env.GEMINI_API_KEY,
+      bibliotecaCordoba: true,
+      bibliotecaModo: "local",
+      categoriasBiblioteca:
+        Object.keys(
+          biblioteca.categorias || {}
+        )
+    });
+  }
+);
+
+/* ================================
+   GENERAR
+================================ */
+
+app.post(
+  "/api/generar",
+  upload.array("materiales", 2),
+  async (req, res) => {
+    try {
+      const categoriasRaw =
+        req.body.bibliotecaCategorias;
+
+      const categorias =
+        Array.isArray(categoriasRaw)
+          ? categoriasRaw
+          : categoriasRaw
+            ? [categoriasRaw]
+            : [];
+
+      const bibliotecaLocal =
+        obtenerBibliotecaLocal(
+          categorias
+        );
+
+      const partesMateriales = [];
+      const materialesUsados = [];
+
+      for (
+        const file of req.files || []
+      ) {
+        const texto =
+          (
+            await extraerTextoArchivo(
+              file
+            )
+          ).slice(0, 20000);
+
+        partesMateriales.push(
+          `MATERIAL DEL DOCENTE — ${file.originalname}\n${texto}`
+        );
+
+        materialesUsados.push(
+          file.originalname
+        );
+      }
+
+      const prompt =
+        buildPrompt(
+          req.body,
+          partesMateriales.join(
+            "\n\n"
+          ),
+          bibliotecaLocal
+        );
+
+      const resultado =
+        await generarConGemini(
+          prompt
+        );
+
+      res.json({
+        ok: true,
+        texto: resultado.texto,
+        modelo: resultado.modelo,
+        materialesUsados,
+        bibliotecaSeleccionada:
+          bibliotecaLocal.seleccionadas,
+        bibliotecaUsada:
+          bibliotecaLocal.usadas,
+        bibliotecaNoEncontrada:
+          bibliotecaLocal.noEncontradas,
+        bibliotecaModo: "local",
+        anioReferencia: 2026
+      });
+
+    } catch (error) {
+      console.error(
+        "Error /api/generar:",
+        error
+      );
+
+      res.status(500).json({
+        ok: false,
+        error:
+          error.message ||
+          "Error de generación"
+      });
+    }
+  }
+);
+
+/* ================================
+   INDEX
+================================ */
+
+app.get(
+  "*",
+  (req, res) => {
+    res.sendFile(
+      path.join(
+        __dirname,
+        "index.html"
+      )
+    );
+  }
+);
+
+/* ================================
+   SERVIDOR
+================================ */
+
+if (
+  require.main === module
+) {
+  app.listen(
+    PORT,
+    () => {
+      console.log(
+        `Edu.sistem Pro IA en puerto ${PORT}`
+      );
+    }
+  );
+}
+
+module.exports = app;
