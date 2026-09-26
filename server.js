@@ -4,6 +4,7 @@ const multer = require("multer");
 const pdfParse = require("pdf-parse");
 const mammoth = require("mammoth");
 const fs = require("fs");
+const crypto = require("crypto");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -19,9 +20,44 @@ const upload = multer({
   }
 });
 
-/* ================================
+/* =========================================================
+   CONFIGURACIÓN DE USO GRATUITO
+========================================================= */
+
+const MAX_GENERACIONES_GRATIS = 5;
+
+/*
+  En Vercel:
+  - se aplican las 5 generaciones gratuitas.
+  
+  En uso local desde el ZIP:
+  - no hay límite.
+*/
+
+const ES_VERCEL =
+  process.env.VERCEL === "1" ||
+  process.env.VERCEL === "true";
+
+/*
+  Secret para firmar el contador.
+  
+  Recomendado:
+  crear en Vercel una variable:
+  
+  USO_GRATIS_SECRET
+  
+  Si todavía no existe, usamos GEMINI_API_KEY
+  como respaldo para que el sistema siga funcionando.
+*/
+
+const USO_SECRET =
+  process.env.USO_GRATIS_SECRET ||
+  process.env.GEMINI_API_KEY ||
+  "edu-sistem-pro-ia-secret-local";
+
+/* =========================================================
    BIBLIOTECA CÓRDOBA
-================================ */
+========================================================= */
 
 const bibliotecaPath = path.join(
   __dirname,
@@ -34,7 +70,10 @@ let biblioteca = {
 
 try {
   biblioteca = JSON.parse(
-    fs.readFileSync(bibliotecaPath, "utf8")
+    fs.readFileSync(
+      bibliotecaPath,
+      "utf8"
+    )
   );
 
   console.log(
@@ -47,9 +86,9 @@ try {
   );
 }
 
-/* ================================
+/* =========================================================
    MODELOS GEMINI
-================================ */
+========================================================= */
 
 const MODELS = (
   process.env.GEMINI_MODEL ||
@@ -59,49 +98,485 @@ const MODELS = (
   .map(x => x.trim())
   .filter(Boolean);
 
-/* ================================
-   LIMPIAR RESULTADO
-================================ */
+/* =========================================================
+   FUNCIONES PARA COOKIE DEL CONTADOR
+========================================================= */
 
-function limpiarResultado(texto) {
-  return String(texto || "")
-    .replace(/^```[\s\S]*?\n/, "")
-    .replace(/```$/g, "")
-    .replace(/^#{1,6}\s*/gm, "")
-    .replace(/\*\*(.*?)\*\*/g, "$1")
-    .replace(/\*(.*?)\*/g, "$1")
-    .replace(/^\s*[-*]\s+/gm, "• ")
-    .trim();
+function obtenerCookies(req) {
+  const header =
+    req.headers.cookie || "";
+
+  const cookies = {};
+
+  header
+    .split(";")
+    .forEach(parte => {
+
+      const posicion =
+        parte.indexOf("=");
+
+      if (posicion === -1) {
+        return;
+      }
+
+      const nombre =
+        parte
+          .slice(0, posicion)
+          .trim();
+
+      const valor =
+        parte
+          .slice(posicion + 1)
+          .trim();
+
+      if (nombre) {
+        cookies[nombre] =
+          decodeURIComponent(valor);
+      }
+    });
+
+  return cookies;
 }
 
-/* ================================
-   LEER ARCHIVOS
-================================ */
+function mesActual() {
+  /*
+    Usamos la zona horaria de Argentina
+    para que el cambio de mes coincida
+    con el uso habitual de la aplicación.
+  */
 
-async function extraerTextoArchivo(file) {
-  const name = (
-    file.originalname || ""
-  ).toLowerCase();
+  try {
 
-  if (name.endsWith(".pdf")) {
-    const resultado =
-      await pdfParse(file.buffer);
+    const partes =
+      new Intl.DateTimeFormat(
+        "es-AR",
+        {
+          timeZone:
+            "America/Argentina/Cordoba",
+          year: "numeric",
+          month: "2-digit"
+        }
+      ).formatToParts(
+        new Date()
+      );
 
-    return resultado.text || "";
+    const year =
+      partes.find(
+        p => p.type === "year"
+      )?.value;
+
+    const month =
+      partes.find(
+        p => p.type === "month"
+      )?.value;
+
+    return `${year}-${month}`;
+
+  } catch (_) {
+
+    const ahora =
+      new Date();
+
+    return (
+      ahora.getUTCFullYear() +
+      "-" +
+      String(
+        ahora.getUTCMonth() + 1
+      ).padStart(2, "0")
+    );
+  }
+}
+
+function firmarContador(
+  mes,
+  cantidad
+) {
+
+  const datos =
+    `${mes}.${cantidad}`;
+
+  const firma =
+    crypto
+      .createHmac(
+        "sha256",
+        USO_SECRET
+      )
+      .update(datos)
+      .digest("hex");
+
+  return Buffer
+    .from(
+      JSON.stringify({
+        mes,
+        cantidad,
+        firma
+      })
+    )
+    .toString("base64url");
+}
+
+function leerContador(req) {
+
+  /*
+    En uso local no se controla.
+  */
+
+  if (!ES_VERCEL) {
+    return {
+      mes: mesActual(),
+      cantidad: 0
+    };
   }
 
-  if (name.endsWith(".docx")) {
-    const resultado =
-      await mammoth.extractRawText({
-        buffer: file.buffer
-      });
+  const cookies =
+    obtenerCookies(req);
 
-    return resultado.value || "";
+  const valor =
+    cookies.edu_sistem_uso;
+
+  if (!valor) {
+    return {
+      mes: mesActual(),
+      cantidad: 0
+    };
+  }
+
+  try {
+
+    const contenido =
+      JSON.parse(
+        Buffer
+          .from(
+            valor,
+            "base64url"
+          )
+          .toString("utf8")
+      );
+
+    const mes =
+      String(
+        contenido.mes || ""
+      );
+
+    const cantidad =
+      Number(
+        contenido.cantidad
+      );
+
+    const firma =
+      String(
+        contenido.firma || ""
+      );
+
+    if (
+      !mes ||
+      !Number.isInteger(
+        cantidad
+      ) ||
+      cantidad < 0 ||
+      cantidad > MAX_GENERACIONES_GRATIS ||
+      !firma
+    ) {
+      throw new Error(
+        "Contador inválido"
+      );
+    }
+
+    const firmaEsperada =
+      crypto
+        .createHmac(
+          "sha256",
+          USO_SECRET
+        )
+        .update(
+          `${mes}.${cantidad}`
+        )
+        .digest("hex");
+
+    if (
+      !crypto.timingSafeEqual(
+        Buffer.from(firma),
+        Buffer.from(firmaEsperada)
+      )
+    ) {
+      throw new Error(
+        "Firma inválida"
+      );
+    }
+
+    /*
+      Si cambió el mes:
+      comienza nuevamente desde cero.
+    */
+
+    if (
+      mes !== mesActual()
+    ) {
+      return {
+        mes: mesActual(),
+        cantidad: 0
+      };
+    }
+
+    return {
+      mes,
+      cantidad
+    };
+
+  } catch (_) {
+
+    return {
+      mes: mesActual(),
+      cantidad: 0
+    };
+  }
+}
+
+function guardarContador(
+  res,
+  mes,
+  cantidad
+) {
+
+  if (!ES_VERCEL) {
+    return;
+  }
+
+  const valor =
+    firmarContador(
+      mes,
+      cantidad
+    );
+
+  const maxAge =
+    60 * 60 * 24 * 40;
+
+  const partes = [
+    `edu_sistem_uso=${encodeURIComponent(valor)}`,
+    `Max-Age=${maxAge}`,
+    "Path=/",
+    "HttpOnly",
+    "SameSite=Lax"
+  ];
+
+  /*
+    En Vercel siempre usamos HTTPS.
+  */
+
+  if (ES_VERCEL) {
+    partes.push("Secure");
+  }
+
+  res.setHeader(
+    "Set-Cookie",
+    partes.join("; ")
+  );
+}
+
+/* =========================================================
+   ESTADO DE USO
+========================================================= */
+
+function obtenerEstadoUso(req) {
+
+  /*
+    LOCAL = SIN LÍMITE
+  */
+
+  if (!ES_VERCEL) {
+
+    return {
+      limitado: false,
+      plan: "local",
+      limite: null,
+      usadas: 0,
+      restantes: null,
+      mes: mesActual()
+    };
+  }
+
+  const contador =
+    leerContador(req);
+
+  const restantes =
+    Math.max(
+      0,
+      MAX_GENERACIONES_GRATIS -
+        contador.cantidad
+    );
+
+  return {
+
+    limitado: true,
+
+    plan: "gratis",
+
+    limite:
+      MAX_GENERACIONES_GRATIS,
+
+    usadas:
+      contador.cantidad,
+
+    restantes,
+
+    mes:
+      contador.mes
+  };
+}
+
+/* =========================================================
+   COMPROBAR LÍMITE
+========================================================= */
+
+function comprobarLimite(req) {
+
+  const estado =
+    obtenerEstadoUso(req);
+
+  /*
+    Uso local:
+    nunca se bloquea.
+  */
+
+  if (!estado.limitado) {
+    return {
+      permitido: true,
+      estado
+    };
   }
 
   if (
-    /\.(txt|md|csv|html|htm)$/.test(name)
+    estado.usadas >=
+    MAX_GENERACIONES_GRATIS
   ) {
+
+    return {
+      permitido: false,
+      estado
+    };
+  }
+
+  return {
+    permitido: true,
+    estado
+  };
+}
+
+/* =========================================================
+   REGISTRAR GENERACIÓN EXITOSA
+========================================================= */
+
+function registrarGeneracion(
+  req,
+  res
+) {
+
+  /*
+    En local no se registra.
+  */
+
+  if (!ES_VERCEL) {
+    return;
+  }
+
+  const contador =
+    leerContador(req);
+
+  const nuevaCantidad =
+    Math.min(
+      MAX_GENERACIONES_GRATIS,
+      contador.cantidad + 1
+    );
+
+  guardarContador(
+    res,
+    contador.mes,
+    nuevaCantidad
+  );
+}
+
+/* =========================================================
+   LIMPIAR RESULTADO
+========================================================= */
+
+function limpiarResultado(texto) {
+
+  return String(texto || "")
+    .replace(
+      /^```[\s\S]*?\n/,
+      ""
+    )
+    .replace(
+      /```$/g,
+      ""
+    )
+    .replace(
+      /^#{1,6}\s*/gm,
+      ""
+    )
+    .replace(
+      /\*\*(.*?)\*\*/g,
+      "$1"
+    )
+    .replace(
+      /\*(.*?)\*/g,
+      "$1"
+    )
+    .replace(
+      /^\s*[-*]\s+/gm,
+      "• "
+    )
+    .trim();
+}
+
+/* =========================================================
+   LEER ARCHIVOS
+========================================================= */
+
+async function extraerTextoArchivo(
+  file
+) {
+
+  const name =
+    (
+      file.originalname || ""
+    ).toLowerCase();
+
+  if (
+    name.endsWith(".pdf")
+  ) {
+
+    const resultado =
+      await pdfParse(
+        file.buffer
+      );
+
+    return (
+      resultado.text || ""
+    );
+  }
+
+  if (
+    name.endsWith(".docx")
+  ) {
+
+    const resultado =
+      await mammoth.extractRawText({
+        buffer:
+          file.buffer
+      });
+
+    return (
+      resultado.value || ""
+    );
+  }
+
+  if (
+    /\.(txt|md|csv|html|htm)$/.test(
+      name
+    )
+  ) {
+
     return file.buffer
       .toString("utf8")
       .replace(
@@ -124,18 +599,28 @@ async function extraerTextoArchivo(file) {
   );
 }
 
-/* ================================
+/* =========================================================
    BUSCAR CATEGORÍA
-================================ */
+========================================================= */
 
-function buscarCategoria(categoria) {
+function buscarCategoria(
+  categoria
+) {
+
   const categorias =
-    biblioteca.categorias || {};
+    biblioteca.categorias ||
+    {};
 
-  if (categorias[categoria]) {
+  if (
+    categorias[categoria]
+  ) {
+
     return {
-      nombre: categoria,
-      item: categorias[categoria]
+      nombre:
+        categoria,
+
+      item:
+        categorias[categoria]
     };
   }
 
@@ -146,9 +631,12 @@ function buscarCategoria(categoria) {
       "Educación Técnico Profesional"
     ]
   ) {
+
     return {
+
       nombre:
         "Educación Técnico Profesional",
+
       item:
         categorias[
           "Educación Técnico Profesional"
@@ -163,9 +651,12 @@ function buscarCategoria(categoria) {
       "Técnico Profesional"
     ]
   ) {
+
     return {
+
       nombre:
         "Técnico Profesional",
+
       item:
         categorias[
           "Técnico Profesional"
@@ -176,13 +667,14 @@ function buscarCategoria(categoria) {
   return null;
 }
 
-/* ================================
+/* =========================================================
    OBTENER BIBLIOTECA
-================================ */
+========================================================= */
 
 function obtenerBibliotecaLocal(
   categorias
 ) {
+
   const seleccionadas =
     Array.isArray(categorias)
       ? categorias
@@ -193,19 +685,27 @@ function obtenerBibliotecaLocal(
   const bloques = [];
 
   for (
-    const categoria of seleccionadas
+    const categoria of
+      seleccionadas
   ) {
+
     const encontrado =
-      buscarCategoria(categoria);
+      buscarCategoria(
+        categoria
+      );
 
     if (!encontrado) {
+
       noEncontradas.push(
         categoria
       );
+
       continue;
     }
 
-    usadas.push(categoria);
+    usadas.push(
+      categoria
+    );
 
     const item =
       encontrado.item || {};
@@ -214,35 +714,46 @@ function obtenerBibliotecaLocal(
       [
         "REFERENCIA LOCAL:",
         categoria,
+
         "Nombre en biblioteca:",
         encontrado.nombre,
+
         "Estado:",
         item.estado ||
           "referencia",
+
         "Contenido:",
-        item.contenido || ""
+        item.contenido ||
+          ""
       ].join("\n")
     );
   }
 
   return {
+
     seleccionadas,
+
     usadas,
+
     noEncontradas,
+
     texto:
-      bloques.join("\n\n")
+      bloques.join(
+        "\n\n"
+      )
   };
 }
 
-/* ================================
+/* =========================================================
    PROMPT
-================================ */
+========================================================= */
 
 function buildPrompt(
   data,
   materiales,
   bibliotecaInfo
 ) {
+
   const tipo =
     String(
       data.tipo || ""
@@ -414,18 +925,20 @@ GENERÁ AHORA EL DOCUMENTO FINAL.
 `;
 }
 
-/* ================================
+/* =========================================================
    LLAMAR GEMINI
-================================ */
+========================================================= */
 
 async function llamarGemini(
   modelo,
   prompt
 ) {
+
   const key =
     process.env.GEMINI_API_KEY;
 
   if (!key) {
+
     throw new Error(
       "GEMINI_API_KEY no configurada."
     );
@@ -443,6 +956,7 @@ async function llamarGemini(
         method: "POST",
 
         headers: {
+
           "Content-Type":
             "application/json",
 
@@ -450,21 +964,33 @@ async function llamarGemini(
             key
         },
 
-        body: JSON.stringify({
-          contents: [
-            {
-              parts: [
-                {
-                  text: prompt
-                }
-              ]
-            }
-          ],
+        body:
+          JSON.stringify({
 
-          generationConfig: {
-            temperature: 0.2
-          }
-        })
+            contents: [
+
+              {
+
+                parts: [
+
+                  {
+                    text:
+                      prompt
+                  }
+
+                ]
+
+              }
+
+            ],
+
+            generationConfig: {
+
+              temperature:
+                0.2
+            }
+
+          })
       }
     );
 
@@ -474,11 +1000,14 @@ async function llamarGemini(
   let json = {};
 
   try {
+
     json =
       JSON.parse(raw);
+
   } catch (_) {}
 
   if (!response.ok) {
+
     const error =
       new Error(
         json?.error?.message ||
@@ -502,19 +1031,23 @@ async function llamarGemini(
   );
 }
 
-/* ================================
+/* =========================================================
    GENERAR CON GEMINI
-================================ */
+========================================================= */
 
 async function generarConGemini(
   prompt
 ) {
+
   let ultimoError;
 
   for (
-    const modelo of MODELS
+    const modelo of
+      MODELS
   ) {
+
     try {
+
       console.log(
         "Probando modelo:",
         modelo
@@ -527,6 +1060,7 @@ async function generarConGemini(
         );
 
       return {
+
         texto:
           limpiarResultado(
             texto
@@ -556,9 +1090,9 @@ async function generarConGemini(
   );
 }
 
-/* ================================
+/* =========================================================
    HEALTH
-================================ */
+========================================================= */
 
 app.get(
   "/api/health",
@@ -572,7 +1106,7 @@ app.get(
         "Edu.sistem pro ia",
 
       version:
-        "3.2-local",
+        "3.3-local-gratis",
 
       geminiConfigured:
         !!process.env.GEMINI_API_KEY,
@@ -587,14 +1121,42 @@ app.get(
         Object.keys(
           biblioteca.categorias ||
             {}
-        )
+        ),
+
+      limiteGratis:
+        MAX_GENERACIONES_GRATIS,
+
+      controlGratis:
+        ES_VERCEL
+          ? "vercel"
+          : "local-ilimitado"
     });
   }
 );
 
-/* ================================
+/* =========================================================
+   ESTADO DE USO
+========================================================= */
+
+app.get(
+  "/api/uso",
+  (req, res) => {
+
+    const estado =
+      obtenerEstadoUso(req);
+
+    res.json({
+
+      ok: true,
+
+      ...estado
+    });
+  }
+);
+
+/* =========================================================
    GENERAR
-================================ */
+========================================================= */
 
 app.post(
   "/api/generar",
@@ -608,6 +1170,47 @@ app.post(
     req,
     res
   ) => {
+
+    /*
+      PRIMERO comprobamos el límite.
+
+      Esto ocurre antes de llamar a Gemini,
+      por lo que una generación bloqueada
+      no consume cuota.
+    */
+
+    const control =
+      comprobarLimite(req);
+
+    if (
+      !control.permitido
+    ) {
+
+      return res
+        .status(429)
+        .json({
+
+          ok: false,
+
+          codigo:
+            "LIMITE_GRATIS",
+
+          error:
+            "Alcanzaste las 5 generaciones gratuitas de este mes.",
+
+          limite:
+            MAX_GENERACIONES_GRATIS,
+
+          usadas:
+            control.estado.usadas,
+
+          restantes:
+            0,
+
+          mensaje:
+            "Podés volver a utilizar las generaciones gratuitas el próximo mes."
+        });
+    }
 
     try {
 
@@ -661,6 +1264,7 @@ app.post(
 
       const prompt =
         buildPrompt(
+
           req.body,
 
           partesMateriales.join(
@@ -670,12 +1274,38 @@ app.post(
           bibliotecaLocal
         );
 
+      /*
+        Gemini solamente se ejecuta si
+        todavía quedan generaciones.
+      */
+
       const resultado =
         await generarConGemini(
           prompt
         );
 
-      res.json({
+      /*
+        MUY IMPORTANTE:
+
+        El contador aumenta solamente
+        después de que Gemini terminó
+        correctamente.
+      */
+
+      registrarGeneracion(
+        req,
+        res
+      );
+
+      /*
+        Volvemos a calcular el estado
+        para informar al HTML.
+      */
+
+      const estadoDespues =
+        obtenerEstadoUso(req);
+
+      return res.json({
 
         ok: true,
 
@@ -702,7 +1332,33 @@ app.post(
           "local",
 
         anioReferencia:
-          2026
+          2026,
+
+        /*
+          Información del uso.
+        */
+
+        uso: {
+
+          limitado:
+            estadoDespues.limitado,
+
+          plan:
+            estadoDespues.plan,
+
+          limite:
+            estadoDespues.limite,
+
+          usadas:
+            estadoDespues.usadas,
+
+          restantes:
+            estadoDespues.restantes,
+
+          mes:
+            estadoDespues.mes
+        }
+
       });
 
     } catch (error) {
@@ -712,22 +1368,36 @@ app.post(
         error
       );
 
-      res.status(500).json({
+      /*
+        Los errores de Gemini,
+        archivos, biblioteca, etc.
+        NO consumen una generación.
+      */
 
-        ok: false,
+      return res
+        .status(
+          error.status &&
+          error.status >= 400 &&
+          error.status < 600
+            ? error.status
+            : 500
+        )
+        .json({
 
-        error:
-          error.message ||
-          "Error de generación"
+          ok: false,
 
-      });
+          error:
+            error.message ||
+            "Error de generación"
+
+        });
     }
   }
 );
 
-/* ================================
+/* =========================================================
    INDEX
-================================ */
+========================================================= */
 
 app.get(
   "/",
@@ -742,9 +1412,9 @@ app.get(
   }
 );
 
-/* ================================
+/* =========================================================
    RUTA GENERAL
-================================ */
+========================================================= */
 
 app.use(
   (req, res, next) => {
@@ -754,6 +1424,7 @@ app.use(
         "/api/"
       )
     ) {
+
       return next();
     }
 
@@ -766,9 +1437,9 @@ app.use(
   }
 );
 
-/* ================================
+/* =========================================================
    SERVIDOR
-================================ */
+========================================================= */
 
 if (
   require.main === module
@@ -780,6 +1451,12 @@ if (
 
       console.log(
         `Edu.sistem Pro IA en puerto ${PORT}`
+      );
+
+      console.log(
+        ES_VERCEL
+          ? "Modo Vercel: 5 generaciones gratis por mes."
+          : "Modo local: generaciones ilimitadas."
       );
 
     }
