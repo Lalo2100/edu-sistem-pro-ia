@@ -441,85 +441,67 @@ Simple, rápido y pensado para usar desde el celular.
 </section>
 
 
-<section id="biblioteca" class="card">
-<h2>📚 Biblioteca Curricular Córdoba</h2>
-<p class="small"><strong>🟢 Biblioteca local:</strong> las referencias curriculares se encuentran dentro de la aplicación.</p>
-<p class="small">Elegí las referencias curriculares que querés usar. Estas referencias forman parte de la biblioteca local de Edu.sistem Pro IA y no requieren subir archivos ni consultar Internet.</p>
-<div class="library-grid">
-<label class="library-card library-select" style="cursor:pointer;display:block">
-<input type="checkbox" class="biblioteca-check" value="Primaria" style="width:auto;margin-right:8px;vertical-align:middle">
-<span class="library-title">🔵 Primaria</span>
-<div class="library-description">Orientaciones Pedagógicas y Didácticas para Educación Primaria.</div>
-</label>
-<label class="library-card library-select" style="cursor:pointer;display:block">
-<input type="checkbox" class="biblioteca-check" value="Inicial" style="width:auto;margin-right:8px;vertical-align:middle">
-<span class="library-title">🟣 Inicial</span>
-<div class="library-description">Orientaciones Pedagógicas y Didácticas para Educación Inicial.</div>
-</label>
-<label class="library-card library-select" style="cursor:pointer;display:block">
-<input type="checkbox" class="biblioteca-check" value="Secundaria" style="width:auto;margin-right:8px;vertical-align:middle">
-<span class="library-title">🟢 Secundaria</span>
-<div class="library-description">Orientaciones Pedagógicas y Didácticas para Educación Secundaria.</div>
-</label>
-<label class="library-card library-select" style="cursor:pointer;display:block">
-<input type="checkbox" class="biblioteca-check" value="Superior" style="width:auto;margin-right:8px;vertical-align:middle">
-<span class="library-title">🟠 Superior</span>
-<div class="library-description">Referencia general del Marco Curricular Común. No se presenta como diseño específico de Superior.</div>
-</label>
-<label class="library-card library-select" style="cursor:pointer;display:block">
-<input type="checkbox" class="biblioteca-check" value="Educación Especial" style="width:auto;margin-right:8px;vertical-align:middle">
-<span class="library-title">🟡 Educación Especial</span>
-<div class="library-description">Referencia general del Marco Curricular Común para trabajo situado e inclusivo.</div>
-</label>
-<label class="library-card library-select" style="cursor:pointer;display:block">
-<input type="checkbox" class="biblioteca-check" value="Jóvenes y Adultos" style="width:auto;margin-right:8px;vertical-align:middle">
-<span class="library-title">🟤 Jóvenes y Adultos</span>
-<div class="library-description">Referencia curricular general; el Marco contempla módulos para esta modalidad.</div>
-</label>
-<label class="library-card library-select" style="cursor:pointer;display:block">
-<input type="checkbox" class="biblioteca-check" value="Educación Rural" style="width:auto;margin-right:8px;vertical-align:middle">
-<span class="library-title">🌾 Educación Rural</span>
-<div class="library-description">Referencia general del Marco Curricular Común para contextualización institucional.</div>
-</label>
-<label class="library-card library-select" style="cursor:pointer;display:block">
-<input type="checkbox" class="biblioteca-check" value="Educación Técnico Profesional" style="width:auto;margin-right:8px;vertical-align:middle">
-<span class="library-title">🔧 Educación Técnico Profesional</span>
-<div class="library-description">Referencia general del Marco Curricular Común. Material específico se incorporará cuando esté disponible localmente.</div>
-</label>
-<label class="library-card library-select" style="cursor:pointer;display:block">
-<input type="checkbox" class="biblioteca-check" value="Progresiones" style="width:auto;margin-right:8px;vertical-align:middle">
-<span class="library-title">📈 Progresiones</span>
-<div class="library-description">Progresiones de aprendizaje y sus componentes: metas por ciclo, aprendizajes y contenidos e indicadores de logro.</div>
-</label>
-<label class="library-card library-select" style="cursor:pointer;display:block">
-<input type="checkbox" class="biblioteca-check" value="Aprendizajes y Contenidos Fundamentales" style="width:auto;margin-right:8px;vertical-align:middle">
-<span class="library-title">🎯 Aprendizajes y Contenidos Fundamentales</span>
-<div class="library-description">Componente curricular de aprendizajes y contenidos del currículum provincial.</div>
-</label>
-<label class="library-card library-select" style="cursor:pointer;display:block">
-<input type="checkbox" class="biblioteca-check" value="Actualización curricular" style="width:auto;margin-right:8px;vertical-align:middle">
-<span class="library-title">📘 Actualización curricular</span>
-<div class="library-description">Referencia al proceso de renovación y actualización curricular provincial.</div>
-</label>
-<label class="library-card library-select" style="cursor:pointer;display:block">
-<input type="checkbox" class="biblioteca-check" value="Referencias 2026" style="width:auto;margin-right:8px;vertical-align:middle">
-<span class="library-title">🏛️ Referencias 2026</span>
-<div class="library-description">Referencia general a materiales curriculares disponibles para el ciclo 2026; no inventa normativa.</div>
-</label>
-</div>
- <div id="bibliotecaSeleccionadas" class="library-info" style="margin-top:12px;">
-📚 No seleccionaste referencias todavía.
-</div> 
-<div class="library-info">📌 <strong>Biblioteca local:</strong> la selección se envía al servidor junto con tu pedido. No se descargan documentos desde Internet durante la generación.</div>
-<div class="material-box">
-<h3>👨‍🏫 Materiales que carga el docente</h3>
-<p class="small">Podés agregar tus propios diseños, planificaciones, secuencias, programas, ejemplos o documentos institucionales.</p>
-<input id="archivo" type="file" accept=".pdf,.docx,.txt,.md,.csv,.html,.htm" multiple>
-<div class="buttons"><button type="button" class="secondary" onclick="agregarMaterial()">+ Agregar material</button></div>
-<div id="materialesLista"><p class="small">Todavía no agregaste materiales.</p></div>
-</div>
-</section>
+<section id="planes" class="card">
 
+<h2>💳 Planes</h2>
+
+<p class="small">
+Elegí el plan que querés utilizar.
+</p>
+
+<div class="plans">
+
+<div class="plan">
+<h3>Gratis</h3>
+<div class="price">5 / mes</div>
+<p>Para conocer la herramienta.</p>
+</div>
+
+<div class="plan">
+<h3>Docente</h3>
+<div class="price">100 / mes</div>
+<p>Para uso habitual.</p>
+<a
+  href="https://mpago.la/2X9cT72"
+  target="_blank"
+  rel="noopener noreferrer"
+  style="display:block;text-align:center;margin-top:12px;text-decoration:none"
+>
+  <button type="button">💳 Contratar</button>
+</a>
+</div>
+
+<div class="plan">
+<h3>Profesional</h3>
+<div class="price">300 / mes</div>
+<p>Para mayor volumen.</p>
+<a
+  href="https://mpago.la/142hjdM"
+  target="_blank"
+  rel="noopener noreferrer"
+  style="display:block;text-align:center;margin-top:12px;text-decoration:none"
+>
+  <button type="button">💳 Contratar</button>
+</a>
+</div>
+
+<div class="plan">
+<h3>Institución</h3>
+<div class="price">1000 / mes</div>
+<p>Para equipos educativos.</p>
+<a
+  href="https://mpago.la/2ECLDFR"
+  target="_blank"
+  rel="noopener noreferrer"
+  style="display:block;text-align:center;margin-top:12px;text-decoration:none"
+>
+  <button type="button">💳 Contratar</button>
+</a>
+</div>
+
+</div>
+
+</section>
 
 <section id="crear" class="card">
 
