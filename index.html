@@ -1,47 +1,600 @@
-  <section class="card">
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Edu.sistem Pro IA</title>
 
-    <h2>
-      📎 Materiales de referencia
-    </h2>
+<style>
+:root{
+  --bg:#f5f7fb;
+  --card:#ffffff;
+  --text:#182230;
+  --muted:#667085;
+  --line:#e5e7eb;
+  --primary:#4f46e5;
+  --primary-dark:#3730a3;
+  --soft:#eef2ff;
+  --ok:#067647;
+  --ok-bg:#ecfdf3;
+  --err:#b42318;
+  --err-bg:#fef3f2;
+}
 
-    <p class="subtitle">
-      Podés agregar documentos que quieras utilizar como referencia:
-      PDF, Word, TXT, MD, CSV o HTML.
-    </p>
+*{
+  box-sizing:border-box;
+}
 
-    <div class="field">
+body{
+  margin:0;
+  font-family:Arial,Helvetica,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
 
-      <label for="archivo">
-        Seleccionar material
-      </label>
+.container{
+  max-width:1100px;
+  margin:0 auto;
+  padding:20px;
+}
 
-      <input
-        id="archivo"
-        type="file"
-        accept=".pdf,.docx,.txt,.md,.csv,.html,.htm">
+header{
+  background:var(--card);
+  border-bottom:1px solid var(--line);
+}
+
+.header-inner{
+  max-width:1100px;
+  margin:auto;
+  padding:18px 20px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:14px;
+}
+
+.logo{
+  width:58px;
+  height:58px;
+  flex:none;
+}
+
+.brand h1{
+  margin:0;
+  font-size:24px;
+}
+
+.brand p{
+  margin:4px 0 0;
+  color:var(--muted);
+  font-size:14px;
+}
+
+.status{
+  padding:8px 12px;
+  border-radius:999px;
+  background:#f2f4f7;
+  color:var(--muted);
+  font-size:13px;
+  white-space:nowrap;
+}
+
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:20px;
+  margin-bottom:18px;
+  box-shadow:0 2px 8px rgba(16,24,40,.04);
+}
+
+h2{
+  margin:0 0 16px;
+  font-size:20px;
+}
+
+h3{
+  margin:0 0 10px;
+  font-size:17px;
+}
+
+label{
+  display:block;
+  font-weight:600;
+  margin-bottom:6px;
+}
+
+input,
+select,
+textarea{
+  width:100%;
+  border:1px solid #d0d5dd;
+  border-radius:10px;
+  padding:11px 12px;
+  font:inherit;
+  background:#fff;
+}
+
+textarea{
+  min-height:120px;
+  resize:vertical;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:16px;
+}
+
+.full{
+  grid-column:1/-1;
+}
+
+button{
+  border:0;
+  border-radius:10px;
+  padding:12px 18px;
+  font-weight:700;
+  cursor:pointer;
+  font-size:15px;
+}
+
+.btn-primary{
+  background:var(--primary);
+  color:#fff;
+}
+
+.btn-primary:hover{
+  background:var(--primary-dark);
+}
+
+.btn-secondary{
+  background:#f2f4f7;
+  color:var(--text);
+}
+
+.actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-top:16px;
+}
+
+.library-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:10px;
+}
+
+.library-item{
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:12px;
+  background:#fff;
+}
+
+.library-item label{
+  display:flex;
+  align-items:flex-start;
+  gap:8px;
+  font-weight:500;
+  margin:0;
+}
+
+.library-item input{
+  width:auto;
+  margin-top:3px;
+}
+
+.materials{
+  margin-top:12px;
+}
+
+.material{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:10px 12px;
+  margin-top:8px;
+}
+
+.material-name{
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.result{
+  white-space:pre-wrap;
+  line-height:1.6;
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:18px;
+  background:#fff;
+  min-height:200px;
+}
+
+.plans{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:14px;
+}
+
+.plan{
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:18px;
+}
+
+.plan-price{
+  font-size:25px;
+  font-weight:800;
+  margin:8px 0;
+}
+
+.plan ul{
+  padding-left:20px;
+  color:var(--muted);
+}
+
+.small{
+  font-size:13px;
+  color:var(--muted);
+}
+
+.hidden{
+  display:none;
+}
+
+@media(max-width:800px){
+  .grid,
+  .plans,
+  .library-grid{
+    grid-template-columns:1fr;
+  }
+
+  .full{
+    grid-column:auto;
+  }
+
+  .header-inner{
+    align-items:flex-start;
+    flex-direction:column;
+  }
+
+  .status{
+    align-self:flex-start;
+  }
+
+  .container{
+    padding:12px;
+  }
+
+  .card{
+    padding:15px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="header-inner">
+
+    <div class="brand">
+
+      <svg class="logo"
+           viewBox="0 0 100 100"
+           xmlns="http://www.w3.org/2000/svg"
+           aria-label="Edu.sistem Pro IA">
+
+        <circle cx="50" cy="50" r="47"
+                fill="#4f46e5"/>
+
+        <path d="M25 35
+                 L50 22
+                 L75 35
+                 L50 48
+                 Z"
+              fill="#ffffff"/>
+
+        <path d="M32 43
+                 V62
+                 C32 70 40 77 50 77
+                 C60 77 68 70 68 62
+                 V43"
+              fill="none"
+              stroke="#ffffff"
+              stroke-width="6"
+              stroke-linecap="round"/>
+
+        <circle cx="50" cy="56"
+                r="5"
+                fill="#ffffff"/>
+
+      </svg>
+
+      <div>
+        <h1>Edu.sistem Pro IA</h1>
+        <p>Asistente inteligente para docentes</p>
+      </div>
 
     </div>
 
-    <div class="actions">
+    <div id="estado" class="status">
+      Comprobando conexión...
+    </div>
 
+  </div>
+</header>
+
+<main class="container">
+
+  <section class="card">
+
+    <h2>Crear material docente</h2>
+
+    <div class="grid">
+
+      <div>
+        <label for="tipo">Tipo de trabajo</label>
+
+        <select id="tipo">
+          <option value="anual">
+            Planificación anual
+          </option>
+
+          <option value="secuencia">
+            Secuencia didáctica
+          </option>
+
+          <option value="proyecto">
+            Proyecto
+          </option>
+
+          <option value="rubrica">
+            Rúbrica
+          </option>
+        </select>
+      </div>
+
+      <div>
+        <label for="nivel">Nivel</label>
+
+        <select id="nivel">
+          <option value="Inicial">Inicial</option>
+          <option value="Primaria">Primaria</option>
+          <option value="Secundaria">Secundaria</option>
+          <option value="Superior">Superior</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="grado">Grado / Curso</label>
+
+        <input
+          id="grado"
+          type="text"
+          placeholder="Ej.: 5.º grado">
+      </div>
+
+      <div>
+        <label for="area">Área / Materia</label>
+
+        <input
+          id="area"
+          type="text"
+          placeholder="Ej.: Lengua">
+      </div>
+
+      <div>
+        <label for="tema">Tema</label>
+
+        <input
+          id="tema"
+          type="text"
+          placeholder="Tema o contenido">
+      </div>
+
+      <div>
+        <label for="duracion">Duración</label>
+
+        <input
+          id="duracion"
+          type="text"
+          placeholder="Ej.: 4 semanas">
+      </div>
+
+      <div class="full">
+
+        <label for="indicaciones">
+          ¿Cómo querés que lo realice?
+        </label>
+
+        <textarea
+          id="indicaciones"
+          placeholder="Escribí las indicaciones, características, enfoque, actividades o cualquier detalle que quieras que tenga el trabajo."></textarea>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <section class="card">
+
+    <h2>📚 Biblioteca Curricular Córdoba</h2>
+
+    <p class="small">
+      Seleccioná los contenidos curriculares que querés utilizar como referencia.
+    </p>
+
+    <div class="library-grid">
+
+      <div class="library-item">
+        <label>
+          <input
+            type="checkbox"
+            value="Inicial"
+            class="biblioteca">
+          <span>Inicial</span>
+        </label>
+      </div>
+
+      <div class="library-item">
+        <label>
+          <input
+            type="checkbox"
+            value="Primaria"
+            class="biblioteca">
+          <span>Primaria</span>
+        </label>
+      </div>
+
+      <div class="library-item">
+        <label>
+          <input
+            type="checkbox"
+            value="Secundaria"
+            class="biblioteca">
+          <span>Secundaria</span>
+        </label>
+      </div>
+
+      <div class="library-item">
+        <label>
+          <input
+            type="checkbox"
+            value="Superior"
+            class="biblioteca">
+          <span>Superior</span>
+        </label>
+      </div>
+
+      <div class="library-item">
+        <label>
+          <input
+            type="checkbox"
+            value="Educación Especial"
+            class="biblioteca">
+          <span>Educación Especial</span>
+        </label>
+      </div>
+
+      <div class="library-item">
+        <label>
+          <input
+            type="checkbox"
+            value="Jóvenes y Adultos"
+            class="biblioteca">
+          <span>Jóvenes y Adultos</span>
+        </label>
+      </div>
+
+      <div class="library-item">
+        <label>
+          <input
+            type="checkbox"
+            value="Educación Rural"
+            class="biblioteca">
+          <span>Educación Rural</span>
+        </label>
+      </div>
+
+      <div class="library-item">
+        <label>
+          <input
+            type="checkbox"
+            value="Educación Técnico Profesional"
+            class="biblioteca">
+          <span>Educación Técnico Profesional</span>
+        </label>
+      </div>
+
+      <div class="library-item">
+        <label>
+          <input
+            type="checkbox"
+            value="Progresiones"
+            class="biblioteca">
+          <span>Progresiones</span>
+        </label>
+      </div>
+
+      <div class="library-item">
+        <label>
+          <input
+            type="checkbox"
+            value="Aprendizajes y Contenidos Fundamentales"
+            class="biblioteca">
+          <span>
+            Aprendizajes y Contenidos Fundamentales
+          </span>
+        </label>
+      </div>
+
+      <div class="library-item">
+        <label>
+          <input
+            type="checkbox"
+            value="Actualización curricular"
+            class="biblioteca">
+          <span>Actualización curricular</span>
+        </label>
+      </div>
+
+      <div class="library-item">
+        <label>
+          <input
+            type="checkbox"
+            value="Referencias 2026"
+            class="biblioteca">
+          <span>Referencias 2026</span>
+        </label>
+      </div>
+
+    </div>
+
+  </section>
+    <section class="card">
+
+    <h2>📎 Materiales de referencia</h2>
+
+    <p class="small">
+      Podés agregar documentos para que Gemini los utilice como
+      referencia al preparar el material.
+    </p>
+
+    <input
+      id="archivo"
+      type="file"
+      multiple
+      accept=".pdf,.docx,.txt,.md,.csv,.html,.htm">
+
+    <div class="actions">
       <button
         type="button"
         class="btn-secondary"
         onclick="agregarMaterial()">
         + Agregar material
       </button>
-
     </div>
 
-    <div
-      id="materiales"
-      class="material-list">
-    </div>
+    <div id="listaMateriales" class="materials"></div>
 
-    <div class="help">
-      Los materiales se utilizan únicamente durante esta generación
-      como contexto de referencia.
-    </div>
+    <p class="small">
+      Formatos permitidos: PDF, Word, TXT, MD, CSV y HTML.
+    </p>
 
   </section>
 
@@ -51,11 +604,11 @@
     <div class="actions">
 
       <button
+        id="btnGenerar"
         type="button"
         class="btn-primary"
-        id="btnGenerar"
         onclick="generar()">
-        ✨ Generar propuesta
+        ✨ Generar material
       </button>
 
       <button
@@ -69,30 +622,24 @@
 
     <div
       id="mensaje"
-      style="display:none">
+      class="small"
+      style="margin-top:12px;">
     </div>
 
   </section>
 
 
-  <section
-    class="card"
-    id="resultado">
+  <section class="card">
 
-    <h2>
-      Resultado
-    </h2>
+    <h2>Resultado</h2>
 
     <div
-      id="resultadoTexto"
+      id="resultado"
       class="result">
-      Tu propuesta aparecerá aquí.
+      El material generado aparecerá aquí.
     </div>
 
-    <div
-      class="actions"
-      id="accionesResultado"
-      style="display:none">
+    <div class="actions">
 
       <button
         type="button"
@@ -119,7 +666,7 @@
         type="button"
         class="btn-secondary"
         onclick="imprimir()">
-        🖨️ Imprimir / PDF
+        🖨️ Imprimir
       </button>
 
       <button
@@ -136,49 +683,16 @@
 
   <section class="card">
 
-    <h2>
-      💳 Planes de Edu.sistem Pro IA
-    </h2>
-
-    <p class="subtitle">
-      Elegí el plan que mejor se adapte a tu uso.
-    </p>
+    <h2>Planes para docentes</h2>
 
     <div class="plans">
 
       <div class="plan">
 
-        <h3>
-          Gratis
-        </h3>
+        <h3>Docente</h3>
 
-        <div class="price">
-          $0
-        </div>
-
-        <ul>
-          <li>5 generaciones por mes</li>
-          <li>Acceso al asistente</li>
-          <li>Biblioteca curricular</li>
-        </ul>
-
-        <a
-          href="#crear"
-          onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">
-          Comenzar
-        </a>
-
-      </div>
-
-
-      <div class="plan">
-
-        <h3>
-          Docente
-        </h3>
-
-        <div class="price">
-          $4.999 / mes
+        <div class="plan-price">
+          $4.999/mes
         </div>
 
         <ul>
@@ -190,8 +704,14 @@
         <a
           href="https://mpago.la/2ECLDFR"
           target="_blank"
-          rel="noopener noreferrer">
-          Contratar
+          rel="noopener">
+
+          <button
+            type="button"
+            class="btn-primary">
+            Contratar
+          </button>
+
         </a>
 
       </div>
@@ -199,12 +719,10 @@
 
       <div class="plan">
 
-        <h3>
-          Profesional
-        </h3>
+        <h3>Profesional</h3>
 
-        <div class="price">
-          $8.999 / mes
+        <div class="plan-price">
+          $8.999/mes
         </div>
 
         <ul>
@@ -216,8 +734,14 @@
         <a
           href="https://mpago.la/2X9cT72"
           target="_blank"
-          rel="noopener noreferrer">
-          Contratar
+          rel="noopener">
+
+          <button
+            type="button"
+            class="btn-primary">
+            Contratar
+          </button>
+
         </a>
 
       </div>
@@ -225,25 +749,29 @@
 
       <div class="plan">
 
-        <h3>
-          Institución
-        </h3>
+        <h3>Institución</h3>
 
-        <div class="price">
-          $24.999 / mes
+        <div class="plan-price">
+          $24.999/mes
         </div>
 
         <ul>
           <li>Hasta 1000 generaciones</li>
           <li>Biblioteca Curricular Córdoba</li>
-          <li>Uso institucional</li>
+          <li>Materiales de referencia</li>
         </ul>
 
         <a
           href="https://mpago.la/142hjdM"
           target="_blank"
-          rel="noopener noreferrer">
-          Contratar
+          rel="noopener">
+
+          <button
+            type="button"
+            class="btn-primary">
+            Contratar
+          </button>
+
         </a>
 
       </div>
@@ -255,156 +783,89 @@
 </main>
 
 
-<footer>
-  Edu.sistem Pro IA · Asistente inteligente para docentes
-</footer>
-
-
 <script>
 
-let materiales = [];
-
-const MAX_ARCHIVOS = 2;
+const materiales = [];
 
 const MAX_TOTAL = 3 * 1024 * 1024;
 
-let totalMateriales = 0;
+const MAX_ARCHIVOS = 2;
 
 
-/* ================================
-   ESTADO DEL SERVIDOR
-================================ */
+let bibliotecaCategoriasSeleccionadas = [];
 
-async function health(){
 
-  const estado = document.getElementById("estado");
+function mostrarMensaje(texto, error = false){
 
-  try{
+  const elemento = document.getElementById("mensaje");
 
-    const r = await fetch("/api/health");
-
-    if(!r.ok){
-      throw new Error("Servidor no disponible");
-    }
-
-    const j = await r.json();
-
-    if(j.geminiConfigured){
-
-      estado.innerHTML =
-        '<span class="status-dot"></span>' +
-        '<span>✓ Gemini conectado</span>';
-
-      estado.classList.remove("error");
-
-    }else{
-
-      estado.innerHTML =
-        '<span class="status-dot"></span>' +
-        '<span>Gemini no configurado</span>';
-
-    }
-
-  }catch(e){
-
-    estado.innerHTML =
-      '<span class="status-dot"></span>' +
-      '<span>Servidor no disponible</span>';
-
+  if(!elemento){
+    return;
   }
+
+  elemento.textContent = texto;
+
+  elemento.style.color = error
+    ? "#b42318"
+    : "#067647";
+}
+
+
+function actualizarBiblioteca(){
+
+  bibliotecaCategoriasSeleccionadas =
+    Array.from(
+      document.querySelectorAll(".biblioteca:checked")
+    ).map(
+      elemento => elemento.value
+    );
 
 }
 
 
-/* ================================
-   MATERIALES
-================================ */
+document
+  .querySelectorAll(".biblioteca")
+  .forEach(
+    elemento => {
 
-function agregarMaterial(){
+      elemento.addEventListener(
+        "change",
+        actualizarBiblioteca
+      );
 
-  const input =
-    document.getElementById("archivo");
-
-  if(!input.files || !input.files.length){
-
-    mostrarMensaje(
-      "Seleccioná un archivo antes de agregarlo.",
-      true
-    );
-
-    return;
-  }
-
-  const archivo = input.files[0];
-
-
-  if(materiales.length >= MAX_ARCHIVOS){
-
-    mostrarMensaje(
-      "Podés agregar como máximo 2 materiales.",
-      true
-    );
-
-    input.value = "";
-
-    return;
-  }
-
-
-  if(
-    totalMateriales + archivo.size >
-    MAX_TOTAL
-  ){
-
-    mostrarMensaje(
-      "El tamaño total de los materiales no puede superar 3 MB.",
-      true
-    );
-
-    input.value = "";
-
-    return;
-  }
-
-
-  materiales.push(archivo);
-
-  totalMateriales += archivo.size;
-
-  renderMateriales();
-
-  input.value = "";
-
-}
+    }
+  );
 
 
 function renderMateriales(){
 
   const contenedor =
-    document.getElementById("materiales");
+    document.getElementById("listaMateriales");
+
+  if(!contenedor){
+    return;
+  }
 
   contenedor.innerHTML = "";
 
   materiales.forEach(
-    (archivo,index)=>{
+    (material, indice) => {
 
-      const item =
+      const fila =
         document.createElement("div");
 
-      item.className = "material";
+      fila.className = "material";
 
       const nombre =
-        document.createElement("div");
+        document.createElement("span");
 
-      nombre.className =
-        "material-name";
+      nombre.className = "material-name";
 
       nombre.textContent =
-        archivo.name +
+        material.name +
         " (" +
-        formatearTamano(archivo.size) +
-        ")";
-
+        Math.round(material.size / 1024) +
+        " KB)";
 
       const boton =
         document.createElement("button");
@@ -412,20 +873,21 @@ function renderMateriales(){
       boton.type = "button";
 
       boton.className =
-        "btn-danger";
+        "btn-secondary";
 
-      boton.textContent =
-        "Eliminar";
+      boton.textContent = "Eliminar";
 
-      boton.onclick = () =>
-        eliminarMaterial(index);
+      boton.onclick = function(){
 
+        eliminarMaterial(indice);
 
-      item.appendChild(nombre);
+      };
 
-      item.appendChild(boton);
+      fila.appendChild(nombre);
 
-      contenedor.appendChild(item);
+      fila.appendChild(boton);
+
+      contenedor.appendChild(fila);
 
     }
   );
@@ -433,150 +895,241 @@ function renderMateriales(){
 }
 
 
-function eliminarMaterial(index){
+function agregarMaterial(){
 
-  if(
-    index < 0 ||
-    index >= materiales.length
-  ){
+  const input =
+    document.getElementById("archivo");
+
+  if(!input){
     return;
   }
 
-  totalMateriales -=
-    materiales[index].size;
+  const archivos =
+    Array.from(input.files || []);
 
-  materiales.splice(index,1);
+  if(!archivos.length){
+
+    mostrarMensaje(
+      "Seleccioná al menos un archivo.",
+      true
+    );
+
+    return;
+  }
+
+
+  if(
+    materiales.length + archivos.length >
+    MAX_ARCHIVOS
+  ){
+
+    mostrarMensaje(
+      "Podés agregar como máximo " +
+      MAX_ARCHIVOS +
+      " archivos.",
+      true
+    );
+
+    return;
+  }
+
+
+  const totalActual =
+    materiales.reduce(
+      (total, archivo) =>
+        total + archivo.size,
+      0
+    );
+
+
+  const totalNuevo =
+    archivos.reduce(
+      (total, archivo) =>
+        total + archivo.size,
+      0
+    );
+
+
+  if(
+    totalActual + totalNuevo >
+    MAX_TOTAL
+  ){
+
+    mostrarMensaje(
+      "El tamaño total de los archivos no puede superar 3 MB.",
+      true
+    );
+
+    return;
+  }
+
+
+  for(
+    const archivo of archivos
+  ){
+
+    materiales.push(archivo);
+
+  }
+
+
+  renderMateriales();
+
+  input.value = "";
+
+  mostrarMensaje(
+    "Material agregado correctamente."
+  );
+
+}
+
+
+function eliminarMaterial(indice){
+
+  materiales.splice(indice, 1);
 
   renderMateriales();
 
 }
 
 
-function formatearTamano(bytes){
+async function health(){
 
-  if(bytes < 1024){
-    return bytes + " B";
+  const estado =
+    document.getElementById("estado");
+
+  try{
+
+    const respuesta =
+      await fetch(
+        "/api/health",
+        {
+          method:"GET",
+          cache:"no-store"
+        }
+      );
+
+
+    if(!respuesta.ok){
+
+      throw new Error(
+        "HTTP " +
+        respuesta.status
+      );
+
+    }
+
+
+    const datos =
+      await respuesta.json();
+
+
+    if(
+      datos.ok &&
+      datos.geminiConfigured
+    ){
+
+      estado.textContent =
+        "✓ Gemini conectado";
+
+      estado.style.background =
+        "#ecfdf3";
+
+      estado.style.color =
+        "#067647";
+
+    }else{
+
+      estado.textContent =
+        "⚠ Gemini no configurado";
+
+      estado.style.background =
+        "#fef3f2";
+
+      estado.style.color =
+        "#b42318";
+
+    }
+
+  }catch(error){
+
+    estado.textContent =
+      "⚠ Servidor no disponible";
+
+    estado.style.background =
+      "#fef3f2";
+
+    estado.style.color =
+      "#b42318";
+
   }
 
-  if(bytes < 1024 * 1024){
-    return (
-      (bytes / 1024).toFixed(1) +
-      " KB"
-    );
-  }
-
-  return (
-    (bytes / (1024 * 1024)).toFixed(2) +
-    " MB"
-  );
-
 }
 
 
-/* ================================
-   BIBLIOTECA
-================================ */
+function obtenerDatosFormulario(){
 
-function obtenerBiblioteca(){
+  actualizarBiblioteca();
 
-  return Array.from(
-    document.querySelectorAll(
-      ".biblioteca-check:checked"
-    )
-  ).map(
-    checkbox => checkbox.value
-  );
+  return {
 
-}
+    tipo:
+      document.getElementById("tipo").value,
 
+    nivel:
+      document.getElementById("nivel").value,
 
-/* ================================
-   MENSAJES
-================================ */
+    grado:
+      document.getElementById("grado").value.trim(),
 
-function mostrarMensaje(
-  texto,
-  error=false
-){
+    area:
+      document.getElementById("area").value.trim(),
 
-  const mensaje =
-    document.getElementById("mensaje");
+    tema:
+      document.getElementById("tema").value.trim(),
 
-  mensaje.style.display = "block";
+    duracion:
+      document.getElementById("duracion").value.trim(),
 
-  mensaje.className =
-    error
-      ? "notice notice-error"
-      : "notice notice-ok";
+    indicaciones:
+      document
+        .getElementById("indicaciones")
+        .value
+        .trim(),
 
-  mensaje.textContent = texto;
+    bibliotecaCategorias:
+      bibliotecaCategoriasSeleccionadas
+
+  };
 
 }
 
-
-function ocultarMensaje(){
-
-  const mensaje =
-    document.getElementById("mensaje");
-
-  mensaje.style.display = "none";
-
-}
-
-
-/* ================================
-   GENERAR
-================================ */
 
 async function generar(){
-
-  ocultarMensaje();
 
   const boton =
     document.getElementById("btnGenerar");
 
   const resultado =
-    document.getElementById("resultadoTexto");
-
-  const acciones =
-    document.getElementById("accionesResultado");
+    document.getElementById("resultado");
 
 
-  const tipo =
-    document.getElementById("tipo").value;
-
-  const nivel =
-    document.getElementById("nivel").value;
-
-  const grado =
-    document.getElementById("grado").value.trim();
-
-  const area =
-    document.getElementById("area").value.trim();
-
-  const tema =
-    document.getElementById("tema").value.trim();
-
-  const duracion =
-    document.getElementById("duracion").value.trim();
-
-  const indicaciones =
-    document.getElementById("indicaciones").value.trim();
+  const datos =
+    obtenerDatosFormulario();
 
 
-  if(!nivel){
+  if(!datos.grado){
 
     mostrarMensaje(
-      "Seleccioná el nivel educativo.",
+      "Completá el grado o curso.",
       true
     );
 
     return;
-
   }
 
 
-  if(!area){
+  if(!datos.area){
 
     mostrarMensaje(
       "Completá el área o materia.",
@@ -584,11 +1137,10 @@ async function generar(){
     );
 
     return;
-
   }
 
 
-  if(!tema){
+  if(!datos.tema){
 
     mostrarMensaje(
       "Completá el tema.",
@@ -596,7 +1148,6 @@ async function generar(){
     );
 
     return;
-
   }
 
 
@@ -605,11 +1156,10 @@ async function generar(){
   boton.textContent =
     "⏳ Generando...";
 
-  resultado.textContent =
-    "Estamos preparando tu propuesta. Esperá unos segundos...";
 
-  acciones.style.display =
-    "none";
+  mostrarMensaje(
+    "Preparando el material..."
+  );
 
 
   try{
@@ -620,71 +1170,61 @@ async function generar(){
 
     formData.append(
       "tipo",
-      tipo
+      datos.tipo
     );
+
 
     formData.append(
       "nivel",
-      nivel
+      datos.nivel
     );
+
 
     formData.append(
       "grado",
-      grado
+      datos.grado
     );
+
 
     formData.append(
       "area",
-      area
+      datos.area
     );
+
 
     formData.append(
       "tema",
-      tema
+      datos.tema
     );
+
 
     formData.append(
       "duracion",
-      duracion
+      datos.duracion
     );
+
 
     formData.append(
       "indicaciones",
-      indicaciones
+      datos.indicaciones
     );
-
-
-    const biblioteca =
-      obtenerBiblioteca();
 
 
     formData.append(
       "bibliotecaCategorias",
-      JSON.stringify(biblioteca)
-    );
-
-
-    formData.append(
-      "materiales",
       JSON.stringify(
-        materiales.map(
-          archivo => ({
-            nombre: archivo.name,
-            tipo: archivo.type,
-            tamano: archivo.size
-          })
-        )
+        datos.bibliotecaCategorias
       )
     );
 
 
     materiales.forEach(
-      archivo => {
+      material => {
 
         formData.append(
-          "archivos",
-          archivo,
-          archivo.name
+          "materiales",
+          material,
+          material.name
         );
 
       }
@@ -705,19 +1245,20 @@ async function generar(){
       await respuesta.text();
 
 
-    let j;
+    let datosRespuesta;
+
 
     try{
 
-      j =
+      datosRespuesta =
         JSON.parse(
           textoRespuesta
         );
 
-    }catch(e){
+    }catch(error){
 
       throw new Error(
-        "El servidor devolvió una respuesta inválida."
+        "El servidor devolvió una respuesta no válida."
       );
 
     }
@@ -726,62 +1267,34 @@ async function generar(){
     if(!respuesta.ok){
 
       throw new Error(
-        j.error ||
-        "No se pudo generar la propuesta."
-      );
-
-    }
-
-
-    if(!j.texto){
-
-      throw new Error(
-        "La respuesta no contiene el texto generado."
+        datosRespuesta.error ||
+        "No se pudo generar el material."
       );
 
     }
 
 
     resultado.textContent =
-      limpiarFormato(j.texto);
-
-
-    acciones.style.display =
-      "flex";
-
-
-    resultado.scrollIntoView({
-      behavior:"smooth",
-      block:"start"
-    });
-
-
-    if(j.materialesUsados){
-
-      mostrarMensaje(
-        "Propuesta generada correctamente utilizando las referencias seleccionadas."
+      limpiarMarkdown(
+        datosRespuesta.texto ||
+        "No se recibió contenido."
       );
 
-    }else{
 
-      mostrarMensaje(
-        "Propuesta generada correctamente."
-      );
-
-    }
+    mostrarMensaje(
+      "✓ Material generado correctamente."
+    );
 
 
   }catch(error){
 
-    console.error(error);
-
     resultado.textContent =
-      "No se pudo generar la propuesta.";
+      "No se pudo generar el material.\n\n" +
+      error.message;
 
 
     mostrarMensaje(
-      error.message ||
-      "Error de conexión con el servidor.",
+      error.message,
       true
     );
 
@@ -791,122 +1304,111 @@ async function generar(){
     boton.disabled = false;
 
     boton.textContent =
-      "✨ Generar propuesta";
+      "✨ Generar material";
 
   }
 
 }
 
 
-/* ================================
-   LIMPIAR FORMATO
-================================ */
-
-function limpiarFormato(texto){
+function limpiarMarkdown(texto){
 
   if(!texto){
     return "";
   }
 
+
   return texto
 
-    .replace(/\*\*(.*?)\*\*/g,"$1")
+    .replace(
+      /\*\*(.*?)\*\*/g,
+      "$1"
+    )
 
-    .replace(/__(.*?)__/g,"$1")
+    .replace(
+      /^#{1,6}\s*/gm,
+      ""
+    )
 
-    .replace(/^#{1,6}\s*/gm,"")
+    .replace(
+      /^---+$/gm,
+      ""
+    )
 
-    .replace(/^\s*[-*]\s+/gm,"• ")
-
-    .replace(/\n{3,}/g,"\n\n")
+    .replace(
+      /`([^`]+)`/g,
+      "$1"
+    )
 
     .trim();
 
 }
 
 
-/* ================================
-   COPIAR
-================================ */
-
-async function copiar(){
+function copiar(){
 
   const resultado =
-    document.getElementById(
-      "resultadoTexto"
-    );
+    document.getElementById("resultado");
+
 
   const texto =
-    resultado.textContent.trim();
+    resultado.innerText.trim();
 
 
   if(!texto){
 
     mostrarMensaje(
-      "No hay contenido para copiar.",
+      "No hay ningún resultado para copiar.",
       true
     );
 
     return;
-
   }
 
 
-  try{
+  navigator.clipboard
+    .writeText(texto)
+    .then(
+      () => {
 
-    await navigator.clipboard.writeText(
-      texto
+        mostrarMensaje(
+          "✓ Resultado copiado."
+        );
+
+      }
+    )
+    .catch(
+      () => {
+
+        mostrarMensaje(
+          "No se pudo copiar automáticamente.",
+          true
+        );
+
+      }
     );
-
-    mostrarMensaje(
-      "Texto copiado correctamente."
-    );
-
-  }catch(e){
-
-    const area =
-      document.createElement("textarea");
-
-    area.value = texto;
-
-    document.body.appendChild(area);
-
-    area.select();
-
-    document.execCommand("copy");
-
-    area.remove();
-
-    mostrarMensaje(
-      "Texto copiado correctamente."
-    );
-
-  }
 
 }
 
 
-/* ================================
-   DESCARGAR TXT
-================================ */
-
 function descargar(){
 
+  const resultado =
+    document.getElementById("resultado");
+
+
   const texto =
-    document.getElementById(
-      "resultadoTexto"
-    ).textContent.trim();
+    resultado.innerText.trim();
 
 
   if(!texto){
 
     mostrarMensaje(
-      "No hay contenido para descargar.",
+      "No hay ningún resultado para descargar.",
       true
     );
 
     return;
-
   }
 
 
@@ -923,72 +1425,75 @@ function descargar(){
     URL.createObjectURL(blob);
 
 
-  const a =
+  const enlace =
     document.createElement("a");
 
-  a.href = url;
 
-  a.download =
+  enlace.href = url;
+
+  enlace.download =
     "Edu.sistem_Pro_IA_resultado.txt";
 
-  document.body.appendChild(a);
 
-  a.click();
+  document.body.appendChild(enlace);
 
-  a.remove();
+  enlace.click();
+
+  enlace.remove();
 
   URL.revokeObjectURL(url);
+
+
+  mostrarMensaje(
+    "✓ Archivo TXT descargado."
+  );
 
 }
 
 
-/* ================================
-   WORD
-================================ */
-
 function descargarWord(){
 
+  const resultado =
+    document.getElementById("resultado");
+
+
   const texto =
-    document.getElementById(
-      "resultadoTexto"
-    ).textContent.trim();
+    resultado.innerText.trim();
 
 
   if(!texto){
 
     mostrarMensaje(
-      "No hay contenido para descargar.",
+      "No hay ningún resultado para descargar.",
       true
     );
 
     return;
-
   }
 
 
-  const contenido =
-    `
-    <html>
-    <head>
-      <meta charset="utf-8">
-      <title>Edu.sistem Pro IA</title>
-    </head>
-    <body>
-      <h1>Edu.sistem Pro IA</h1>
-      <pre style="font-family:Arial;white-space:pre-wrap;">
-${escapeHtml(texto)}
-      </pre>
-    </body>
-    </html>
-    `;
+  const htmlWord = `
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Edu.sistem Pro IA</title>
+</head>
+<body>
+${texto
+  .replace(/&/g,"&amp;")
+  .replace(/</g,"&lt;")
+  .replace(/>/g,"&gt;")
+  .replace(/\n/g,"<br>")}
+</body>
+</html>
+`;
 
 
   const blob =
     new Blob(
-      ["\ufeff",contenido],
+      [htmlWord],
       {
-        type:
-          "application/msword"
+        type:"application/msword"
       }
     );
 
@@ -997,63 +1502,50 @@ ${escapeHtml(texto)}
     URL.createObjectURL(blob);
 
 
-  const a =
+  const enlace =
     document.createElement("a");
 
-  a.href = url;
 
-  a.download =
+  enlace.href = url;
+
+  enlace.download =
     "Edu.sistem_Pro_IA_resultado.doc";
 
-  document.body.appendChild(a);
 
-  a.click();
+  document.body.appendChild(enlace);
 
-  a.remove();
+  enlace.click();
+
+  enlace.remove();
 
   URL.revokeObjectURL(url);
 
-}
 
-
-function escapeHtml(text){
-
-  return text
-
-    .replace(/&/g,"&amp;")
-
-    .replace(/</g,"&lt;")
-
-    .replace(/>/g,"&gt;")
-
-    .replace(/"/g,"&quot;")
-
-    .replace(/'/g,"&#039;");
+  mostrarMensaje(
+    "✓ Documento Word descargado."
+  );
 
 }
 
-
-/* ================================
-   IMPRIMIR
-================================ */
 
 function imprimir(){
 
+  const resultado =
+    document.getElementById("resultado");
+
+
   const texto =
-    document.getElementById(
-      "resultadoTexto"
-    ).textContent.trim();
+    resultado.innerText.trim();
 
 
   if(!texto){
 
     mostrarMensaje(
-      "No hay contenido para imprimir.",
+      "No hay ningún resultado para imprimir.",
       true
     );
 
     return;
-
   }
 
 
@@ -1064,64 +1556,37 @@ function imprimir(){
     );
 
 
-  if(!ventana){
-
-    mostrarMensaje(
-      "El navegador bloqueó la ventana de impresión.",
-      true
-    );
-
-    return;
-
-  }
-
-
   ventana.document.write(`
     <!DOCTYPE html>
-
     <html lang="es">
-
     <head>
-
       <meta charset="UTF-8">
-
-      <title>
-        Edu.sistem Pro IA
-      </title>
+      <title>Edu.sistem Pro IA</title>
 
       <style>
-
         body{
-          font-family:Arial,Helvetica,sans-serif;
-          margin:40px;
+          font-family:Arial,sans-serif;
+          padding:30px;
+          line-height:1.6;
           color:#182230;
         }
-
-        h1{
-          font-size:24px;
-          margin-bottom:25px;
-        }
-
-        pre{
-          white-space:pre-wrap;
-          font-family:Arial,Helvetica,sans-serif;
-          line-height:1.6;
-        }
-
       </style>
 
     </head>
 
     <body>
 
-      <h1>
-        Edu.sistem Pro IA
-      </h1>
+      <h1>Edu.sistem Pro IA</h1>
 
-      <pre>${escapeHtml(texto)}</pre>
+      <div>
+        ${texto
+          .replace(/&/g,"&amp;")
+          .replace(/</g,"&lt;")
+          .replace(/>/g,"&gt;")
+          .replace(/\n/g,"<br>")}
+      </div>
 
     </body>
-
     </html>
   `);
 
@@ -1135,27 +1600,24 @@ function imprimir(){
 }
 
 
-/* ================================
-   COMPARTIR
-================================ */
-
 async function compartir(){
 
+  const resultado =
+    document.getElementById("resultado");
+
+
   const texto =
-    document.getElementById(
-      "resultadoTexto"
-    ).textContent.trim();
+    resultado.innerText.trim();
 
 
   if(!texto){
 
     mostrarMensaje(
-      "No hay contenido para compartir.",
+      "No hay ningún resultado para compartir.",
       true
     );
 
     return;
-
   }
 
 
@@ -1166,15 +1628,21 @@ async function compartir(){
     try{
 
       await navigator.share({
-        title:
-          "Edu.sistem Pro IA",
-        text:
-          texto
+        title:"Edu.sistem Pro IA",
+        text:texto
       });
 
-    }catch(e){
 
-      if(e.name !== "AbortError"){
+      mostrarMensaje(
+        "✓ Compartido."
+      );
+
+    }catch(error){
+
+      if(
+        error.name !==
+        "AbortError"
+      ){
 
         mostrarMensaje(
           "No se pudo compartir.",
@@ -1185,112 +1653,165 @@ async function compartir(){
 
     }
 
-    return;
+  }else{
+
+    await navigator.clipboard.writeText(
+      texto
+    );
+
+    mostrarMensaje(
+      "✓ Resultado copiado. Podés pegarlo donde quieras."
+    );
 
   }
 
+}
 
-  await copiar();
+
+function limpiar(){
+
+  document.getElementById("grado").value = "";
+
+  document.getElementById("area").value = "";
+
+  document.getElementById("tema").value = "";
+
+  document.getElementById("duracion").value = "";
+
+  document.getElementById("indicaciones").value = "";
+
+  document.getElementById("resultado").textContent =
+    "El material generado aparecerá aquí.";
+
+
+  document
+    .querySelectorAll(".biblioteca")
+    .forEach(
+      elemento => {
+        elemento.checked = false;
+      }
+    );
+
+
+  materiales.length = 0;
+
+  renderMateriales();
+
+  actualizarBiblioteca();
 
   mostrarMensaje(
-    "El contenido fue copiado. Podés pegarlo donde quieras compartirlo."
+    "Formulario limpiado."
   );
 
 }
 
 
-/* ================================
-   LIMPIAR
-================================ */
+renderMateriales();
 
-function limpiar(){
+actualizarBiblioteca();
 
-  document.getElementById(
-    "tipo"
-  ).value = "anual";
-
-  document.getElementById(
-    "nivel"
-  ).value = "";
-
-  document.getElementById(
-    "grado"
-  ).value = "";
-
-  document.getElementById(
-    "area"
-  ).value = "";
-
-  document.getElementById(
-    "tema"
-  ).value = "";
-
-  document.getElementById(
-    "duracion"
-  ).value = "";
-
-  document.getElementById(
-    "indicaciones"
-  ).value = "";
-
-
-  document
-    .querySelectorAll(
-      ".biblioteca-check"
-    )
-    .forEach(
-      checkbox =>
-        checkbox.checked = false
-    );
-
-
-  materiales = [];
-
-  totalMateriales = 0;
-
-  renderMateriales();
-
-
-  document.getElementById(
-    "resultadoTexto"
-  ).textContent =
-    "Tu propuesta aparecerá aquí.";
-
-
-  document.getElementById(
-    "accionesResultado"
-  ).style.display =
-    "none";
-
-
-  ocultarMensaje();
-
-
-  window.scrollTo({
-    top:0,
-    behavior:"smooth"
-  });
-
-}
-
-
-/* ================================
-   INICIO
-================================ */
-
-document.addEventListener(
-  "DOMContentLoaded",
-  () => {
-
-    health();
-
-  }
-);
+health();
 
 </script>
 
 </body>
 </html>
+<section id="biblioteca" class="card">
+
+<h2>📚 Biblioteca Curricular Córdoba</h2>
+
+<p class="small">
+Elegí una o varias referencias. Edu.sistem Pro IA las consultará como contexto curricular al generar tu trabajo. No tenés que descargar ni subir estos documentos.
+</p>
+
+<div class="library-grid">
+
+<div class="library-card"><label class="library-select"><input type="checkbox" class="biblioteca-check" value="Inicial"> <span>🟣 Inicial</span></label><div class="library-description">Referencias curriculares para Educación Inicial.</div></div>
+
+<div class="library-card"><label class="library-select"><input type="checkbox" class="biblioteca-check" value="Primaria"> <span>🔵 Primaria</span></label><div class="library-description">Referencias curriculares para Educación Primaria.</div></div>
+
+<div class="library-card"><label class="library-select"><input type="checkbox" class="biblioteca-check" value="Secundaria"> <span>🟢 Secundaria</span></label><div class="library-description">Referencias curriculares para Educación Secundaria.</div></div>
+
+<div class="library-card"><label class="library-select"><input type="checkbox" class="biblioteca-check" value="Superior"> <span>🟠 Superior</span></label><div class="library-description">Referencias para Educación Superior.</div></div>
+
+<div class="library-card"><label class="library-select"><input type="checkbox" class="biblioteca-check" value="Educación Especial"> <span>🟡 Educación Especial</span></label><div class="library-description">Referencias y orientaciones para esta modalidad.</div></div>
+
+<div class="library-card"><label class="library-select"><input type="checkbox" class="biblioteca-check" value="Jóvenes y Adultos"> <span>🟤 Jóvenes y Adultos</span></label><div class="library-description">Referencias para la modalidad de Jóvenes y Adultos.</div></div>
+
+<div class="library-card"><label class="library-select"><input type="checkbox" class="biblioteca-check" value="Educación Rural"> <span>🌾 Educación Rural</span></label><div class="library-description">Referencias específicas para Educación Rural.</div></div>
+
+<div class="library-card"><label class="library-select"><input type="checkbox" class="biblioteca-check" value="Técnico Profesional"> <span>🔧 Educación Técnico Profesional</span></label><div class="library-description">Materiales y referencias para la Educación Técnico Profesional.</div></div>
+
+<div class="library-card"><label class="library-select"><input type="checkbox" class="biblioteca-check" value="Progresiones"> <span>📈 Progresiones</span></label><div class="library-description">Metas, aprendizajes, contenidos e indicadores de las Progresiones de Aprendizaje.</div></div>
+
+<div class="library-card"><label class="library-select"><input type="checkbox" class="biblioteca-check" value="Aprendizajes y Contenidos Fundamentales"> <span>🎯 Aprendizajes y Contenidos Fundamentales</span></label><div class="library-description">Referencia vinculada a aprendizajes y contenidos curriculares.</div></div>
+
+<div class="library-card"><label class="library-select"><input type="checkbox" class="biblioteca-check" value="Actualización curricular"> <span>📘 Actualización curricular</span></label><div class="library-description">Referencias de actualización curricular.</div></div>
+
+<div class="library-card"><label class="library-select"><input type="checkbox" class="biblioteca-check" value="Referencias 2026"> <span>🏛️ Referencias 2026</span></label><div class="library-description">Referencias identificadas para el ciclo 2026.</div></div>
+
+</div>
+
+<div id="bibliotecaSeleccionadas" class="library-info">
+📚 No seleccionaste referencias todavía.
+</div>
+
+<div class="library-info">
+📌 <strong>Cómo funciona:</strong> las referencias oficiales disponibles se consultan desde el servidor cuando generás el trabajo. La aplicación no necesita que descargues los PDF ni que los subas a GitHub.
+</div>
+
+<div class="material-box">
+
+<h3>👨‍🏫 Materiales que carga el docente</h3>
+
+<p class="small">
+Acá podés agregar tus propios diseños, planificaciones, secuencias, programas, ejemplos o documentos institucionales.
+</p>
+
+<input
+id="archivo"
+type="file"
+accept=".pdf,.docx,.txt,.md,.csv,.html,.htm"
+multiple>
+
+<div class="buttons">
+
+<button
+type="button"
+class="secondary"
+onclick="agregarMaterial()">
+
++ Agregar material
+
+</button>
+
+</div>
+
+<div id="materialesLista">
+
+<p class="small">
+Todavía no agregaste materiales.
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+
+<section id="crear" class="card">
+
+<h2>✨ ¿Qué querés crear?</h2>
+
+<div class="grid">
+
+<div>
+
+<label>Tipo de trabajo</label>
+
+<select id="tipo">
+
 <option value="anual">
 Planificación anual
 </option>
@@ -1332,7 +1853,9 @@ Rúbrica
 
 <label>Grado / Curso</label>
 
-<input id="grado" placeholder="Ej.: 5.º grado">
+<input
+id="grado"
+placeholder="Ej.: 5.º grado">
 
 </div>
 
@@ -1341,7 +1864,9 @@ Rúbrica
 
 <label>Área / Materia</label>
 
-<input id="area" placeholder="Ej.: Lengua">
+<input
+id="area"
+placeholder="Ej.: Lengua">
 
 </div>
 
@@ -1350,7 +1875,9 @@ Rúbrica
 
 <label>Tema</label>
 
-<input id="tema" placeholder="¿Sobre qué necesitás trabajar?">
+<input
+id="tema"
+placeholder="¿Sobre qué necesitás trabajar?">
 
 </div>
 
@@ -1359,7 +1886,9 @@ Rúbrica
 
 <label>Duración</label>
 
-<input id="duracion" placeholder="Ej.: 4 semanas">
+<input
+id="duracion"
+placeholder="Ej.: 4 semanas">
 
 </div>
 
@@ -1385,13 +1914,17 @@ Podés escribirlo con tus palabras.
 
 <div class="buttons">
 
-<button id="btnGenerar" onclick="generar()">
+<button
+id="btnGenerar"
+onclick="generar()">
 
 ✨ Crear con Gemini
 
 </button>
 
-<button class="secondary" onclick="limpiar()">
+<button
+class="secondary"
+onclick="limpiar()">
 
 Limpiar
 
@@ -1406,7 +1939,9 @@ Limpiar
 
 <h2>📄 Resultado</h2>
 
-<div id="estado" class="state">
+<div
+id="estado"
+class="state">
 
 Todavía no generaste un trabajo.
 
@@ -1422,20 +1957,36 @@ Todavía no generaste un trabajo.
 Copiar
 </button>
 
-<button class="secondary" onclick="descargar()">
+<button
+class="secondary"
+onclick="descargar()">
+
 Descargar .txt
+
 </button>
 
-<button class="secondary" onclick="descargarWord()">
+<button
+class="secondary"
+onclick="descargarWord()">
+
 Descargar Word
+
 </button>
 
-<button class="ghost" onclick="imprimir()">
+<button
+class="ghost"
+onclick="imprimir()">
+
 Imprimir / PDF
+
 </button>
 
-<button class="ghost" onclick="compartir()">
+<button
+class="ghost"
+onclick="compartir()">
+
 Compartir
+
 </button>
 
 </div>
@@ -1467,7 +2018,6 @@ $0
 
 </div>
 
-
 <div class="plan">
 
 <h3>👩‍🏫 Docente</h3>
@@ -1491,7 +2041,6 @@ Suscribirme
 
 </div>
 
-
 <div class="plan">
 
 <h3>💼 Profesional</h3>
@@ -1514,7 +2063,6 @@ Suscribirme
 </a>
 
 </div>
-
 
 <div class="plan">
 
@@ -1542,1181 +2090,3 @@ Suscribirme
 </div>
 
 </section>
-
-</main>
-
-
-<footer>
-
-Edu.sistem Pro IA · Asistente inteligente para docentes
-
-</footer>
-
-
-<script>
-
-let materiales = [];
-
-let bibliotecaCategoriasSeleccionadas = [];
-
-let ultimo = '';
-
-const $ = id => document.getElementById(id);
-
-
-/* ESCAPE */
-
-function esc(s){
-
-  return String(s).replace(
-    /[&<>"']/g,
-    c => ({
-      '&':'&amp;',
-      '<':'&lt;',
-      '>':'&gt;',
-      '"':'&quot;',
-      "'":'&#39;'
-    }[c])
-  );
-
-}
-
-
-/* SCROLL */
-
-function ir(id){
-
-  const elemento = $(id);
-
-  if(elemento){
-
-    elemento.scrollIntoView({
-      behavior:'smooth'
-    });
-
-  }
-
-}
-
-
-/* ESTADO */
-
-function setEstado(t,cl=''){
-
-  const estado = $('estado');
-
-  if(!estado)return;
-
-  estado.textContent = t;
-
-  estado.className =
-    'state ' + cl;
-
-}
-
-
-/* =====================================================
-   COMPROBAR CONEXIÓN
-===================================================== */
-
-async function health(){
-
-  const status =
-    $('status');
-
-  if(!status)return;
-
-  status.textContent =
-    'Comprobando conexión…';
-
-  try{
-
-    const r =
-      await fetch(
-        '/api/health',
-        {
-          method:'GET',
-          cache:'no-store'
-        }
-      );
-
-    if(!r.ok){
-
-      throw new Error(
-        'Servidor no disponible'
-      );
-
-    }
-
-    const data =
-      await r.json();
-
-    if(data && data.ok){
-
-      status.textContent =
-        '🟢 Servidor conectado';
-
-      status.style.background =
-        '#ecfdf3';
-
-      status.style.color =
-        '#067647';
-
-    }else{
-
-      status.textContent =
-        '🔴 Servidor con problemas';
-
-    }
-
-  }catch(e){
-
-    status.textContent =
-      '🔴 Error de conexión';
-
-    status.style.background =
-      '#fef3f2';
-
-    status.style.color =
-      '#b42318';
-
-  }
-
-}
-
-
-/* =====================================================
-   BIBLIOTECA CURRICULAR CÓRDOBA
-===================================================== */
-
-document
-.querySelectorAll('.biblioteca-check')
-.forEach(check => {
-
-  check.addEventListener(
-    'change',
-    function(){
-
-      const categoria =
-        this.value;
-
-      if(this.checked){
-
-        if(
-          !bibliotecaCategoriasSeleccionadas
-          .includes(categoria)
-        ){
-
-          bibliotecaCategoriasSeleccionadas
-          .push(categoria);
-
-        }
-
-      }else{
-
-        bibliotecaCategoriasSeleccionadas =
-          bibliotecaCategoriasSeleccionadas
-          .filter(
-            x => x !== categoria
-          );
-
-      }
-
-      renderBiblioteca();
-
-    }
-  );
-
-});
-
-
-function renderBiblioteca(){
-
-  const box =
-    $('bibliotecaSeleccionadas');
-
-  if(!box)return;
-
-
-  if(
-    !bibliotecaCategoriasSeleccionadas.length
-  ){
-
-    box.innerHTML =
-      '📚 No seleccionaste referencias todavía.';
-
-    return;
-
-  }
-
-
-  box.innerHTML =
-    '<strong>📚 Referencias seleccionadas:</strong> ' +
-    bibliotecaCategoriasSeleccionadas
-      .map(esc)
-      .join(' · ');
-
-}
-
-
-/* =====================================================
-   MATERIALES DEL DOCENTE
-===================================================== */
-
-function agregarMaterial(){
-
-  const input =
-    $('archivo');
-
-  const files =
-    [...input.files];
-
-  if(!files.length){
-
-    alert(
-      'Seleccioná uno o más archivos.'
-    );
-
-    return;
-
-  }
-
-
-  for(const f of files){
-
-    const existe =
-      materiales.some(
-        x =>
-          x.name === f.name &&
-          x.size === f.size
-      );
-
-    if(!existe){
-
-      materiales.push(f);
-
-    }
-
-  }
-
-
-  input.value = '';
-
-  renderMateriales();
-
-}
-
-
-function renderMateriales(){
-
-  const box =
-    $('materialesLista');
-
-  if(!box)return;
-
-
-  if(!materiales.length){
-
-    box.innerHTML =
-      '<p class="small">Todavía no agregaste materiales.</p>';
-
-    return;
-
-  }
-
-
-  box.innerHTML =
-    materiales
-      .map(
-        (m,i) => `
-
-          <div class="material">
-
-            <span>
-
-              📄 ${esc(m.name)}
-
-              <small>
-                (${Math.round(m.size / 1024)} KB)
-              </small>
-
-            </span>
-
-            <button
-              type="button"
-              class="danger"
-              onclick="eliminarMaterial(${i})">
-
-              Eliminar
-
-            </button>
-
-          </div>
-
-        `
-      )
-      .join('');
-
-}
-
-
-function eliminarMaterial(i){
-
-  materiales.splice(i,1);
-
-  renderMateriales();
-
-}
-
-
-/* =====================================================
-   GENERAR
-===================================================== */
-
-async function generar(){
-
-  const tema =
-    $('tema')
-      .value
-      .trim();
-
-
-  if(!tema){
-
-    setEstado(
-      'Escribí el tema que necesitás trabajar.',
-      'err'
-    );
-
-    ir('crear');
-
-    return;
-
-  }
-
-
-  const btn =
-    $('btnGenerar');
-
-
-  btn.disabled = true;
-
-  btn.textContent =
-    '⏳ Generando…';
-
-
-  $('resultadoTexto')
-    .textContent = '';
-
-
-  setEstado(
-    'Preparando la solicitud…'
-  );
-
-
-  /*
-    Vercel tiene un límite de payload.
-    Dejamos margen de seguridad.
-  */
-
-  const MAX_TOTAL =
-    3 * 1024 * 1024;
-
-  const MAX_ARCHIVOS = 2;
-
-
-  const todosLosMateriales =
-    materiales.map(
-      f => ({
-        file:f,
-        categoria:'Materiales del docente',
-        name:f.name,
-        size:f.size
-      })
-    );
-
-
-  if(
-    todosLosMateriales.length >
-    MAX_ARCHIVOS
-  ){
-
-    setEstado(
-      'Podés enviar hasta 2 documentos por generación. Eliminá algún archivo y volvé a intentar.',
-      'err'
-    );
-
-    btn.disabled = false;
-
-    btn.textContent =
-      '✨ Crear con Gemini';
-
-    return;
-
-  }
-
-
-  let totalBytes = 0;
-
-
-  for(
-    const item of todosLosMateriales
-  ){
-
-    totalBytes +=
-      item.file.size;
-
-  }
-    if(totalBytes > MAX_TOTAL){
-
-    setEstado(
-      'El tamaño total de los materiales supera el límite permitido de 3 MB.',
-      'err'
-    );
-
-    btn.disabled = false;
-
-    btn.textContent =
-      '✨ Crear con Gemini';
-
-    return;
-
-  }
-
-
-  try{
-
-    const fd =
-      new FormData();
-
-
-    fd.append(
-      'tipo',
-      $('tipo').value
-    );
-
-    fd.append(
-      'nivel',
-      $('nivel').value
-    );
-
-    fd.append(
-      'grado',
-      $('grado').value.trim()
-    );
-
-    fd.append(
-      'area',
-      $('area').value.trim()
-    );
-
-    fd.append(
-      'tema',
-      $('tema').value.trim()
-    );
-
-    fd.append(
-      'duracion',
-      $('duracion').value.trim()
-    );
-
-    fd.append(
-      'indicaciones',
-      $('indicaciones').value.trim()
-    );
-
-
-    fd.append(
-      'bibliotecaCategorias',
-      JSON.stringify(
-        bibliotecaCategoriasSeleccionadas
-      )
-    );
-
-
-    fd.append(
-      'materiales',
-      JSON.stringify(
-        materiales.map(
-          f => ({
-            nombre:f.name,
-            tipo:f.type,
-            tamano:f.size
-          })
-        )
-      )
-    );
-
-
-    materiales.forEach(
-      archivo => {
-
-        fd.append(
-          'archivos',
-          archivo,
-          archivo.name
-        );
-
-      }
-    );
-
-
-    setEstado(
-      '🤖 Gemini está preparando tu propuesta…'
-    );
-
-
-    const respuesta =
-      await fetch(
-        '/api/generar',
-        {
-          method:'POST',
-          body:fd
-        }
-      );
-
-
-    const texto =
-      await respuesta.text();
-
-
-    let data;
-
-
-    try{
-
-      data =
-        JSON.parse(texto);
-
-    }catch(e){
-
-      throw new Error(
-        'El servidor devolvió una respuesta que no se pudo interpretar.'
-      );
-
-    }
-
-
-    if(!respuesta.ok){
-
-      throw new Error(
-        data.error ||
-        data.message ||
-        'No se pudo generar la propuesta.'
-      );
-
-    }
-
-
-    if(
-      !data.texto
-    ){
-
-      throw new Error(
-        'Gemini no devolvió contenido.'
-      );
-
-    }
-
-
-    ultimo =
-      limpiarTexto(
-        data.texto
-      );
-
-
-    $('resultadoTexto')
-      .textContent =
-      ultimo;
-
-
-    setEstado(
-      '✅ Propuesta generada correctamente.',
-      'ok'
-    );
-
-
-    ir('resultado');
-
-
-  }catch(error){
-
-    console.error(error);
-
-
-    setEstado(
-      '❌ ' +
-      (
-        error.message ||
-        'Error de conexión con el servidor.'
-      ),
-      'err'
-    );
-
-
-  }finally{
-
-    btn.disabled = false;
-
-    btn.textContent =
-      '✨ Crear con Gemini';
-
-  }
-
-}
-
-
-/* =====================================================
-   LIMPIAR TEXTO GENERADO
-===================================================== */
-
-function limpiarTexto(texto){
-
-  if(!texto){
-
-    return '';
-
-  }
-
-
-  return String(texto)
-
-    .replace(
-      /\*\*(.*?)\*\*/g,
-      '$1'
-    )
-
-    .replace(
-      /__(.*?)__/g,
-      '$1'
-    )
-
-    .replace(
-      /^#{1,6}\s*/gm,
-      ''
-    )
-
-    .replace(
-      /^\s*[-*]\s+/gm,
-      '• '
-    )
-
-    .replace(
-      /\n{3,}/g,
-      '\n\n'
-    )
-
-    .trim();
-
-}
-
-
-/* =====================================================
-   COPIAR
-===================================================== */
-
-async function copiar(){
-
-  const texto =
-    $('resultadoTexto')
-      .textContent
-      .trim();
-
-
-  if(!texto){
-
-    alert(
-      'No hay ningún resultado para copiar.'
-    );
-
-    return;
-
-  }
-
-
-  try{
-
-    await navigator
-      .clipboard
-      .writeText(texto);
-
-
-    setEstado(
-      '📋 Texto copiado correctamente.',
-      'ok'
-    );
-
-
-  }catch(e){
-
-    const area =
-      document.createElement(
-        'textarea'
-      );
-
-
-    area.value =
-      texto;
-
-
-    document.body.appendChild(
-      area
-    );
-
-
-    area.select();
-
-
-    document.execCommand(
-      'copy'
-    );
-
-
-    area.remove();
-
-
-    setEstado(
-      '📋 Texto copiado correctamente.',
-      'ok'
-    );
-
-  }
-
-}
-
-
-/* =====================================================
-   DESCARGAR TXT
-===================================================== */
-
-function descargar(){
-
-  const texto =
-    $('resultadoTexto')
-      .textContent
-      .trim();
-
-
-  if(!texto){
-
-    alert(
-      'No hay ningún resultado para descargar.'
-    );
-
-    return;
-
-  }
-
-
-  const blob =
-    new Blob(
-      [texto],
-      {
-        type:
-          'text/plain;charset=utf-8'
-      }
-    );
-
-
-  const url =
-    URL.createObjectURL(
-      blob
-    );
-
-
-  const a =
-    document.createElement(
-      'a'
-    );
-
-
-  a.href =
-    url;
-
-
-  a.download =
-    'Edu.sistem_Pro_IA_resultado.txt';
-
-
-  document.body.appendChild(
-    a
-  );
-
-
-  a.click();
-
-
-  a.remove();
-
-
-  URL.revokeObjectURL(
-    url
-  );
-
-}
-
-
-/* =====================================================
-   DESCARGAR WORD
-===================================================== */
-
-function descargarWord(){
-
-  const texto =
-    $('resultadoTexto')
-      .textContent
-      .trim();
-
-
-  if(!texto){
-
-    alert(
-      'No hay ningún resultado para descargar.'
-    );
-
-    return;
-
-  }
-
-
-  const html =
-    `
-<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<title>Edu.sistem Pro IA</title>
-</head>
-
-<body>
-
-<h1>Edu.sistem Pro IA</h1>
-
-<pre style="
-font-family:Arial,Helvetica,sans-serif;
-white-space:pre-wrap;
-line-height:1.6;
-">${esc(texto)}</pre>
-
-</body>
-</html>
-`;
-
-
-  const blob =
-    new Blob(
-      [
-        '\ufeff',
-        html
-      ],
-      {
-        type:
-          'application/msword'
-      }
-    );
-
-
-  const url =
-    URL.createObjectURL(
-      blob
-    );
-
-
-  const a =
-    document.createElement(
-      'a'
-    );
-
-
-  a.href =
-    url;
-
-
-  a.download =
-    'Edu.sistem_Pro_IA_resultado.doc';
-
-
-  document.body.appendChild(
-    a
-  );
-
-
-  a.click();
-
-
-  a.remove();
-
-
-  URL.revokeObjectURL(
-    url
-  );
-
-}
-
-
-/* =====================================================
-   IMPRIMIR / PDF
-===================================================== */
-
-function imprimir(){
-
-  const texto =
-    $('resultadoTexto')
-      .textContent
-      .trim();
-
-
-  if(!texto){
-
-    alert(
-      'No hay ningún resultado para imprimir.'
-    );
-
-    return;
-
-  }
-
-
-  const ventana =
-    window.open(
-      '',
-      '_blank'
-    );
-
-
-  if(!ventana){
-
-    alert(
-      'El navegador bloqueó la ventana de impresión.'
-    );
-
-    return;
-
-  }
-
-
-  ventana.document.write(
-`
-<!DOCTYPE html>
-
-<html lang="es">
-
-<head>
-
-<meta charset="UTF-8">
-
-<title>
-Edu.sistem Pro IA
-</title>
-
-<style>
-
-body{
-  font-family:Arial,Helvetica,sans-serif;
-  margin:40px;
-  color:#182230;
-}
-
-h1{
-  font-size:24px;
-  margin-bottom:25px;
-}
-
-pre{
-  white-space:pre-wrap;
-  font-family:Arial,Helvetica,sans-serif;
-  line-height:1.6;
-}
-
-</style>
-
-</head>
-
-<body>
-
-<h1>
-Edu.sistem Pro IA
-</h1>
-
-<pre>
-${esc(texto)}
-</pre>
-
-</body>
-
-</html>
-`
-  );
-
-
-  ventana.document.close();
-
-  ventana.focus();
-
-  ventana.print();
-
-}
-
-
-/* =====================================================
-   COMPARTIR
-===================================================== */
-
-async function compartir(){
-
-  const texto =
-    $('resultadoTexto')
-      .textContent
-      .trim();
-
-
-  if(!texto){
-
-    alert(
-      'No hay ningún resultado para compartir.'
-    );
-
-    return;
-
-  }
-
-
-  if(
-    navigator.share
-  ){
-
-    try{
-
-      await navigator.share({
-
-        title:
-          'Edu.sistem Pro IA',
-
-        text:
-          texto
-
-      });
-
-    }catch(e){
-
-      if(
-        e.name !==
-        'AbortError'
-      ){
-
-        console.error(e);
-
-      }
-
-    }
-
-    return;
-
-  }
-
-
-  await copiar();
-
-
-  setEstado(
-    '📋 El texto fue copiado. Podés pegarlo donde quieras compartirlo.',
-    'ok'
-  );
-
-}
-
-
-/* =====================================================
-   LIMPIAR FORMULARIO
-===================================================== */
-
-function limpiar(){
-
-  $('tipo').value =
-    'anual';
-
-
-  $('nivel').selectedIndex =
-    0;
-
-
-  $('grado').value =
-    '';
-
-
-  $('area').value =
-    '';
-
-
-  $('tema').value =
-    '';
-
-
-  $('duracion').value =
-    '';
-
-
-  $('indicaciones').value =
-    '';
-
-
-  document
-    .querySelectorAll(
-      '.biblioteca-check'
-    )
-    .forEach(
-      check => {
-        check.checked =
-          false;
-      }
-    );
-
-
-  bibliotecaCategoriasSeleccionadas =
-    [];
-
-
-  renderBiblioteca();
-
-
-  materiales =
-    [];
-
-
-  renderMateriales();
-
-
-  $('resultadoTexto')
-    .textContent =
-    '';
-
-
-  setEstado(
-    'Todavía no generaste un trabajo.'
-  );
-
-}
-
-
-/* =====================================================
-   INICIO
-===================================================== */
-
-document.addEventListener(
-  'DOMContentLoaded',
-  () => {
-
-    health();
-
-    renderMateriales();
-
-    renderBiblioteca();
-
-  }
-);
-
-</script>
-
-</body>
-
-</html>
