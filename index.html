@@ -1,329 +1,2722 @@
-```html
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Planes | Edu.sistem Pro IA</title>
+  <section class="card">
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+    <h2>
+      📎 Materiales de referencia
+    </h2>
 
-    body {
-      margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background: #f5f7fb;
-      color: #1f2937;
-    }
-
-    header {
-      background: linear-gradient(135deg, #243b8f, #536dfe);
-      color: white;
-      text-align: center;
-      padding: 35px 20px;
-    }
-
-    .logo {
-      font-size: 30px;
-      font-weight: 800;
-      margin-bottom: 8px;
-    }
-
-    .subtitulo {
-      font-size: 17px;
-      opacity: 0.95;
-    }
-
-    .contenedor {
-      max-width: 1100px;
-      margin: 40px auto;
-      padding: 0 20px;
-    }
-
-    h1 {
-      text-align: center;
-      margin-bottom: 10px;
-      color: #172554;
-    }
-
-    .descripcion {
-      text-align: center;
-      color: #64748b;
-      margin-bottom: 35px;
-    }
-
-    .planes {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 20px;
-    }
-
-    .plan {
-      background: white;
-      border-radius: 18px;
-      padding: 28px 22px;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.08);
-      display: flex;
-      flex-direction: column;
-      min-height: 470px;
-    }
-
-    .plan.destacado {
-      border: 3px solid #536dfe;
-      transform: translateY(-6px);
-    }
-
-    .etiqueta {
-      display: inline-block;
-      align-self: flex-start;
-      background: #536dfe;
-      color: white;
-      padding: 6px 12px;
-      border-radius: 20px;
-      font-size: 13px;
-      font-weight: bold;
-      margin-bottom: 12px;
-    }
-
-    .plan h2 {
-      margin: 5px 0 10px;
-      color: #172554;
-    }
-
-    .precio {
-      font-size: 30px;
-      font-weight: 800;
-      color: #243b8f;
-      margin-bottom: 20px;
-    }
-
-    .precio span {
-      font-size: 14px;
-      font-weight: normal;
-      color: #64748b;
-    }
-
-    .plan ul {
-      padding-left: 20px;
-      margin: 0 0 25px;
-      flex-grow: 1;
-    }
-
-    .plan li {
-      margin-bottom: 11px;
-    }
-
-    .boton {
-      display: block;
-      text-align: center;
-      text-decoration: none;
-      background: #536dfe;
-      color: white;
-      padding: 14px 18px;
-      border-radius: 10px;
-      font-weight: bold;
-      transition: 0.2s;
-    }
-
-    .boton:hover {
-      background: #3f51d9;
-      transform: translateY(-1px);
-    }
-
-    .boton.gratis {
-      background: #16a34a;
-    }
-
-    .boton.gratis:hover {
-      background: #15803d;
-    }
-
-    .nota {
-      text-align: center;
-      margin: 35px auto 10px;
-      max-width: 700px;
-      color: #64748b;
-      font-size: 14px;
-    }
-
-    footer {
-      text-align: center;
-      padding: 30px 20px;
-      color: #64748b;
-      font-size: 14px;
-    }
-
-    @media (max-width: 900px) {
-      .planes {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-
-    @media (max-width: 600px) {
-      header {
-        padding: 28px 15px;
-      }
-
-      .logo {
-        font-size: 25px;
-      }
-
-      .contenedor {
-        margin: 25px auto;
-      }
-
-      .planes {
-        grid-template-columns: 1fr;
-      }
-
-      .plan.destacado {
-        transform: none;
-      }
-    }
-  </style>
-</head>
-
-<body>
-
-  <header>
-    <div class="logo">Edu.sistem Pro IA</div>
-    <div class="subtitulo">Asistente inteligente para docentes</div>
-  </header>
-
-  <main class="contenedor">
-
-    <h1>Elegí tu plan</h1>
-
-    <p class="descripcion">
-      Herramientas de inteligencia artificial pensadas para facilitar el trabajo docente.
+    <p class="subtitle">
+      Podés agregar documentos que quieras utilizar como referencia:
+      PDF, Word, TXT, MD, CSV o HTML.
     </p>
 
-    <section class="planes">
+    <div class="field">
 
-      <!-- PLAN GRATIS -->
-      <article class="plan">
-        <h2>🆓 Gratis</h2>
+      <label for="archivo">
+        Seleccionar material
+      </label>
 
-        <div class="precio">
-          $0 <span>/ mes</span>
+      <input
+        id="archivo"
+        type="file"
+        accept=".pdf,.docx,.txt,.md,.csv,.html,.htm">
+
+    </div>
+
+    <div class="actions">
+
+      <button
+        type="button"
+        class="btn-secondary"
+        onclick="agregarMaterial()">
+        + Agregar material
+      </button>
+
+    </div>
+
+    <div
+      id="materiales"
+      class="material-list">
+    </div>
+
+    <div class="help">
+      Los materiales se utilizan únicamente durante esta generación
+      como contexto de referencia.
+    </div>
+
+  </section>
+
+
+  <section class="card">
+
+    <div class="actions">
+
+      <button
+        type="button"
+        class="btn-primary"
+        id="btnGenerar"
+        onclick="generar()">
+        ✨ Generar propuesta
+      </button>
+
+      <button
+        type="button"
+        class="btn-secondary"
+        onclick="limpiar()">
+        Limpiar
+      </button>
+
+    </div>
+
+    <div
+      id="mensaje"
+      style="display:none">
+    </div>
+
+  </section>
+
+
+  <section
+    class="card"
+    id="resultado">
+
+    <h2>
+      Resultado
+    </h2>
+
+    <div
+      id="resultadoTexto"
+      class="result">
+      Tu propuesta aparecerá aquí.
+    </div>
+
+    <div
+      class="actions"
+      id="accionesResultado"
+      style="display:none">
+
+      <button
+        type="button"
+        class="btn-secondary"
+        onclick="copiar()">
+        📋 Copiar
+      </button>
+
+      <button
+        type="button"
+        class="btn-secondary"
+        onclick="descargar()">
+        📄 Descargar TXT
+      </button>
+
+      <button
+        type="button"
+        class="btn-secondary"
+        onclick="descargarWord()">
+        📝 Descargar Word
+      </button>
+
+      <button
+        type="button"
+        class="btn-secondary"
+        onclick="imprimir()">
+        🖨️ Imprimir / PDF
+      </button>
+
+      <button
+        type="button"
+        class="btn-secondary"
+        onclick="compartir()">
+        📤 Compartir
+      </button>
+
+    </div>
+
+  </section>
+
+
+  <section class="card">
+
+    <h2>
+      💳 Planes de Edu.sistem Pro IA
+    </h2>
+
+    <p class="subtitle">
+      Elegí el plan que mejor se adapte a tu uso.
+    </p>
+
+    <div class="plans">
+
+      <div class="plan">
+
+        <h3>
+          Gratis
+        </h3>
+
+        <div class="price">
+          $0
         </div>
 
         <ul>
-          <li>Generaciones de prueba</li>
-          <li>Planificaciones</li>
-          <li>Secuencias didácticas</li>
-          <li>Proyectos</li>
-          <li>Rúbricas</li>
+          <li>5 generaciones por mes</li>
+          <li>Acceso al asistente</li>
+          <li>Biblioteca curricular</li>
         </ul>
 
-        <a class="boton gratis" href="index.html">
-          Comenzar gratis
+        <a
+          href="#crear"
+          onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">
+          Comenzar
         </a>
-      </article>
+
+      </div>
 
 
-      <!-- PLAN DOCENTE -->
-      <article class="plan destacado">
+      <div class="plan">
 
-        <div class="etiqueta">PARA DOCENTES</div>
+        <h3>
+          Docente
+        </h3>
 
-        <h2>👨‍🏫 Docente</h2>
-
-        <div class="precio">
-          $4.999 <span>/ mes</span>
+        <div class="price">
+          $4.999 / mes
         </div>
 
         <ul>
           <li>Hasta 100 generaciones</li>
-          <li>Planificaciones anuales</li>
-          <li>Secuencias didácticas</li>
-          <li>Proyectos</li>
-          <li>Rúbricas</li>
           <li>Biblioteca Curricular Córdoba</li>
           <li>Materiales de referencia</li>
         </ul>
 
         <a
-          class="boton"
           href="https://mpago.la/2ECLDFR"
           target="_blank"
           rel="noopener noreferrer">
-          Pagar $4.999
+          Contratar
         </a>
 
-      </article>
+      </div>
 
 
-      <!-- PLAN PROFESIONAL -->
-      <article class="plan">
+      <div class="plan">
 
-        <h2>⭐ Profesional</h2>
+        <h3>
+          Profesional
+        </h3>
 
-        <div class="precio">
-          $8.999 <span>/ mes</span>
+        <div class="price">
+          $8.999 / mes
         </div>
 
         <ul>
           <li>Hasta 300 generaciones</li>
-          <li>Todas las herramientas</li>
           <li>Biblioteca Curricular Córdoba</li>
           <li>Materiales de referencia</li>
-          <li>Generación de trabajos docentes</li>
         </ul>
 
         <a
-          class="boton"
           href="https://mpago.la/2X9cT72"
           target="_blank"
           rel="noopener noreferrer">
-          Pagar $8.999
+          Contratar
         </a>
 
-      </article>
+      </div>
 
 
-      <!-- PLAN INSTITUCIÓN -->
-      <article class="plan">
+      <div class="plan">
 
-        <h2>🏫 Institución</h2>
+        <h3>
+          Institución
+        </h3>
 
-        <div class="precio">
-          $24.999 <span>/ mes</span>
+        <div class="price">
+          $24.999 / mes
         </div>
 
         <ul>
-          <li>Hasta 1.000 generaciones</li>
-          <li>Herramientas completas</li>
+          <li>Hasta 1000 generaciones</li>
           <li>Biblioteca Curricular Córdoba</li>
-          <li>Materiales de referencia</li>
           <li>Uso institucional</li>
         </ul>
 
         <a
-          class="boton"
           href="https://mpago.la/142hjdM"
           target="_blank"
           rel="noopener noreferrer">
-          Pagar $24.999
+          Contratar
         </a>
 
-      </article>
+      </div>
 
-    </section>
+    </div>
 
-    <p class="nota">
-      Los pagos se realizan mediante Mercado Pago.
-      Después de realizar el pago, conservá el comprobante.
-    </p>
+  </section>
 
-  </main>
+</main>
 
-  <footer>
-    © 2026 Edu.sistem Pro IA · Asistente inteligente para docentes
-  </footer>
+
+<footer>
+  Edu.sistem Pro IA · Asistente inteligente para docentes
+</footer>
+
+
+<script>
+
+let materiales = [];
+
+const MAX_ARCHIVOS = 2;
+
+const MAX_TOTAL = 3 * 1024 * 1024;
+
+let totalMateriales = 0;
+
+
+/* ================================
+   ESTADO DEL SERVIDOR
+================================ */
+
+async function health(){
+
+  const estado = document.getElementById("estado");
+
+  try{
+
+    const r = await fetch("/api/health");
+
+    if(!r.ok){
+      throw new Error("Servidor no disponible");
+    }
+
+    const j = await r.json();
+
+    if(j.geminiConfigured){
+
+      estado.innerHTML =
+        '<span class="status-dot"></span>' +
+        '<span>✓ Gemini conectado</span>';
+
+      estado.classList.remove("error");
+
+    }else{
+
+      estado.innerHTML =
+        '<span class="status-dot"></span>' +
+        '<span>Gemini no configurado</span>';
+
+    }
+
+  }catch(e){
+
+    estado.innerHTML =
+      '<span class="status-dot"></span>' +
+      '<span>Servidor no disponible</span>';
+
+  }
+
+}
+
+
+/* ================================
+   MATERIALES
+================================ */
+
+function agregarMaterial(){
+
+  const input =
+    document.getElementById("archivo");
+
+  if(!input.files || !input.files.length){
+
+    mostrarMensaje(
+      "Seleccioná un archivo antes de agregarlo.",
+      true
+    );
+
+    return;
+  }
+
+  const archivo = input.files[0];
+
+
+  if(materiales.length >= MAX_ARCHIVOS){
+
+    mostrarMensaje(
+      "Podés agregar como máximo 2 materiales.",
+      true
+    );
+
+    input.value = "";
+
+    return;
+  }
+
+
+  if(
+    totalMateriales + archivo.size >
+    MAX_TOTAL
+  ){
+
+    mostrarMensaje(
+      "El tamaño total de los materiales no puede superar 3 MB.",
+      true
+    );
+
+    input.value = "";
+
+    return;
+  }
+
+
+  materiales.push(archivo);
+
+  totalMateriales += archivo.size;
+
+  renderMateriales();
+
+  input.value = "";
+
+}
+
+
+function renderMateriales(){
+
+  const contenedor =
+    document.getElementById("materiales");
+
+  contenedor.innerHTML = "";
+
+  materiales.forEach(
+    (archivo,index)=>{
+
+      const item =
+        document.createElement("div");
+
+      item.className = "material";
+
+      const nombre =
+        document.createElement("div");
+
+      nombre.className =
+        "material-name";
+
+      nombre.textContent =
+        archivo.name +
+        " (" +
+        formatearTamano(archivo.size) +
+        ")";
+
+
+      const boton =
+        document.createElement("button");
+
+      boton.type = "button";
+
+      boton.className =
+        "btn-danger";
+
+      boton.textContent =
+        "Eliminar";
+
+      boton.onclick = () =>
+        eliminarMaterial(index);
+
+
+      item.appendChild(nombre);
+
+      item.appendChild(boton);
+
+      contenedor.appendChild(item);
+
+    }
+  );
+
+}
+
+
+function eliminarMaterial(index){
+
+  if(
+    index < 0 ||
+    index >= materiales.length
+  ){
+    return;
+  }
+
+  totalMateriales -=
+    materiales[index].size;
+
+  materiales.splice(index,1);
+
+  renderMateriales();
+
+}
+
+
+function formatearTamano(bytes){
+
+  if(bytes < 1024){
+    return bytes + " B";
+  }
+
+  if(bytes < 1024 * 1024){
+    return (
+      (bytes / 1024).toFixed(1) +
+      " KB"
+    );
+  }
+
+  return (
+    (bytes / (1024 * 1024)).toFixed(2) +
+    " MB"
+  );
+
+}
+
+
+/* ================================
+   BIBLIOTECA
+================================ */
+
+function obtenerBiblioteca(){
+
+  return Array.from(
+    document.querySelectorAll(
+      ".biblioteca-check:checked"
+    )
+  ).map(
+    checkbox => checkbox.value
+  );
+
+}
+
+
+/* ================================
+   MENSAJES
+================================ */
+
+function mostrarMensaje(
+  texto,
+  error=false
+){
+
+  const mensaje =
+    document.getElementById("mensaje");
+
+  mensaje.style.display = "block";
+
+  mensaje.className =
+    error
+      ? "notice notice-error"
+      : "notice notice-ok";
+
+  mensaje.textContent = texto;
+
+}
+
+
+function ocultarMensaje(){
+
+  const mensaje =
+    document.getElementById("mensaje");
+
+  mensaje.style.display = "none";
+
+}
+
+
+/* ================================
+   GENERAR
+================================ */
+
+async function generar(){
+
+  ocultarMensaje();
+
+  const boton =
+    document.getElementById("btnGenerar");
+
+  const resultado =
+    document.getElementById("resultadoTexto");
+
+  const acciones =
+    document.getElementById("accionesResultado");
+
+
+  const tipo =
+    document.getElementById("tipo").value;
+
+  const nivel =
+    document.getElementById("nivel").value;
+
+  const grado =
+    document.getElementById("grado").value.trim();
+
+  const area =
+    document.getElementById("area").value.trim();
+
+  const tema =
+    document.getElementById("tema").value.trim();
+
+  const duracion =
+    document.getElementById("duracion").value.trim();
+
+  const indicaciones =
+    document.getElementById("indicaciones").value.trim();
+
+
+  if(!nivel){
+
+    mostrarMensaje(
+      "Seleccioná el nivel educativo.",
+      true
+    );
+
+    return;
+
+  }
+
+
+  if(!area){
+
+    mostrarMensaje(
+      "Completá el área o materia.",
+      true
+    );
+
+    return;
+
+  }
+
+
+  if(!tema){
+
+    mostrarMensaje(
+      "Completá el tema.",
+      true
+    );
+
+    return;
+
+  }
+
+
+  boton.disabled = true;
+
+  boton.textContent =
+    "⏳ Generando...";
+
+  resultado.textContent =
+    "Estamos preparando tu propuesta. Esperá unos segundos...";
+
+  acciones.style.display =
+    "none";
+
+
+  try{
+
+    const formData =
+      new FormData();
+
+
+    formData.append(
+      "tipo",
+      tipo
+    );
+
+    formData.append(
+      "nivel",
+      nivel
+    );
+
+    formData.append(
+      "grado",
+      grado
+    );
+
+    formData.append(
+      "area",
+      area
+    );
+
+    formData.append(
+      "tema",
+      tema
+    );
+
+    formData.append(
+      "duracion",
+      duracion
+    );
+
+    formData.append(
+      "indicaciones",
+      indicaciones
+    );
+
+
+    const biblioteca =
+      obtenerBiblioteca();
+
+
+    formData.append(
+      "bibliotecaCategorias",
+      JSON.stringify(biblioteca)
+    );
+
+
+    formData.append(
+      "materiales",
+      JSON.stringify(
+        materiales.map(
+          archivo => ({
+            nombre: archivo.name,
+            tipo: archivo.type,
+            tamano: archivo.size
+          })
+        )
+      )
+    );
+
+
+    materiales.forEach(
+      archivo => {
+
+        formData.append(
+          "archivos",
+          archivo,
+          archivo.name
+        );
+
+      }
+    );
+
+
+    const respuesta =
+      await fetch(
+        "/api/generar",
+        {
+          method:"POST",
+          body:formData
+        }
+      );
+
+
+    const textoRespuesta =
+      await respuesta.text();
+
+
+    let j;
+
+    try{
+
+      j =
+        JSON.parse(
+          textoRespuesta
+        );
+
+    }catch(e){
+
+      throw new Error(
+        "El servidor devolvió una respuesta inválida."
+      );
+
+    }
+
+
+    if(!respuesta.ok){
+
+      throw new Error(
+        j.error ||
+        "No se pudo generar la propuesta."
+      );
+
+    }
+
+
+    if(!j.texto){
+
+      throw new Error(
+        "La respuesta no contiene el texto generado."
+      );
+
+    }
+
+
+    resultado.textContent =
+      limpiarFormato(j.texto);
+
+
+    acciones.style.display =
+      "flex";
+
+
+    resultado.scrollIntoView({
+      behavior:"smooth",
+      block:"start"
+    });
+
+
+    if(j.materialesUsados){
+
+      mostrarMensaje(
+        "Propuesta generada correctamente utilizando las referencias seleccionadas."
+      );
+
+    }else{
+
+      mostrarMensaje(
+        "Propuesta generada correctamente."
+      );
+
+    }
+
+
+  }catch(error){
+
+    console.error(error);
+
+    resultado.textContent =
+      "No se pudo generar la propuesta.";
+
+
+    mostrarMensaje(
+      error.message ||
+      "Error de conexión con el servidor.",
+      true
+    );
+
+
+  }finally{
+
+    boton.disabled = false;
+
+    boton.textContent =
+      "✨ Generar propuesta";
+
+  }
+
+}
+
+
+/* ================================
+   LIMPIAR FORMATO
+================================ */
+
+function limpiarFormato(texto){
+
+  if(!texto){
+    return "";
+  }
+
+  return texto
+
+    .replace(/\*\*(.*?)\*\*/g,"$1")
+
+    .replace(/__(.*?)__/g,"$1")
+
+    .replace(/^#{1,6}\s*/gm,"")
+
+    .replace(/^\s*[-*]\s+/gm,"• ")
+
+    .replace(/\n{3,}/g,"\n\n")
+
+    .trim();
+
+}
+
+
+/* ================================
+   COPIAR
+================================ */
+
+async function copiar(){
+
+  const resultado =
+    document.getElementById(
+      "resultadoTexto"
+    );
+
+  const texto =
+    resultado.textContent.trim();
+
+
+  if(!texto){
+
+    mostrarMensaje(
+      "No hay contenido para copiar.",
+      true
+    );
+
+    return;
+
+  }
+
+
+  try{
+
+    await navigator.clipboard.writeText(
+      texto
+    );
+
+    mostrarMensaje(
+      "Texto copiado correctamente."
+    );
+
+  }catch(e){
+
+    const area =
+      document.createElement("textarea");
+
+    area.value = texto;
+
+    document.body.appendChild(area);
+
+    area.select();
+
+    document.execCommand("copy");
+
+    area.remove();
+
+    mostrarMensaje(
+      "Texto copiado correctamente."
+    );
+
+  }
+
+}
+
+
+/* ================================
+   DESCARGAR TXT
+================================ */
+
+function descargar(){
+
+  const texto =
+    document.getElementById(
+      "resultadoTexto"
+    ).textContent.trim();
+
+
+  if(!texto){
+
+    mostrarMensaje(
+      "No hay contenido para descargar.",
+      true
+    );
+
+    return;
+
+  }
+
+
+  const blob =
+    new Blob(
+      [texto],
+      {
+        type:"text/plain;charset=utf-8"
+      }
+    );
+
+
+  const url =
+    URL.createObjectURL(blob);
+
+
+  const a =
+    document.createElement("a");
+
+  a.href = url;
+
+  a.download =
+    "Edu.sistem_Pro_IA_resultado.txt";
+
+  document.body.appendChild(a);
+
+  a.click();
+
+  a.remove();
+
+  URL.revokeObjectURL(url);
+
+}
+
+
+/* ================================
+   WORD
+================================ */
+
+function descargarWord(){
+
+  const texto =
+    document.getElementById(
+      "resultadoTexto"
+    ).textContent.trim();
+
+
+  if(!texto){
+
+    mostrarMensaje(
+      "No hay contenido para descargar.",
+      true
+    );
+
+    return;
+
+  }
+
+
+  const contenido =
+    `
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <title>Edu.sistem Pro IA</title>
+    </head>
+    <body>
+      <h1>Edu.sistem Pro IA</h1>
+      <pre style="font-family:Arial;white-space:pre-wrap;">
+${escapeHtml(texto)}
+      </pre>
+    </body>
+    </html>
+    `;
+
+
+  const blob =
+    new Blob(
+      ["\ufeff",contenido],
+      {
+        type:
+          "application/msword"
+      }
+    );
+
+
+  const url =
+    URL.createObjectURL(blob);
+
+
+  const a =
+    document.createElement("a");
+
+  a.href = url;
+
+  a.download =
+    "Edu.sistem_Pro_IA_resultado.doc";
+
+  document.body.appendChild(a);
+
+  a.click();
+
+  a.remove();
+
+  URL.revokeObjectURL(url);
+
+}
+
+
+function escapeHtml(text){
+
+  return text
+
+    .replace(/&/g,"&amp;")
+
+    .replace(/</g,"&lt;")
+
+    .replace(/>/g,"&gt;")
+
+    .replace(/"/g,"&quot;")
+
+    .replace(/'/g,"&#039;");
+
+}
+
+
+/* ================================
+   IMPRIMIR
+================================ */
+
+function imprimir(){
+
+  const texto =
+    document.getElementById(
+      "resultadoTexto"
+    ).textContent.trim();
+
+
+  if(!texto){
+
+    mostrarMensaje(
+      "No hay contenido para imprimir.",
+      true
+    );
+
+    return;
+
+  }
+
+
+  const ventana =
+    window.open(
+      "",
+      "_blank"
+    );
+
+
+  if(!ventana){
+
+    mostrarMensaje(
+      "El navegador bloqueó la ventana de impresión.",
+      true
+    );
+
+    return;
+
+  }
+
+
+  ventana.document.write(`
+    <!DOCTYPE html>
+
+    <html lang="es">
+
+    <head>
+
+      <meta charset="UTF-8">
+
+      <title>
+        Edu.sistem Pro IA
+      </title>
+
+      <style>
+
+        body{
+          font-family:Arial,Helvetica,sans-serif;
+          margin:40px;
+          color:#182230;
+        }
+
+        h1{
+          font-size:24px;
+          margin-bottom:25px;
+        }
+
+        pre{
+          white-space:pre-wrap;
+          font-family:Arial,Helvetica,sans-serif;
+          line-height:1.6;
+        }
+
+      </style>
+
+    </head>
+
+    <body>
+
+      <h1>
+        Edu.sistem Pro IA
+      </h1>
+
+      <pre>${escapeHtml(texto)}</pre>
+
+    </body>
+
+    </html>
+  `);
+
+
+  ventana.document.close();
+
+  ventana.focus();
+
+  ventana.print();
+
+}
+
+
+/* ================================
+   COMPARTIR
+================================ */
+
+async function compartir(){
+
+  const texto =
+    document.getElementById(
+      "resultadoTexto"
+    ).textContent.trim();
+
+
+  if(!texto){
+
+    mostrarMensaje(
+      "No hay contenido para compartir.",
+      true
+    );
+
+    return;
+
+  }
+
+
+  if(
+    navigator.share
+  ){
+
+    try{
+
+      await navigator.share({
+        title:
+          "Edu.sistem Pro IA",
+        text:
+          texto
+      });
+
+    }catch(e){
+
+      if(e.name !== "AbortError"){
+
+        mostrarMensaje(
+          "No se pudo compartir.",
+          true
+        );
+
+      }
+
+    }
+
+    return;
+
+  }
+
+
+  await copiar();
+
+  mostrarMensaje(
+    "El contenido fue copiado. Podés pegarlo donde quieras compartirlo."
+  );
+
+}
+
+
+/* ================================
+   LIMPIAR
+================================ */
+
+function limpiar(){
+
+  document.getElementById(
+    "tipo"
+  ).value = "anual";
+
+  document.getElementById(
+    "nivel"
+  ).value = "";
+
+  document.getElementById(
+    "grado"
+  ).value = "";
+
+  document.getElementById(
+    "area"
+  ).value = "";
+
+  document.getElementById(
+    "tema"
+  ).value = "";
+
+  document.getElementById(
+    "duracion"
+  ).value = "";
+
+  document.getElementById(
+    "indicaciones"
+  ).value = "";
+
+
+  document
+    .querySelectorAll(
+      ".biblioteca-check"
+    )
+    .forEach(
+      checkbox =>
+        checkbox.checked = false
+    );
+
+
+  materiales = [];
+
+  totalMateriales = 0;
+
+  renderMateriales();
+
+
+  document.getElementById(
+    "resultadoTexto"
+  ).textContent =
+    "Tu propuesta aparecerá aquí.";
+
+
+  document.getElementById(
+    "accionesResultado"
+  ).style.display =
+    "none";
+
+
+  ocultarMensaje();
+
+
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
+
+}
+
+
+/* ================================
+   INICIO
+================================ */
+
+document.addEventListener(
+  "DOMContentLoaded",
+  () => {
+
+    health();
+
+  }
+);
+
+</script>
 
 </body>
 </html>
-```
+<option value="anual">
+Planificación anual
+</option>
+
+<option value="secuencia">
+Secuencia didáctica
+</option>
+
+<option value="proyecto">
+Proyecto
+</option>
+
+<option value="rubrica">
+Rúbrica
+</option>
+
+</select>
+
+</div>
+
+
+<div>
+
+<label>Nivel</label>
+
+<select id="nivel">
+
+<option>Inicial</option>
+<option selected="">Primaria</option>
+<option>Secundaria</option>
+<option>Superior</option>
+
+</select>
+
+</div>
+
+
+<div>
+
+<label>Grado / Curso</label>
+
+<input id="grado" placeholder="Ej.: 5.º grado">
+
+</div>
+
+
+<div>
+
+<label>Área / Materia</label>
+
+<input id="area" placeholder="Ej.: Lengua">
+
+</div>
+
+
+<div class="full">
+
+<label>Tema</label>
+
+<input id="tema" placeholder="¿Sobre qué necesitás trabajar?">
+
+</div>
+
+
+<div>
+
+<label>Duración</label>
+
+<input id="duracion" placeholder="Ej.: 4 semanas">
+
+</div>
+
+
+<div class="full">
+
+<label>
+¿Cómo querés que lo realice?
+</label>
+
+<textarea
+id="indicaciones"
+placeholder="Ej.: incluir fundamentación, objetivos, actividades y evaluación, organizado en tablas."></textarea>
+
+<p class="small">
+Podés escribirlo con tus palabras.
+</p>
+
+</div>
+
+</div>
+
+
+<div class="buttons">
+
+<button id="btnGenerar" onclick="generar()">
+
+✨ Crear con Gemini
+
+</button>
+
+<button class="secondary" onclick="limpiar()">
+
+Limpiar
+
+</button>
+
+</div>
+
+</section>
+
+
+<section id="resultado" class="card">
+
+<h2>📄 Resultado</h2>
+
+<div id="estado" class="state">
+
+Todavía no generaste un trabajo.
+
+</div>
+
+<br>
+
+<div id="resultadoTexto"></div>
+
+<div class="buttons">
+
+<button onclick="copiar()">
+Copiar
+</button>
+
+<button class="secondary" onclick="descargar()">
+Descargar .txt
+</button>
+
+<button class="secondary" onclick="descargarWord()">
+Descargar Word
+</button>
+
+<button class="ghost" onclick="imprimir()">
+Imprimir / PDF
+</button>
+
+<button class="ghost" onclick="compartir()">
+Compartir
+</button>
+
+</div>
+
+</section>
+
+
+<section id="planes" class="card">
+
+<h2>💳 Planes Edu.sistem Pro IA</h2>
+
+<p class="small">
+Elegí la modalidad que mejor se adapte a tu uso.
+</p>
+
+<div class="plans">
+
+<div class="plan">
+
+<h3>🆓 Gratis</h3>
+
+<div class="price">
+$0
+</div>
+
+<p>
+5 generaciones por mes.
+</p>
+
+</div>
+
+
+<div class="plan">
+
+<h3>👩‍🏫 Docente</h3>
+
+<div class="price">
+$4.999 / mes
+</div>
+
+<p>
+100 generaciones por mes.
+</p>
+
+<a
+href="https://mpago.la/2ECLDFR"
+target="_blank"
+rel="noopener noreferrer">
+
+Suscribirme
+
+</a>
+
+</div>
+
+
+<div class="plan">
+
+<h3>💼 Profesional</h3>
+
+<div class="price">
+$8.999 / mes
+</div>
+
+<p>
+300 generaciones por mes.
+</p>
+
+<a
+href="https://mpago.la/2X9cT72"
+target="_blank"
+rel="noopener noreferrer">
+
+Suscribirme
+
+</a>
+
+</div>
+
+
+<div class="plan">
+
+<h3>🏫 Institución</h3>
+
+<div class="price">
+$24.999 / mes
+</div>
+
+<p>
+1.000 generaciones por mes.
+</p>
+
+<a
+href="https://mpago.la/142hjdM"
+target="_blank"
+rel="noopener noreferrer">
+
+Suscribirme
+
+</a>
+
+</div>
+
+</div>
+
+</section>
+
+</main>
+
+
+<footer>
+
+Edu.sistem Pro IA · Asistente inteligente para docentes
+
+</footer>
+
+
+<script>
+
+let materiales = [];
+
+let bibliotecaCategoriasSeleccionadas = [];
+
+let ultimo = '';
+
+const $ = id => document.getElementById(id);
+
+
+/* ESCAPE */
+
+function esc(s){
+
+  return String(s).replace(
+    /[&<>"']/g,
+    c => ({
+      '&':'&amp;',
+      '<':'&lt;',
+      '>':'&gt;',
+      '"':'&quot;',
+      "'":'&#39;'
+    }[c])
+  );
+
+}
+
+
+/* SCROLL */
+
+function ir(id){
+
+  const elemento = $(id);
+
+  if(elemento){
+
+    elemento.scrollIntoView({
+      behavior:'smooth'
+    });
+
+  }
+
+}
+
+
+/* ESTADO */
+
+function setEstado(t,cl=''){
+
+  const estado = $('estado');
+
+  if(!estado)return;
+
+  estado.textContent = t;
+
+  estado.className =
+    'state ' + cl;
+
+}
+
+
+/* =====================================================
+   COMPROBAR CONEXIÓN
+===================================================== */
+
+async function health(){
+
+  const status =
+    $('status');
+
+  if(!status)return;
+
+  status.textContent =
+    'Comprobando conexión…';
+
+  try{
+
+    const r =
+      await fetch(
+        '/api/health',
+        {
+          method:'GET',
+          cache:'no-store'
+        }
+      );
+
+    if(!r.ok){
+
+      throw new Error(
+        'Servidor no disponible'
+      );
+
+    }
+
+    const data =
+      await r.json();
+
+    if(data && data.ok){
+
+      status.textContent =
+        '🟢 Servidor conectado';
+
+      status.style.background =
+        '#ecfdf3';
+
+      status.style.color =
+        '#067647';
+
+    }else{
+
+      status.textContent =
+        '🔴 Servidor con problemas';
+
+    }
+
+  }catch(e){
+
+    status.textContent =
+      '🔴 Error de conexión';
+
+    status.style.background =
+      '#fef3f2';
+
+    status.style.color =
+      '#b42318';
+
+  }
+
+}
+
+
+/* =====================================================
+   BIBLIOTECA CURRICULAR CÓRDOBA
+===================================================== */
+
+document
+.querySelectorAll('.biblioteca-check')
+.forEach(check => {
+
+  check.addEventListener(
+    'change',
+    function(){
+
+      const categoria =
+        this.value;
+
+      if(this.checked){
+
+        if(
+          !bibliotecaCategoriasSeleccionadas
+          .includes(categoria)
+        ){
+
+          bibliotecaCategoriasSeleccionadas
+          .push(categoria);
+
+        }
+
+      }else{
+
+        bibliotecaCategoriasSeleccionadas =
+          bibliotecaCategoriasSeleccionadas
+          .filter(
+            x => x !== categoria
+          );
+
+      }
+
+      renderBiblioteca();
+
+    }
+  );
+
+});
+
+
+function renderBiblioteca(){
+
+  const box =
+    $('bibliotecaSeleccionadas');
+
+  if(!box)return;
+
+
+  if(
+    !bibliotecaCategoriasSeleccionadas.length
+  ){
+
+    box.innerHTML =
+      '📚 No seleccionaste referencias todavía.';
+
+    return;
+
+  }
+
+
+  box.innerHTML =
+    '<strong>📚 Referencias seleccionadas:</strong> ' +
+    bibliotecaCategoriasSeleccionadas
+      .map(esc)
+      .join(' · ');
+
+}
+
+
+/* =====================================================
+   MATERIALES DEL DOCENTE
+===================================================== */
+
+function agregarMaterial(){
+
+  const input =
+    $('archivo');
+
+  const files =
+    [...input.files];
+
+  if(!files.length){
+
+    alert(
+      'Seleccioná uno o más archivos.'
+    );
+
+    return;
+
+  }
+
+
+  for(const f of files){
+
+    const existe =
+      materiales.some(
+        x =>
+          x.name === f.name &&
+          x.size === f.size
+      );
+
+    if(!existe){
+
+      materiales.push(f);
+
+    }
+
+  }
+
+
+  input.value = '';
+
+  renderMateriales();
+
+}
+
+
+function renderMateriales(){
+
+  const box =
+    $('materialesLista');
+
+  if(!box)return;
+
+
+  if(!materiales.length){
+
+    box.innerHTML =
+      '<p class="small">Todavía no agregaste materiales.</p>';
+
+    return;
+
+  }
+
+
+  box.innerHTML =
+    materiales
+      .map(
+        (m,i) => `
+
+          <div class="material">
+
+            <span>
+
+              📄 ${esc(m.name)}
+
+              <small>
+                (${Math.round(m.size / 1024)} KB)
+              </small>
+
+            </span>
+
+            <button
+              type="button"
+              class="danger"
+              onclick="eliminarMaterial(${i})">
+
+              Eliminar
+
+            </button>
+
+          </div>
+
+        `
+      )
+      .join('');
+
+}
+
+
+function eliminarMaterial(i){
+
+  materiales.splice(i,1);
+
+  renderMateriales();
+
+}
+
+
+/* =====================================================
+   GENERAR
+===================================================== */
+
+async function generar(){
+
+  const tema =
+    $('tema')
+      .value
+      .trim();
+
+
+  if(!tema){
+
+    setEstado(
+      'Escribí el tema que necesitás trabajar.',
+      'err'
+    );
+
+    ir('crear');
+
+    return;
+
+  }
+
+
+  const btn =
+    $('btnGenerar');
+
+
+  btn.disabled = true;
+
+  btn.textContent =
+    '⏳ Generando…';
+
+
+  $('resultadoTexto')
+    .textContent = '';
+
+
+  setEstado(
+    'Preparando la solicitud…'
+  );
+
+
+  /*
+    Vercel tiene un límite de payload.
+    Dejamos margen de seguridad.
+  */
+
+  const MAX_TOTAL =
+    3 * 1024 * 1024;
+
+  const MAX_ARCHIVOS = 2;
+
+
+  const todosLosMateriales =
+    materiales.map(
+      f => ({
+        file:f,
+        categoria:'Materiales del docente',
+        name:f.name,
+        size:f.size
+      })
+    );
+
+
+  if(
+    todosLosMateriales.length >
+    MAX_ARCHIVOS
+  ){
+
+    setEstado(
+      'Podés enviar hasta 2 documentos por generación. Eliminá algún archivo y volvé a intentar.',
+      'err'
+    );
+
+    btn.disabled = false;
+
+    btn.textContent =
+      '✨ Crear con Gemini';
+
+    return;
+
+  }
+
+
+  let totalBytes = 0;
+
+
+  for(
+    const item of todosLosMateriales
+  ){
+
+    totalBytes +=
+      item.file.size;
+
+  }
+    if(totalBytes > MAX_TOTAL){
+
+    setEstado(
+      'El tamaño total de los materiales supera el límite permitido de 3 MB.',
+      'err'
+    );
+
+    btn.disabled = false;
+
+    btn.textContent =
+      '✨ Crear con Gemini';
+
+    return;
+
+  }
+
+
+  try{
+
+    const fd =
+      new FormData();
+
+
+    fd.append(
+      'tipo',
+      $('tipo').value
+    );
+
+    fd.append(
+      'nivel',
+      $('nivel').value
+    );
+
+    fd.append(
+      'grado',
+      $('grado').value.trim()
+    );
+
+    fd.append(
+      'area',
+      $('area').value.trim()
+    );
+
+    fd.append(
+      'tema',
+      $('tema').value.trim()
+    );
+
+    fd.append(
+      'duracion',
+      $('duracion').value.trim()
+    );
+
+    fd.append(
+      'indicaciones',
+      $('indicaciones').value.trim()
+    );
+
+
+    fd.append(
+      'bibliotecaCategorias',
+      JSON.stringify(
+        bibliotecaCategoriasSeleccionadas
+      )
+    );
+
+
+    fd.append(
+      'materiales',
+      JSON.stringify(
+        materiales.map(
+          f => ({
+            nombre:f.name,
+            tipo:f.type,
+            tamano:f.size
+          })
+        )
+      )
+    );
+
+
+    materiales.forEach(
+      archivo => {
+
+        fd.append(
+          'archivos',
+          archivo,
+          archivo.name
+        );
+
+      }
+    );
+
+
+    setEstado(
+      '🤖 Gemini está preparando tu propuesta…'
+    );
+
+
+    const respuesta =
+      await fetch(
+        '/api/generar',
+        {
+          method:'POST',
+          body:fd
+        }
+      );
+
+
+    const texto =
+      await respuesta.text();
+
+
+    let data;
+
+
+    try{
+
+      data =
+        JSON.parse(texto);
+
+    }catch(e){
+
+      throw new Error(
+        'El servidor devolvió una respuesta que no se pudo interpretar.'
+      );
+
+    }
+
+
+    if(!respuesta.ok){
+
+      throw new Error(
+        data.error ||
+        data.message ||
+        'No se pudo generar la propuesta.'
+      );
+
+    }
+
+
+    if(
+      !data.texto
+    ){
+
+      throw new Error(
+        'Gemini no devolvió contenido.'
+      );
+
+    }
+
+
+    ultimo =
+      limpiarTexto(
+        data.texto
+      );
+
+
+    $('resultadoTexto')
+      .textContent =
+      ultimo;
+
+
+    setEstado(
+      '✅ Propuesta generada correctamente.',
+      'ok'
+    );
+
+
+    ir('resultado');
+
+
+  }catch(error){
+
+    console.error(error);
+
+
+    setEstado(
+      '❌ ' +
+      (
+        error.message ||
+        'Error de conexión con el servidor.'
+      ),
+      'err'
+    );
+
+
+  }finally{
+
+    btn.disabled = false;
+
+    btn.textContent =
+      '✨ Crear con Gemini';
+
+  }
+
+}
+
+
+/* =====================================================
+   LIMPIAR TEXTO GENERADO
+===================================================== */
+
+function limpiarTexto(texto){
+
+  if(!texto){
+
+    return '';
+
+  }
+
+
+  return String(texto)
+
+    .replace(
+      /\*\*(.*?)\*\*/g,
+      '$1'
+    )
+
+    .replace(
+      /__(.*?)__/g,
+      '$1'
+    )
+
+    .replace(
+      /^#{1,6}\s*/gm,
+      ''
+    )
+
+    .replace(
+      /^\s*[-*]\s+/gm,
+      '• '
+    )
+
+    .replace(
+      /\n{3,}/g,
+      '\n\n'
+    )
+
+    .trim();
+
+}
+
+
+/* =====================================================
+   COPIAR
+===================================================== */
+
+async function copiar(){
+
+  const texto =
+    $('resultadoTexto')
+      .textContent
+      .trim();
+
+
+  if(!texto){
+
+    alert(
+      'No hay ningún resultado para copiar.'
+    );
+
+    return;
+
+  }
+
+
+  try{
+
+    await navigator
+      .clipboard
+      .writeText(texto);
+
+
+    setEstado(
+      '📋 Texto copiado correctamente.',
+      'ok'
+    );
+
+
+  }catch(e){
+
+    const area =
+      document.createElement(
+        'textarea'
+      );
+
+
+    area.value =
+      texto;
+
+
+    document.body.appendChild(
+      area
+    );
+
+
+    area.select();
+
+
+    document.execCommand(
+      'copy'
+    );
+
+
+    area.remove();
+
+
+    setEstado(
+      '📋 Texto copiado correctamente.',
+      'ok'
+    );
+
+  }
+
+}
+
+
+/* =====================================================
+   DESCARGAR TXT
+===================================================== */
+
+function descargar(){
+
+  const texto =
+    $('resultadoTexto')
+      .textContent
+      .trim();
+
+
+  if(!texto){
+
+    alert(
+      'No hay ningún resultado para descargar.'
+    );
+
+    return;
+
+  }
+
+
+  const blob =
+    new Blob(
+      [texto],
+      {
+        type:
+          'text/plain;charset=utf-8'
+      }
+    );
+
+
+  const url =
+    URL.createObjectURL(
+      blob
+    );
+
+
+  const a =
+    document.createElement(
+      'a'
+    );
+
+
+  a.href =
+    url;
+
+
+  a.download =
+    'Edu.sistem_Pro_IA_resultado.txt';
+
+
+  document.body.appendChild(
+    a
+  );
+
+
+  a.click();
+
+
+  a.remove();
+
+
+  URL.revokeObjectURL(
+    url
+  );
+
+}
+
+
+/* =====================================================
+   DESCARGAR WORD
+===================================================== */
+
+function descargarWord(){
+
+  const texto =
+    $('resultadoTexto')
+      .textContent
+      .trim();
+
+
+  if(!texto){
+
+    alert(
+      'No hay ningún resultado para descargar.'
+    );
+
+    return;
+
+  }
+
+
+  const html =
+    `
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Edu.sistem Pro IA</title>
+</head>
+
+<body>
+
+<h1>Edu.sistem Pro IA</h1>
+
+<pre style="
+font-family:Arial,Helvetica,sans-serif;
+white-space:pre-wrap;
+line-height:1.6;
+">${esc(texto)}</pre>
+
+</body>
+</html>
+`;
+
+
+  const blob =
+    new Blob(
+      [
+        '\ufeff',
+        html
+      ],
+      {
+        type:
+          'application/msword'
+      }
+    );
+
+
+  const url =
+    URL.createObjectURL(
+      blob
+    );
+
+
+  const a =
+    document.createElement(
+      'a'
+    );
+
+
+  a.href =
+    url;
+
+
+  a.download =
+    'Edu.sistem_Pro_IA_resultado.doc';
+
+
+  document.body.appendChild(
+    a
+  );
+
+
+  a.click();
+
+
+  a.remove();
+
+
+  URL.revokeObjectURL(
+    url
+  );
+
+}
+
+
+/* =====================================================
+   IMPRIMIR / PDF
+===================================================== */
+
+function imprimir(){
+
+  const texto =
+    $('resultadoTexto')
+      .textContent
+      .trim();
+
+
+  if(!texto){
+
+    alert(
+      'No hay ningún resultado para imprimir.'
+    );
+
+    return;
+
+  }
+
+
+  const ventana =
+    window.open(
+      '',
+      '_blank'
+    );
+
+
+  if(!ventana){
+
+    alert(
+      'El navegador bloqueó la ventana de impresión.'
+    );
+
+    return;
+
+  }
+
+
+  ventana.document.write(
+`
+<!DOCTYPE html>
+
+<html lang="es">
+
+<head>
+
+<meta charset="UTF-8">
+
+<title>
+Edu.sistem Pro IA
+</title>
+
+<style>
+
+body{
+  font-family:Arial,Helvetica,sans-serif;
+  margin:40px;
+  color:#182230;
+}
+
+h1{
+  font-size:24px;
+  margin-bottom:25px;
+}
+
+pre{
+  white-space:pre-wrap;
+  font-family:Arial,Helvetica,sans-serif;
+  line-height:1.6;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>
+Edu.sistem Pro IA
+</h1>
+
+<pre>
+${esc(texto)}
+</pre>
+
+</body>
+
+</html>
+`
+  );
+
+
+  ventana.document.close();
+
+  ventana.focus();
+
+  ventana.print();
+
+}
+
+
+/* =====================================================
+   COMPARTIR
+===================================================== */
+
+async function compartir(){
+
+  const texto =
+    $('resultadoTexto')
+      .textContent
+      .trim();
+
+
+  if(!texto){
+
+    alert(
+      'No hay ningún resultado para compartir.'
+    );
+
+    return;
+
+  }
+
+
+  if(
+    navigator.share
+  ){
+
+    try{
+
+      await navigator.share({
+
+        title:
+          'Edu.sistem Pro IA',
+
+        text:
+          texto
+
+      });
+
+    }catch(e){
+
+      if(
+        e.name !==
+        'AbortError'
+      ){
+
+        console.error(e);
+
+      }
+
+    }
+
+    return;
+
+  }
+
+
+  await copiar();
+
+
+  setEstado(
+    '📋 El texto fue copiado. Podés pegarlo donde quieras compartirlo.',
+    'ok'
+  );
+
+}
+
+
+/* =====================================================
+   LIMPIAR FORMULARIO
+===================================================== */
+
+function limpiar(){
+
+  $('tipo').value =
+    'anual';
+
+
+  $('nivel').selectedIndex =
+    0;
+
+
+  $('grado').value =
+    '';
+
+
+  $('area').value =
+    '';
+
+
+  $('tema').value =
+    '';
+
+
+  $('duracion').value =
+    '';
+
+
+  $('indicaciones').value =
+    '';
+
+
+  document
+    .querySelectorAll(
+      '.biblioteca-check'
+    )
+    .forEach(
+      check => {
+        check.checked =
+          false;
+      }
+    );
+
+
+  bibliotecaCategoriasSeleccionadas =
+    [];
+
+
+  renderBiblioteca();
+
+
+  materiales =
+    [];
+
+
+  renderMateriales();
+
+
+  $('resultadoTexto')
+    .textContent =
+    '';
+
+
+  setEstado(
+    'Todavía no generaste un trabajo.'
+  );
+
+}
+
+
+/* =====================================================
+   INICIO
+===================================================== */
+
+document.addEventListener(
+  'DOMContentLoaded',
+  () => {
+
+    health();
+
+    renderMateriales();
+
+    renderBiblioteca();
+
+  }
+);
+
+</script>
+
+</body>
+
+</html>
