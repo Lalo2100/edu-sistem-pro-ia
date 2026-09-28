@@ -1,0 +1,184 @@
+{
+  "version": "2.0",
+  "nombre": "Biblioteca Curricular Argentina",
+  "categorias": [
+    "Inicial",
+    "Primaria",
+    "Secundaria",
+    "Superior",
+    "Educación Especial",
+    "Jóvenes y Adultos",
+    "Educación Rural",
+    "Educación Técnico Profesional",
+    "Progresiones",
+    "Aprendizajes y Contenidos Fundamentales",
+    "Actualización curricular",
+    "Referencias 2026",
+    "Materiales que carga el docente"
+  ],
+  "provincias": {
+    "buenos-aires": {
+      "nombre": "Buenos Aires",
+      "estado": "Disponible",
+      "nota": "Biblioteca preparada para incorporar documentos curriculares oficiales de la jurisdicción.",
+      "documentos": []
+    },
+    "cordoba": {
+      "nombre": "Córdoba",
+      "estado": "Disponible",
+      "nota": "Biblioteca provincial preparada para materiales curriculares oficiales de Currículum Córdoba.",
+      "documentos": [
+        {
+          "titulo": "Currículum Córdoba — portal oficial",
+          "categoria": "Referencias 2026",
+          "url": "https://curriculumcordoba.ar/",
+          "fuente": "Ministerio de Educación de la Provincia de Córdoba"
+        },
+        {
+          "titulo": "Marco Curricular Común",
+          "categoria": "Actualización curricular",
+          "url": "https://curriculumcordoba.ar/marco_curricular.html",
+          "fuente": "Ministerio de Educación de la Provincia de Córdoba"
+        },
+        {
+          "titulo": "Orientaciones Pedagógicas y Didácticas",
+          "categoria": "Inicial",
+          "url": "https://curriculumcordoba.ar/orientaciones_pedagogicas_didacticas.html",
+          "fuente": "Ministerio de Educación de la Provincia de Córdoba"
+        }
+      ]
+    },
+    "santa-fe": {
+      "nombre": "Santa Fe",
+      "estado": "Próximamente",
+      "nota": "",
+      "documentos": []
+    },
+    "mendoza": {
+      "nombre": "Mendoza",
+      "estado": "Próximamente",
+      "nota": "",
+      "documentos": []
+    },
+    "entre-rios": {
+      "nombre": "Entre Ríos",
+      "estado": "Próximamente",
+      "nota": "",
+      "documentos": []
+    },
+    "tucuman": {
+      "nombre": "Tucumán",
+      "estado": "Próximamente",
+      "nota": "",
+      "documentos": []
+    },
+    "salta": {
+      "nombre": "Salta",
+      "estado": "Próximamente",
+      "nota": "",
+      "documentos": []
+    },
+    "misiones": {
+      "nombre": "Misiones",
+      "estado": "Próximamente",
+      "nota": "",
+      "documentos": []
+    },
+    "chaco": {
+      "nombre": "Chaco",
+      "estado": "Próximamente",
+      "nota": "",
+      "documentos": []
+    },
+    "corrientes": {
+      "nombre": "Corrientes",
+      "estado": "Próximamente",
+      "nota": "",
+      "documentos": []
+    },
+    "santiago-del-estero": {
+      "nombre": "Santiago del Estero",
+      "estado": "Próximamente",
+      "nota": "",
+      "documentos": []
+    },
+    "san-juan": {
+      "nombre": "San Juan",
+      "estado": "Próximamente",
+      "nota": "",
+      "documentos": []
+    },
+    "jujuy": {
+      "nombre": "Jujuy",
+      "estado": "Próximamente",
+      "nota": "",
+      "documentos": []
+    },
+    "rio-negro": {
+      "nombre": "Río Negro",
+      "estado": "Próximamente",
+      "nota": "",
+      "documentos": []
+    },
+    "neuquen": {
+      "nombre": "Neuquén",
+      "estado": "Próximamente",
+      "nota": "",
+      "documentos": []
+    },
+    "chubut": {
+      "nombre": "Chubut",
+      "estado": "Próximamente",
+      "nota": "",
+      "documentos": []
+    },
+    "santa-cruz": {
+      "nombre": "Santa Cruz",
+      "estado": "Próximamente",
+      "nota": "",
+      "documentos": []
+    },
+    "tierra-del-fuego": {
+      "nombre": "Tierra del Fuego",
+      "estado": "Próximamente",
+      "nota": "",
+      "documentos": []
+    },
+    "la-pampa": {
+      "nombre": "La Pampa",
+      "estado": "Próximamente",
+      "nota": "",
+      "documentos": []
+    },
+    "san-luis": {
+      "nombre": "San Luis",
+      "estado": "Próximamente",
+      "nota": "",
+      "documentos": []
+    },
+    "catamarca": {
+      "nombre": "Catamarca",
+      "estado": "Próximamente",
+      "nota": "",
+      "documentos": []
+    },
+    "la-rioja": {
+      "nombre": "La Rioja",
+      "estado": "Próximamente",
+      "nota": "",
+      "documentos": []
+    },
+    "formosa": {
+      "nombre": "Formosa",
+      "estado": "Próximamente",
+      "nota": "",
+      "documentos": []
+    },
+    "caba": {
+      "nombre": "Ciudad Autónoma de Buenos Aires",
+      "estado": "Próximamente",
+      "nota": "",
+      "documentos": []
+    }
+  }
+}
