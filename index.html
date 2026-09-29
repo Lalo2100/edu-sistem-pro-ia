@@ -104,10 +104,15 @@ button{border:0;border-radius:11px;padding:12px 16px;font-weight:700;cursor:poin
 </section>
 </div>
 
+```html
 <script>
 const $ = id => document.getElementById(id);
 
 let library = null;
+
+/* =========================================================
+   24 JURISDICCIONES DE ARGENTINA
+========================================================= */
 
 const PROVINCIAS_ARGENTINAS = [
   { id: "buenos_aires", nombre: "Buenos Aires" },
@@ -136,28 +141,98 @@ const PROVINCIAS_ARGENTINAS = [
   { id: "tucuman", nombre: "Tucumán" }
 ];
 
-async function init(){
 
-  /* =========================
-     COMPROBAR SERVIDOR
-  ========================= */
+/* =========================================================
+   CONSTRUIR LISTA COMPLETA
+========================================================= */
 
-  try{
+function construirProvincias(datos) {
 
-    const respuestaHealth = await fetch("/api/health");
+  const existentes = new Map();
 
-    if(!respuestaHealth.ok){
+  if (Array.isArray(datos)) {
+
+    datos.forEach(p => {
+
+      if (p && p.id) {
+        existentes.set(p.id, {
+          ...p,
+          estado: "Disponible",
+          documentos: Array.isArray(p.documentos)
+            ? p.documentos
+            : []
+        });
+      }
+
+    });
+
+  }
+
+  /*
+    Completamos cualquier jurisdicción que no
+    venga todavía desde la biblioteca.
+
+    IMPORTANTE:
+    ninguna queda deshabilitada.
+  */
+
+  return PROVINCIAS_ARGENTINAS.map(p => {
+
+    if (existentes.has(p.id)) {
+      return existentes.get(p.id);
+    }
+
+    return {
+      ...p,
+      estado: "Disponible",
+      documentos: []
+    };
+
+  });
+
+}
+
+
+/* =========================================================
+   INICIAR APLICACIÓN
+========================================================= */
+
+async function init() {
+
+  /* -------------------------------------------------------
+     SERVIDOR / GEMINI
+  ------------------------------------------------------- */
+
+  try {
+
+    const respuestaHealth =
+      await fetch("/api/health");
+
+    if (!respuestaHealth.ok) {
       throw new Error("Servidor no disponible");
     }
 
-    const h = await respuestaHealth.json();
+    const h =
+      await respuestaHealth.json();
 
-    $("status").textContent =
-      h.geminiConfigured
-        ? `✓ Gemini conectado · ${h.provincias || 24} jurisdicciones`
-        : "⚠ Gemini no está configurado";
+    if (h.geminiConfigured) {
 
-  }catch(e){
+      $("status").textContent =
+        `✓ Gemini conectado · 24 jurisdicciones`;
+
+    } else {
+
+      $("status").textContent =
+        "⚠ Gemini no está configurado";
+
+    }
+
+  } catch (e) {
+
+    console.error(
+      "Error comprobando servidor:",
+      e
+    );
 
     $("status").textContent =
       "⚠ Servidor no disponible";
@@ -165,101 +240,104 @@ async function init(){
   }
 
 
-  /* =========================
-     CARGAR BIBLIOTECA
-  ========================= */
+  /* -------------------------------------------------------
+     BIBLIOTECA
+  ------------------------------------------------------- */
 
-  try{
+  try {
 
     const respuestaBiblioteca =
       await fetch("/api/biblioteca");
 
-    if(!respuestaBiblioteca.ok){
-      throw new Error("No se pudo cargar la biblioteca");
+    if (!respuestaBiblioteca.ok) {
+      throw new Error(
+        "No se pudo cargar la Biblioteca Curricular Argentina"
+      );
     }
 
     library =
       await respuestaBiblioteca.json();
 
-  }catch(e){
+  } catch (e) {
 
     console.error(
-      "No se pudo cargar la biblioteca:",
+      "Error cargando biblioteca:",
       e
     );
 
     /*
-      Aunque la API falle, mostramos
-      igualmente todas las jurisdicciones.
+      Si la API falla NO desaparece la biblioteca
+      ni desaparecen las provincias.
     */
 
     library = {
-      provincias: PROVINCIAS_ARGENTINAS.map(p => ({
-        ...p,
-        estado: "Disponible",
-        documentos: []
-      })),
-
-      categorias: []
+      provincias: [],
+      categorias: [
+        "Inicial",
+        "Primaria",
+        "Secundaria",
+        "Superior",
+        "Educación Especial",
+        "Jóvenes y Adultos",
+        "Educación Rural",
+        "Educación Técnico Profesional",
+        "Progresiones",
+        "Aprendizajes y Contenidos Fundamentales",
+        "Actualización curricular",
+        "Referencias 2026",
+        "Materiales que carga el docente"
+      ]
     };
 
   }
 
 
-  /* =========================
+  /* -------------------------------------------------------
      PROVINCIAS
-  ========================= */
+  ------------------------------------------------------- */
 
   const provincias =
-    Array.isArray(library.provincias)
-      ? library.provincias
-      : PROVINCIAS_ARGENTINAS.map(p => ({
-          ...p,
-          estado: "Disponible",
-          documentos: []
-        }));
+    construirProvincias(
+      library.provincias
+    );
 
+  /*
+    Guardamos la lista completa nuevamente
+    para que actualizarBiblioteca() pueda utilizarla.
+  */
+
+  library.provincias =
+    provincias;
+
+
+  /*
+    TODAS las jurisdicciones quedan seleccionables.
+
+    NO:
+      disabled
+      próximamente
+  */
 
   $("provincia").innerHTML =
     provincias
-      .map(p => {
-
-        const estado =
-          p.estado || "Disponible";
-
-        const disabled =
-          estado !== "Disponible"
-            ? "disabled"
-            : "";
-
-        return `
-          <option
-            value="${p.id}"
-            ${disabled}
-          >
-            ${p.nombre}
-            ${
-              estado !== "Disponible"
-                ? " — próximamente"
-                : ""
-            }
-          </option>
-        `;
-
-      })
+      .map(p => `
+        <option value="${p.id}">
+          ${p.nombre}
+        </option>
+      `)
       .join("");
 
 
-  /* =========================
-     SELECCIONAR CÓRDOBA
-  ========================= */
+  /* -------------------------------------------------------
+     CÓRDOBA COMO OPCIÓN INICIAL
+  ------------------------------------------------------- */
 
-  const cordoba =
-    provincias.find(
+  const existeCordoba =
+    provincias.some(
       p => p.id === "cordoba"
     );
 
-  if(cordoba){
+  if (existeCordoba) {
 
     $("provincia").value =
       "cordoba";
@@ -267,21 +345,48 @@ async function init(){
   }
 
 
-  /* =========================
-     CATEGORÍAS
-  ========================= */
+  /* -------------------------------------------------------
+     CATEGORÍAS DE LA BIBLIOTECA
+  ------------------------------------------------------- */
+
+  const categoriasBase = [
+    "Inicial",
+    "Primaria",
+    "Secundaria",
+    "Superior",
+    "Educación Especial",
+    "Jóvenes y Adultos",
+    "Educación Rural",
+    "Educación Técnico Profesional",
+    "Progresiones",
+    "Aprendizajes y Contenidos Fundamentales",
+    "Actualización curricular",
+    "Referencias 2026",
+    "Materiales que carga el docente"
+  ];
+
 
   const categorias =
-    Array.isArray(library.categorias)
+    Array.isArray(library.categorias) &&
+    library.categorias.length
       ? library.categorias
-      : [];
+      : categoriasBase;
+
+
+  /*
+    Evitamos duplicados.
+  */
+
+  const categoriasUnicas =
+    [...new Set(categorias)];
+
 
   $("categoriaBiblioteca").innerHTML =
     `<option value="">
       Todas las referencias disponibles
     </option>` +
 
-    categorias
+    categoriasUnicas
       .filter(
         x =>
           x !==
@@ -296,18 +401,22 @@ async function init(){
       .join("");
 
 
+  /* -------------------------------------------------------
+     INFORMACIÓN INICIAL
+  ------------------------------------------------------- */
+
   actualizarBiblioteca();
 
 }
 
 
-/* =========================
-   INFORMACIÓN BIBLIOTECA
-========================= */
+/* =========================================================
+   INFORMACIÓN DE LA BIBLIOTECA
+========================================================= */
 
-function actualizarBiblioteca(){
+function actualizarBiblioteca() {
 
-  if(!library){
+  if (!library) {
     return;
   }
 
@@ -316,38 +425,52 @@ function actualizarBiblioteca(){
       ? library.provincias
       : [];
 
+
+  const provinciaSeleccionada =
+    $("provincia").value;
+
+
   const p =
     provincias.find(
       x =>
-        x.id ===
-        $("provincia").value
+        x.id === provinciaSeleccionada
     );
 
-  if(!p){
+
+  if (!p) {
+
     $("libraryInfo").textContent =
-      "Seleccioná una jurisdicción.";
+      "Biblioteca Curricular Argentina disponible.";
+
     return;
+
   }
+
 
   const cantidad =
     Array.isArray(p.documentos)
       ? p.documentos.length
       : 0;
 
-  if(cantidad > 0){
+
+  if (cantidad > 0) {
 
     $("libraryInfo").textContent =
-      `${p.nombre}: ${cantidad} referencias oficiales precargadas.`;
+      `📚 ${p.nombre}: ${cantidad} referencias curriculares disponibles.`;
 
-  }else{
+  } else {
 
     $("libraryInfo").textContent =
-      `${p.nombre}: jurisdicción disponible. La biblioteca curricular se ampliará progresivamente.`;
+      `📚 ${p.nombre}: jurisdicción disponible. Podés trabajar con la biblioteca general y agregar materiales de referencia.`;
 
   }
 
 }
 
+
+/* =========================================================
+   CAMBIO DE PROVINCIA
+========================================================= */
 
 $("provincia").addEventListener(
   "change",
@@ -355,9 +478,9 @@ $("provincia").addEventListener(
 );
 
 
-/* =========================
+/* =========================================================
    GENERAR CON IA
-========================= */
+========================================================= */
 
 $("generar").addEventListener(
   "click",
@@ -365,6 +488,7 @@ $("generar").addEventListener(
 
     const fd =
       new FormData();
+
 
     [
       "tipo",
@@ -378,9 +502,10 @@ $("generar").addEventListener(
       "categoriaBiblioteca"
     ].forEach(id => {
 
-      const elemento = $(id);
+      const elemento =
+        $(id);
 
-      if(elemento){
+      if (elemento) {
 
         fd.append(
           id,
@@ -392,14 +517,19 @@ $("generar").addEventListener(
     });
 
 
+    /* -----------------------------------------------------
+       ARCHIVOS DEL DOCENTE
+    ----------------------------------------------------- */
+
     const archivos =
       $("archivos");
 
-    if(archivos){
 
-      for(
+    if (archivos) {
+
+      for (
         const f of archivos.files
-      ){
+      ) {
 
         fd.append(
           "archivos",
@@ -419,7 +549,7 @@ $("generar").addEventListener(
     );
 
 
-    try{
+    try {
 
       const r =
         await fetch(
@@ -433,12 +563,13 @@ $("generar").addEventListener(
 
       let data;
 
-      try{
+
+      try {
 
         data =
           await r.json();
 
-      }catch{
+      } catch {
 
         throw new Error(
           "El servidor devolvió una respuesta inválida."
@@ -447,10 +578,10 @@ $("generar").addEventListener(
       }
 
 
-      if(
+      if (
         !r.ok ||
         !data.ok
-      ){
+      ) {
 
         throw new Error(
           data.error ||
@@ -464,13 +595,20 @@ $("generar").addEventListener(
         data.resultado;
 
 
-    }catch(e){
+    } catch (e) {
+
+      console.error(
+        "Error generando:",
+        e
+      );
+
 
       $("result").textContent =
         "No se pudo generar.\n\n" +
         e.message;
 
-    }finally{
+
+    } finally {
 
       $("generar").textContent =
         "✨ Generar con IA";
@@ -485,9 +623,9 @@ $("generar").addEventListener(
 );
 
 
-/* =========================
+/* =========================================================
    LIMPIAR
-========================= */
+========================================================= */
 
 $("limpiar").addEventListener(
   "click",
@@ -502,9 +640,10 @@ $("limpiar").addEventListener(
     ].forEach(
       id => {
 
-        const elemento = $(id);
+        const elemento =
+          $(id);
 
-        if(elemento){
+        if (elemento) {
           elemento.value = "";
         }
 
@@ -512,7 +651,7 @@ $("limpiar").addEventListener(
     );
 
 
-    if($("archivos")){
+    if ($("archivos")) {
       $("archivos").value = "";
     }
 
@@ -524,21 +663,21 @@ $("limpiar").addEventListener(
 );
 
 
-/* =========================
+/* =========================================================
    COPIAR
-========================= */
+========================================================= */
 
 $("copiar").addEventListener(
   "click",
   async () => {
 
-    try{
+    try {
 
       await navigator.clipboard.writeText(
         $("result").textContent
       );
 
-    }catch(e){
+    } catch (e) {
 
       console.error(
         "No se pudo copiar:",
@@ -551,19 +690,21 @@ $("copiar").addEventListener(
 );
 
 
-/* =========================
+/* =========================================================
    DESCARGAR TXT
-========================= */
+========================================================= */
 
 $("descargarTxt").addEventListener(
   "click",
   () => {
 
+    const texto =
+      $("result").textContent;
+
+
     const blob =
       new Blob(
-        [
-          $("result").textContent
-        ],
+        [texto],
         {
           type:
             "text/plain;charset=utf-8"
@@ -576,30 +717,40 @@ $("descargarTxt").addEventListener(
         "a"
       );
 
-    a.href =
+
+    const url =
       URL.createObjectURL(
         blob
       );
 
+
+    a.href =
+      url;
+
     a.download =
       "Edu.sistem_Pro_IA_resultado.txt";
 
+
+    document.body.appendChild(a);
+
     a.click();
 
-    URL.revokeObjectURL(
-      a.href
-    );
+    a.remove();
+
+    URL.revokeObjectURL(url);
 
   }
 );
 
 
-/* =========================
-   INICIAR APP
-========================= */
+/* =========================================================
+   ARRANCAR
+========================================================= */
 
 init();
 
 </script>
+```
+
 </body>
 </html>
