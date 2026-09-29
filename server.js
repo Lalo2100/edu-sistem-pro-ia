@@ -89,6 +89,42 @@ function stripMarkdown(text) {
     .trim();
 }
 
+async function listGeminiModels(key) {
+  const url = `https://generativelanguage.googleapis.com/v1beta/models?key=${encodeURIComponent(key)}`;
+  const response = await fetch(url);
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) return [];
+  return Array.isArray(data.models) ? data.models : [];
+}
+
+function modelId(name) {
+  return String(name || '').replace(/^models\//, '');
+}
+
+function rankModel(model) {
+  const id = modelId(model.name).toLowerCase();
+  const methods = model.supportedGenerationMethods || [];
+  if (!methods.includes('generateContent')) return -1;
+  if (id === 'gemini-3.8-flash') return 100;
+  if (id === 'gemini-3.6-flash') return 90;
+  if (id === 'gemini-3.5-flash-lite') return 80;
+  if (id.includes('flash') && !id.includes('image') && !id.includes('embedding')) return 60;
+  return -1;
+}
+
+function isTemporaryGeminiError(status, message) {
+  const text = String(message || '').toLowerCase();
+  return [429, 500, 502, 503, 504].includes(status)
+    || text.includes('high demand')
+    || text.includes('temporarily unavailable')
+    || text.includes('try again later')
+    || text.includes('overloaded');
+}
+
+function wait(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 async function geminiGenerate(prompt) {
   const key = process.env.GEMINI_API_KEY;
   if (!key) {
@@ -97,12 +133,40 @@ async function geminiGenerate(prompt) {
     throw err;
   }
 
-  // Usamos exclusivamente el modelo vigente configurado para esta versión.
-  // Ignoramos valores antiguos de GEMINI_MODEL (por ejemplo gemini-2.0-flash).
-  const models = ['gemini-3.8-flash'];
+  // Primero consultamos los modelos disponibles para esa API key. Esto evita
+  // quedar atados a un único modelo si Google cambia disponibilidad o demanda.
+  let available = [];
+  try {
+    available = await listGeminiModels(key);
+  } catch (_) {
+    available = [];
+  }
+
+  const envModel = modelId(process.env.GEMINI_MODEL);
+  const preferredIds = [
+    envModel,
+    'gemini-3.8-flash',
+    'gemini-3.6-flash',
+    'gemini-3.5-flash-lite'
+  ].filter(Boolean);
+
+  const availableIds = available
+    .filter(m => rankModel(m) >= 0)
+    .sort((a, b) => rankModel(b) - rankModel(a))
+    .map(m => modelId(m.name));
+
+  // Conservamos primero los modelos preferidos que realmente estén disponibles.
+  const models = [...new Set([
+    ...preferredIds.filter(id => !available.length || availableIds.includes(id)),
+    ...availableIds
+  ])].slice(0, 5);
+
+  // Si el listado no devolvió modelos, usamos los respaldos conocidos.
+  if (!models.length) models.push(...new Set(preferredIds));
 
   let lastError = null;
-  for (const model of models) {
+  for (let attempt = 0; attempt < models.length; attempt++) {
+    const model = models[attempt];
     const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(key)}`;
     try {
       const response = await fetch(url, {
@@ -121,19 +185,33 @@ async function geminiGenerate(prompt) {
       const data = await response.json().catch(() => ({}));
       if (response.ok) {
         const text = data?.candidates?.[0]?.content?.parts?.map(p => p.text || '').join('') || '';
-        if (!text.trim()) throw new Error('Gemini no devolvió contenido.');
-        return { text: stripMarkdown(text), model };
-      }
+        if (!text.trim()) {
+          lastError = new Error(`${model}: Gemini no devolvió contenido.`);
+        } else {
+          return { text: stripMarkdown(text), model };
+        }
+      } else {
+        const apiMessage = data?.error?.message || `HTTP ${response.status}`;
+        lastError = new Error(`${model}: ${apiMessage}`);
 
-      const apiMessage = data?.error?.message || `HTTP ${response.status}`;
-      lastError = new Error(`${model}: ${apiMessage}`);
-      if (![404, 400].includes(response.status)) break;
+        // Un modelo inexistente o no soportado se salta inmediatamente.
+        // Una saturación temporal pasa al siguiente modelo después de una pausa.
+        if (isTemporaryGeminiError(response.status, apiMessage)) {
+          if (attempt < models.length - 1) await wait(900);
+          continue;
+        }
+        if ([400, 404].includes(response.status)) continue;
+        break;
+      }
     } catch (e) {
       lastError = e;
+      if (attempt < models.length - 1) await wait(900);
     }
   }
 
-  throw lastError || new Error('No se pudo consultar Gemini.');
+  const err = lastError || new Error('No se pudo consultar Gemini.');
+  err.status = isTemporaryGeminiError(err.status, err.message) ? 503 : (err.status || 500);
+  throw err;
 }
 
 app.get('/api/health', (req, res) => {
