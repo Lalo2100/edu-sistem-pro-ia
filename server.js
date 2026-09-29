@@ -101,7 +101,7 @@ async function geminiGenerate(prompt) {
   const models = [
     configured,
     'gemini-2.5-flash',
-    'gemini-2.0-flash'
+   gemini-3.8-flash
   ].filter(Boolean).filter((v, i, a) => a.indexOf(v) === i);
 
   let lastError = null;
