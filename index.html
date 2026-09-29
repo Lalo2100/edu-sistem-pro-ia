@@ -106,52 +106,500 @@ button{border:0;border-radius:11px;padding:12px 16px;font-weight:700;cursor:poin
 
 <script>
 const $ = id => document.getElementById(id);
+
 let library = null;
 
-async function init(){
-  try{
-    const h = await fetch("/api/health").then(r=>r.json());
-    $("status").textContent = h.geminiConfigured ? `✓ Gemini conectado · ${h.provincias} jurisdicciones` : "⚠ Gemini no está configurado";
-  }catch(e){$("status").textContent="⚠ Servidor no disponible";}
-  try{
-    library = await fetch("/api/biblioteca").then(r=>r.json());
-    const disponibles = library.provincias.filter(p=>p.estado==="Disponible");
-    $("provincia").innerHTML = library.provincias.map(p=>`<option value="${p.id}" ${p.estado!=="Disponible"?"disabled":""}>${p.nombre}${p.estado!=="Disponible"?" — próximamente":""}</option>`).join("");
-    $("categoriaBiblioteca").innerHTML = `<option value="">Todas las referencias disponibles</option>` + library.categorias.filter(x=>x!=="Materiales que carga el docente").map(x=>`<option>${x}</option>`).join("");
-    actualizarBiblioteca();
-  }catch(e){}
-}
-function actualizarBiblioteca(){
-  const p = library?.provincias.find(x=>x.id===$("provincia").value);
-  $("libraryInfo").textContent = p ? `${p.nombre}: ${p.documentos.length} referencias oficiales precargadas. La biblioteca seguirá creciendo por jurisdicción.` : "";
-}
-$("provincia").addEventListener("change", actualizarBiblioteca);
+const PROVINCIAS_ARGENTINAS = [
+  { id: "buenos_aires", nombre: "Buenos Aires" },
+  { id: "catamarca", nombre: "Catamarca" },
+  { id: "chaco", nombre: "Chaco" },
+  { id: "chubut", nombre: "Chubut" },
+  { id: "ciudad_autonoma_de_buenos_aires", nombre: "Ciudad Autónoma de Buenos Aires" },
+  { id: "cordoba", nombre: "Córdoba" },
+  { id: "corrientes", nombre: "Corrientes" },
+  { id: "entre_rios", nombre: "Entre Ríos" },
+  { id: "formosa", nombre: "Formosa" },
+  { id: "jujuy", nombre: "Jujuy" },
+  { id: "la_pampa", nombre: "La Pampa" },
+  { id: "la_rioja", nombre: "La Rioja" },
+  { id: "mendoza", nombre: "Mendoza" },
+  { id: "misiones", nombre: "Misiones" },
+  { id: "neuquen", nombre: "Neuquén" },
+  { id: "rio_negro", nombre: "Río Negro" },
+  { id: "salta", nombre: "Salta" },
+  { id: "san_juan", nombre: "San Juan" },
+  { id: "san_luis", nombre: "San Luis" },
+  { id: "santa_cruz", nombre: "Santa Cruz" },
+  { id: "santa_fe", nombre: "Santa Fe" },
+  { id: "santiago_del_estero", nombre: "Santiago del Estero" },
+  { id: "tierra_del_fuego", nombre: "Tierra del Fuego, Antártida e Islas del Atlántico Sur" },
+  { id: "tucuman", nombre: "Tucumán" }
+];
 
-$("generar").addEventListener("click", async()=>{
-  const fd = new FormData();
-  ["tipo","provincia","nivel","grado","area","tema","duracion","indicaciones","categoriaBiblioteca"].forEach(id=>fd.append(id,$(id).value));
-  for(const f of $("archivos").files) fd.append("archivos",f);
-  $("generar").textContent="Generando...";
-  document.body.classList.add("loading");
+async function init(){
+
+  /* =========================
+     COMPROBAR SERVIDOR
+  ========================= */
+
   try{
-    const r = await fetch("/api/generar",{method:"POST",body:fd});
-    const data = await r.json();
-    if(!r.ok || !data.ok) throw new Error(data.error||"No se pudo generar.");
-    $("result").textContent=data.resultado;
-  }catch(e){$("result").textContent="No se pudo generar.\n\n"+e.message;}
-  finally{$("generar").textContent="✨ Generar con IA";document.body.classList.remove("loading");}
-});
-$("limpiar").addEventListener("click",()=>{
-  ["grado","area","tema","duracion","indicaciones"].forEach(id=>$(id).value="");
-  $("archivos").value="";
-  $("result").textContent="Tu trabajo generado aparecerá aquí.";
-});
-$("copiar").addEventListener("click",async()=>{await navigator.clipboard.writeText($("result").textContent);});
-$("descargarTxt").addEventListener("click",()=>{
-  const blob=new Blob([$("result").textContent],{type:"text/plain;charset=utf-8"});
-  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="Edu.sistem_Pro_IA_resultado.txt";a.click();URL.revokeObjectURL(a.href);
-});
+
+    const respuestaHealth = await fetch("/api/health");
+
+    if(!respuestaHealth.ok){
+      throw new Error("Servidor no disponible");
+    }
+
+    const h = await respuestaHealth.json();
+
+    $("status").textContent =
+      h.geminiConfigured
+        ? `✓ Gemini conectado · ${h.provincias || 24} jurisdicciones`
+        : "⚠ Gemini no está configurado";
+
+  }catch(e){
+
+    $("status").textContent =
+      "⚠ Servidor no disponible";
+
+  }
+
+
+  /* =========================
+     CARGAR BIBLIOTECA
+  ========================= */
+
+  try{
+
+    const respuestaBiblioteca =
+      await fetch("/api/biblioteca");
+
+    if(!respuestaBiblioteca.ok){
+      throw new Error("No se pudo cargar la biblioteca");
+    }
+
+    library =
+      await respuestaBiblioteca.json();
+
+  }catch(e){
+
+    console.error(
+      "No se pudo cargar la biblioteca:",
+      e
+    );
+
+    /*
+      Aunque la API falle, mostramos
+      igualmente todas las jurisdicciones.
+    */
+
+    library = {
+      provincias: PROVINCIAS_ARGENTINAS.map(p => ({
+        ...p,
+        estado: "Disponible",
+        documentos: []
+      })),
+
+      categorias: []
+    };
+
+  }
+
+
+  /* =========================
+     PROVINCIAS
+  ========================= */
+
+  const provincias =
+    Array.isArray(library.provincias)
+      ? library.provincias
+      : PROVINCIAS_ARGENTINAS.map(p => ({
+          ...p,
+          estado: "Disponible",
+          documentos: []
+        }));
+
+
+  $("provincia").innerHTML =
+    provincias
+      .map(p => {
+
+        const estado =
+          p.estado || "Disponible";
+
+        const disabled =
+          estado !== "Disponible"
+            ? "disabled"
+            : "";
+
+        return `
+          <option
+            value="${p.id}"
+            ${disabled}
+          >
+            ${p.nombre}
+            ${
+              estado !== "Disponible"
+                ? " — próximamente"
+                : ""
+            }
+          </option>
+        `;
+
+      })
+      .join("");
+
+
+  /* =========================
+     SELECCIONAR CÓRDOBA
+  ========================= */
+
+  const cordoba =
+    provincias.find(
+      p => p.id === "cordoba"
+    );
+
+  if(cordoba){
+
+    $("provincia").value =
+      "cordoba";
+
+  }
+
+
+  /* =========================
+     CATEGORÍAS
+  ========================= */
+
+  const categorias =
+    Array.isArray(library.categorias)
+      ? library.categorias
+      : [];
+
+  $("categoriaBiblioteca").innerHTML =
+    `<option value="">
+      Todas las referencias disponibles
+    </option>` +
+
+    categorias
+      .filter(
+        x =>
+          x !==
+          "Materiales que carga el docente"
+      )
+      .map(
+        x =>
+          `<option value="${x}">
+            ${x}
+          </option>`
+      )
+      .join("");
+
+
+  actualizarBiblioteca();
+
+}
+
+
+/* =========================
+   INFORMACIÓN BIBLIOTECA
+========================= */
+
+function actualizarBiblioteca(){
+
+  if(!library){
+    return;
+  }
+
+  const provincias =
+    Array.isArray(library.provincias)
+      ? library.provincias
+      : [];
+
+  const p =
+    provincias.find(
+      x =>
+        x.id ===
+        $("provincia").value
+    );
+
+  if(!p){
+    $("libraryInfo").textContent =
+      "Seleccioná una jurisdicción.";
+    return;
+  }
+
+  const cantidad =
+    Array.isArray(p.documentos)
+      ? p.documentos.length
+      : 0;
+
+  if(cantidad > 0){
+
+    $("libraryInfo").textContent =
+      `${p.nombre}: ${cantidad} referencias oficiales precargadas.`;
+
+  }else{
+
+    $("libraryInfo").textContent =
+      `${p.nombre}: jurisdicción disponible. La biblioteca curricular se ampliará progresivamente.`;
+
+  }
+
+}
+
+
+$("provincia").addEventListener(
+  "change",
+  actualizarBiblioteca
+);
+
+
+/* =========================
+   GENERAR CON IA
+========================= */
+
+$("generar").addEventListener(
+  "click",
+  async () => {
+
+    const fd =
+      new FormData();
+
+    [
+      "tipo",
+      "provincia",
+      "nivel",
+      "grado",
+      "area",
+      "tema",
+      "duracion",
+      "indicaciones",
+      "categoriaBiblioteca"
+    ].forEach(id => {
+
+      const elemento = $(id);
+
+      if(elemento){
+
+        fd.append(
+          id,
+          elemento.value
+        );
+
+      }
+
+    });
+
+
+    const archivos =
+      $("archivos");
+
+    if(archivos){
+
+      for(
+        const f of archivos.files
+      ){
+
+        fd.append(
+          "archivos",
+          f
+        );
+
+      }
+
+    }
+
+
+    $("generar").textContent =
+      "Generando...";
+
+    document.body.classList.add(
+      "loading"
+    );
+
+
+    try{
+
+      const r =
+        await fetch(
+          "/api/generar",
+          {
+            method: "POST",
+            body: fd
+          }
+        );
+
+
+      let data;
+
+      try{
+
+        data =
+          await r.json();
+
+      }catch{
+
+        throw new Error(
+          "El servidor devolvió una respuesta inválida."
+        );
+
+      }
+
+
+      if(
+        !r.ok ||
+        !data.ok
+      ){
+
+        throw new Error(
+          data.error ||
+          "No se pudo generar."
+        );
+
+      }
+
+
+      $("result").textContent =
+        data.resultado;
+
+
+    }catch(e){
+
+      $("result").textContent =
+        "No se pudo generar.\n\n" +
+        e.message;
+
+    }finally{
+
+      $("generar").textContent =
+        "✨ Generar con IA";
+
+      document.body.classList.remove(
+        "loading"
+      );
+
+    }
+
+  }
+);
+
+
+/* =========================
+   LIMPIAR
+========================= */
+
+$("limpiar").addEventListener(
+  "click",
+  () => {
+
+    [
+      "grado",
+      "area",
+      "tema",
+      "duracion",
+      "indicaciones"
+    ].forEach(
+      id => {
+
+        const elemento = $(id);
+
+        if(elemento){
+          elemento.value = "";
+        }
+
+      }
+    );
+
+
+    if($("archivos")){
+      $("archivos").value = "";
+    }
+
+
+    $("result").textContent =
+      "Tu trabajo generado aparecerá aquí.";
+
+  }
+);
+
+
+/* =========================
+   COPIAR
+========================= */
+
+$("copiar").addEventListener(
+  "click",
+  async () => {
+
+    try{
+
+      await navigator.clipboard.writeText(
+        $("result").textContent
+      );
+
+    }catch(e){
+
+      console.error(
+        "No se pudo copiar:",
+        e
+      );
+
+    }
+
+  }
+);
+
+
+/* =========================
+   DESCARGAR TXT
+========================= */
+
+$("descargarTxt").addEventListener(
+  "click",
+  () => {
+
+    const blob =
+      new Blob(
+        [
+          $("result").textContent
+        ],
+        {
+          type:
+            "text/plain;charset=utf-8"
+        }
+      );
+
+
+    const a =
+      document.createElement(
+        "a"
+      );
+
+    a.href =
+      URL.createObjectURL(
+        blob
+      );
+
+    a.download =
+      "Edu.sistem_Pro_IA_resultado.txt";
+
+    a.click();
+
+    URL.revokeObjectURL(
+      a.href
+    );
+
+  }
+);
+
+
+/* =========================
+   INICIAR APP
+========================= */
+
 init();
+
 </script>
 </body>
 </html>
