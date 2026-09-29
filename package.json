@@ -1,20 +1,19 @@
 {
-  "name": "edu-sistem-pro-ia-nacional",
-  "version": "2.0.0",
+  "name": "edu-sistem-pro-ia",
+  "version": "2.5.0",
   "private": true,
-  "description": "Edu.sistem Pro IA - asistente inteligente para docentes con bibliotecas curriculares por provincia.",
+  "description": "Edu.sistem Pro IA - asistente inteligente para docentes",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=18"
   },
   "dependencies": {
-    "@google/genai": "latest",
-    "express": "^5.1.0",
-    "multer": "^2.0.2",
+    "express": "^4.21.2",
+    "multer": "^1.4.5-lts.1",
     "pdf-parse": "^1.1.1",
-    "mammoth": "^1.10.0"
+    "mammoth": "^1.9.0"
   }
 }

@@ -1,180 +1,220 @@
-const express = require("express");
-const path = require("path");
-const multer = require("multer");
-const pdfParse = require("pdf-parse");
-const mammoth = require("mammoth");
-const fs = require("fs");
-const { GoogleGenAI } = require("@google/genai");
+const express = require('express');
+const path = require('path');
+const multer = require('multer');
+const fs = require('fs');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const VERSION = "2.1";
-const MODEL = process.env.GEMINI_MODEL || "gemini-3.8-flash";
+const ROOT = __dirname;
+const LIBRARY_FILE = path.join(ROOT, 'biblioteca-cordoba.json');
 
-app.use(express.json({ limit: "4mb" }));
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.json({ limit: '2mb' }));
+app.use(express.static(ROOT));
 
 const upload = multer({
   storage: multer.memoryStorage(),
-  limits: { files: 8, fileSize: 12 * 1024 * 1024 }
+  limits: {
+    files: 2,
+    fileSize: 3 * 1024 * 1024
+  }
 });
 
-function loadLibrary() {
+function readLibrary() {
   try {
-    return JSON.parse(fs.readFileSync(path.join(__dirname, "biblioteca.json"), "utf8"));
-  } catch {
-    return { version: VERSION, categorias: [], provincias: {} };
+    return JSON.parse(fs.readFileSync(LIBRARY_FILE, 'utf8'));
+  } catch (_) {
+    return { app: 'Edu.sistem Pro IA', version: '2.5', categorias: [] };
   }
 }
 
 function cleanText(text) {
-  return String(text || "")
-    .replace(/\r/g, "")
-    .replace(/\n{3,}/g, "\n\n")
+  return String(text || '')
+    .replace(/\r/g, '')
+    .replace(/\u0000/g, '')
+    .replace(/\n{3,}/g, '\n\n')
     .trim();
 }
 
-async function extractFile(file) {
+async function extractFileText(file) {
   const ext = path.extname(file.originalname).toLowerCase();
-  if (ext === ".pdf") {
-    const parsed = await pdfParse(file.buffer);
-    return cleanText(parsed.text);
+  if (['.txt', '.md', '.csv', '.html', '.htm'].includes(ext)) {
+    return cleanText(file.buffer.toString('utf8'));
   }
-  if (ext === ".docx") {
-    const result = await mammoth.extractRawText({ buffer: file.buffer });
-    return cleanText(result.value);
+  if (ext === '.pdf') {
+    try {
+      const pdfParse = require('pdf-parse');
+      const result = await pdfParse(file.buffer);
+      return cleanText(result.text);
+    } catch (e) {
+      return `[No se pudo extraer el texto de ${file.originalname}: ${e.message}]`;
+    }
   }
-  if ([".txt",".md",".csv",".html",".htm"].includes(ext)) {
-    return cleanText(file.buffer.toString("utf8").replace(/<[^>]*>/g, " "));
+  if (ext === '.docx') {
+    try {
+      const mammoth = require('mammoth');
+      const result = await mammoth.extractRawText({ buffer: file.buffer });
+      return cleanText(result.value);
+    } catch (e) {
+      return `[No se pudo extraer el texto de ${file.originalname}: ${e.message}]`;
+    }
   }
-  return "";
+  return '';
 }
 
-app.get("/api/health", (req, res) => {
+function buildLibraryContext(selected) {
+  const library = readLibrary();
+  const wanted = Array.isArray(selected) ? selected : [selected].filter(Boolean);
+  if (!wanted.length) return 'No se seleccionaron referencias de la Biblioteca Curricular Córdoba.';
+
+  return wanted.map(name => {
+    const item = library.categorias.find(c => c.nombre === name);
+    if (!item) return `Categoría seleccionada: ${name}`;
+    return [
+      `CATEGORÍA: ${item.nombre}`,
+      `DESCRIPCIÓN: ${item.descripcion}`,
+      `ORIENTACIÓN DE USO: ${item.orientacion}`
+    ].join('\n');
+  }).join('\n\n');
+}
+
+function stripMarkdown(text) {
+  return String(text || '')
+    .replace(/^#{1,6}\s*/gm, '')
+    .replace(/\*\*(.*?)\*\*/g, '$1')
+    .replace(/__(.*?)__/g, '$1')
+    .replace(/`([^`]+)`/g, '$1')
+    .replace(/^\s*[-*]\s+/gm, '• ')
+    .replace(/^\s*\d+\.\s+/gm, match => match.trim() + ' ')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+}
+
+async function geminiGenerate(prompt) {
+  const key = process.env.GEMINI_API_KEY;
+  if (!key) {
+    const err = new Error('Falta configurar GEMINI_API_KEY en Vercel.');
+    err.status = 503;
+    throw err;
+  }
+
+  const configured = process.env.GEMINI_MODEL;
+  const models = [
+    configured,
+    'gemini-2.5-flash',
+    'gemini-2.0-flash'
+  ].filter(Boolean).filter((v, i, a) => a.indexOf(v) === i);
+
+  let lastError = null;
+  for (const model of models) {
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(key)}`;
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: {
+            temperature: 0.55,
+            topP: 0.9,
+            maxOutputTokens: 7000
+          }
+        })
+      });
+
+      const data = await response.json().catch(() => ({}));
+      if (response.ok) {
+        const text = data?.candidates?.[0]?.content?.parts?.map(p => p.text || '').join('') || '';
+        if (!text.trim()) throw new Error('Gemini no devolvió contenido.');
+        return { text: stripMarkdown(text), model };
+      }
+
+      const apiMessage = data?.error?.message || `HTTP ${response.status}`;
+      lastError = new Error(`${model}: ${apiMessage}`);
+      if (![404, 400].includes(response.status)) break;
+    } catch (e) {
+      lastError = e;
+    }
+  }
+
+  throw lastError || new Error('No se pudo consultar Gemini.');
+}
+
+app.get('/api/health', (req, res) => {
+  const library = readLibrary();
   res.json({
     ok: true,
-    app: "Edu.sistem pro ia",
-    version: VERSION,
+    app: 'Edu.sistem Pro IA',
+    version: '2.5',
     geminiConfigured: Boolean(process.env.GEMINI_API_KEY),
-    model: MODEL,
-    bibliotecaArgentina: true,
-    provincias: Object.keys(loadLibrary().provincias || {}).length
+    libraryConfigured: Array.isArray(library.categorias) && library.categorias.length === 12
   });
 });
 
-app.get("/api/biblioteca", (req, res) => {
-  const lib = loadLibrary();
-  res.json({
-    version: lib.version,
-    nombre: lib.nombre,
-    categorias: lib.categorias,
-    provincias: Object.entries(lib.provincias).map(([id, p]) => ({
-      id,
-      nombre: p.nombre,
-      estado: p.estado,
-      nota: p.nota,
-      documentos: p.documentos || []
-    }))
-  });
+app.get('/api/biblioteca', (req, res) => {
+  res.json(readLibrary());
 });
 
-app.post("/api/generar", upload.array("archivos", 8), async (req, res) => {
+app.post('/api/generar', upload.array('materiales', 2), async (req, res) => {
   try {
-    const apiKey = process.env.GEMINI_API_KEY;
-    if (!apiKey) {
-      return res.status(503).json({ ok:false, error:"GEMINI_API_KEY no está configurada en Vercel." });
+    const { tipo, nivel, grado, area, tema, duracion, indicaciones } = req.body || {};
+    const categorias = Array.isArray(req.body?.bibliotecaCategorias)
+      ? req.body.bibliotecaCategorias
+      : (req.body?.bibliotecaCategorias ? [req.body.bibliotecaCategorias] : []);
+
+    if (!tipo || !nivel || !grado || !area || !tema) {
+      return res.status(400).json({ error: 'Completá tipo, nivel, grado/curso, área/materia y tema.' });
     }
 
-    const {
-      tipo = "secuencia",
-      provincia = "cordoba",
-      nivel = "",
-      grado = "",
-      area = "",
-      tema = "",
-      duracion = "",
-      indicaciones = "",
-      categoriaBiblioteca = ""
-    } = req.body || {};
-
-    const lib = loadLibrary();
-    const provinciaData = lib.provincias?.[provincia] || { nombre: provincia, documentos: [] };
-    const docs = (provinciaData.documentos || [])
-      .filter(d => !categoriaBiblioteca || d.categoria === categoriaBiblioteca)
-      .slice(0, 12);
-
-    const partes = [];
-    for (const file of (req.files || [])) {
-      const text = await extractFile(file);
-      if (text) {
-        partes.push(`MATERIAL APORTADO POR EL DOCENTE: ${file.originalname}\n${text.slice(0, 50000)}`);
-      }
+    const files = req.files || [];
+    const extracted = [];
+    for (const file of files) {
+      const text = await extractFileText(file);
+      extracted.push({ name: file.originalname, text: text.slice(0, 90000) });
     }
 
-    const documentosOficiales = docs.length
-      ? docs.map(d => `- ${d.titulo} | Categoría: ${d.categoria} | Fuente: ${d.fuente}\n  Referencia: ${d.url}\n  Contexto: ${d.contexto || ""}`).join("\n")
-      : "No hay documentos oficiales precargados para esta provincia/categoría. Para otras jurisdicciones, trabajá con la información general y los materiales que cargue el docente. No inventes citas ni documentos.";
+    const typeNames = {
+      anual: 'Planificación anual',
+      secuencia: 'Secuencia didáctica',
+      proyecto: 'Proyecto',
+      rubrica: 'Rúbrica'
+    };
 
-    const prompt = `
-Sos Edu.sistem Pro IA, un asistente pedagógico para docentes de Argentina.
+    const libraryContext = buildLibraryContext(categorias);
+    const materialsContext = extracted.length
+      ? extracted.map(x => `MATERIAL DEL DOCENTE: ${x.name}\n${x.text}`).join('\n\n')
+      : 'No se adjuntaron materiales del docente.';
 
-OBJETIVO:
-Generar un ${tipo} claro, práctico y listo para que un docente pueda revisar y usar como base de trabajo.
+    const prompt = `Sos Edu.sistem Pro IA, un asistente para docentes de la Provincia de Córdoba, Argentina.\n\nGenerá un ${typeNames[tipo] || tipo} listo para usar en la práctica docente.\n\nDATOS:\nNivel: ${nivel}\nGrado/Curso: ${grado}\nÁrea/Materia: ${area}\nTema: ${tema}\nDuración: ${duracion || 'No indicada'}\nIndicaciones del docente: ${indicaciones || 'Sin indicaciones adicionales'}\n\nBIBLIOTECA CURRICULAR SELECCIONADA:\n${libraryContext}\n\nMATERIALES DEL DOCENTE:\n${materialsContext}\n\nCRITERIOS:\n- Escribí en español argentino claro y profesional.\n- Priorizá coherencia pedagógica, objetivos/aprendizajes, contenidos, actividades, evaluación y recursos cuando correspondan al tipo de trabajo.\n- Para una planificación anual, organizá por períodos/unidades de manera práctica.\n- Para una secuencia, presentá inicio, desarrollo y cierre, con evaluación.\n- Para un proyecto, incluí propósito, producto o producción final, etapas y evaluación.\n- Para una rúbrica, incluí criterios y niveles de logro claramente diferenciados.\n- Usá los materiales proporcionados como referencia, sin inventar citas ni atribuir textos inexistentes.\n- Si la biblioteca solo aporta orientación de categoría y no un documento específico, no afirmes que citaste un documento oficial concreto.\n- No uses Markdown con # o **. Entregá texto limpio, con títulos simples y listas legibles.\n- No agregues explicaciones sobre cómo funciona la IA; entregá directamente el trabajo docente.\n`;
 
-DATOS:
-Provincia: ${provinciaData.nombre || provincia}
-Nivel: ${nivel}
-Grado/Curso: ${grado}
-Área/Materia: ${area}
-Tema: ${tema}
-Duración: ${duracion}
-Indicaciones del docente: ${indicaciones}
-
-BIBLIOTECA CURRICULAR:
-${documentosOficiales}
-
-MATERIALES SUBIDOS POR EL DOCENTE:
-${partes.length ? partes.join("\n\n") : "No se adjuntaron materiales."}
-
-REGLAS:
-- Adaptá la propuesta a la provincia seleccionada.
-- No atribuyas a una jurisdicción contenidos que no estén respaldados por el material disponible.
-- Si no hay documentación provincial disponible, indicá de manera breve que debe verificarse con el diseño curricular vigente de la jurisdicción.
-- Priorizá claridad, utilidad docente y lenguaje argentino.
-- No uses encabezados llenos de # ni negritas con **.
-- No escribas comentarios sobre cómo funciona la IA.
-- No inventes resoluciones, números de normas, citas textuales ni documentos oficiales.
-- Organizá el resultado con títulos simples y listas limpias.
-- En una planificación/secuencia/proyecto incluí propósito/finalidad, objetivos, contenidos o saberes, actividades, recursos, evaluación y criterios cuando correspondan.
-- En una rúbrica incluí criterios claros y niveles de logro.
-- Entregá únicamente el trabajo solicitado.
-`;
-
-    const ai = new GoogleGenAI({ apiKey });
-    const response = await ai.models.generateContent({
-      model: MODEL,
-      contents: prompt
-    });
-
-    const text = cleanText(response.text || "");
-    if (!text) return res.status(502).json({ ok:false, error:"Gemini no devolvió contenido." });
+    const result = await geminiGenerate(prompt);
 
     res.json({
-      ok:true,
-      resultado:text,
-      provincia:provinciaData.nombre || provincia,
-      modelo:MODEL,
-      version:VERSION
+      ok: true,
+      texto: result.text,
+      modelo: result.model,
+      materialesUsados: extracted.map(x => x.name),
+      bibliotecaCategorias: categorias
     });
   } catch (error) {
-    console.error(error);
-    const message = error?.message || "Error desconocido al generar.";
-    res.status(500).json({ ok:false, error:message });
+    console.error('Error /api/generar:', error);
+    const status = error.status || 500;
+    res.status(status).json({
+      error: status === 503
+        ? error.message
+        : `No se pudo generar el trabajo. ${error.message || ''}`.trim()
+    });
   }
 });
 
-app.get("/{*splat}", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
+app.get('*', (req, res) => {
+  if (req.path.startsWith('/api/')) return res.status(404).json({ error: 'Endpoint no encontrado.' });
+  res.sendFile(path.join(ROOT, 'index.html'));
 });
 
-app.listen(PORT, () => console.log(`Edu.sistem Pro IA ${VERSION} en puerto ${PORT}`));
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`Edu.sistem Pro IA escuchando en ${PORT}`);
+  });
+}
+
+module.exports = app;
