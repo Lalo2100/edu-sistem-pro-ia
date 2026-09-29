@@ -1,4 +1,4 @@
-# Edu.sistem Pro IA — versión nacional 2.0
+# Edu.sistem Pro IA — versión nacional 2.1
 
 Esta versión amplía la aplicación para trabajar por jurisdicción y mantiene Córdoba como biblioteca inicial.
 
@@ -16,3 +16,11 @@ Esta versión amplía la aplicación para trabajar por jurisdicción y mantiene 
 
 ## Importante
 La biblioteca no inventa documentos oficiales. Córdoba incluye referencias oficiales del portal Currículum Córdoba. Buenos Aires queda preparada para cargar sus documentos curriculares oficiales y luego hacer lo mismo con las demás jurisdicciones.
+
+
+### Correcciones 2.1
+- Las 24 jurisdicciones quedan seleccionables desde el formulario.
+- Córdoba incluye referencias oficiales y contexto curricular por categoría.
+- Se agregaron niveles Educación Especial, Jóvenes y Adultos, Rural y Técnico Profesional.
+- Compatible con la sintaxis de rutas de Express 5.
+- La clave Gemini sigue exclusivamente en Vercel (`GEMINI_API_KEY`).

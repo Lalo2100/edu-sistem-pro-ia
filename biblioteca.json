@@ -1,5 +1,5 @@
 {
-  "version": "2.0",
+  "version": "2.1",
   "nombre": "Biblioteca Curricular Argentina",
   "categorias": [
     "Inicial",
@@ -20,164 +20,223 @@
     "buenos-aires": {
       "nombre": "Buenos Aires",
       "estado": "Disponible",
-      "nota": "Biblioteca preparada para incorporar documentos curriculares oficiales de la jurisdicción.",
+      "nota": "Jurisdicción habilitada. La biblioteca provincial específica se incorporará con documentación oficial; mientras tanto se pueden cargar materiales del docente.",
+      "documentos": []
+    },
+    "catamarca": {
+      "nombre": "Catamarca",
+      "estado": "Disponible",
+      "nota": "Jurisdicción habilitada. La biblioteca provincial específica se incorporará con documentación oficial; mientras tanto se pueden cargar materiales del docente.",
+      "documentos": []
+    },
+    "chaco": {
+      "nombre": "Chaco",
+      "estado": "Disponible",
+      "nota": "Jurisdicción habilitada. La biblioteca provincial específica se incorporará con documentación oficial; mientras tanto se pueden cargar materiales del docente.",
+      "documentos": []
+    },
+    "chubut": {
+      "nombre": "Chubut",
+      "estado": "Disponible",
+      "nota": "Jurisdicción habilitada. La biblioteca provincial específica se incorporará con documentación oficial; mientras tanto se pueden cargar materiales del docente.",
       "documentos": []
     },
     "cordoba": {
       "nombre": "Córdoba",
       "estado": "Disponible",
-      "nota": "Biblioteca provincial preparada para materiales curriculares oficiales de Currículum Córdoba.",
+      "nota": "Biblioteca inicial con referencias oficiales de Currículum Córdoba.",
       "documentos": [
         {
           "titulo": "Currículum Córdoba — portal oficial",
           "categoria": "Referencias 2026",
           "url": "https://curriculumcordoba.ar/",
-          "fuente": "Ministerio de Educación de la Provincia de Córdoba"
+          "fuente": "Ministerio de Educación de la Provincia de Córdoba",
+          "contexto": "Portal oficial de socialización de materiales curriculares de Córdoba. Incluye Marco Curricular Común, Progresiones de Aprendizaje, Orientaciones Pedagógicas y Didácticas y Orientaciones y Tecnicaturas."
         },
         {
           "titulo": "Marco Curricular Común",
           "categoria": "Actualización curricular",
           "url": "https://curriculumcordoba.ar/marco_curricular.html",
-          "fuente": "Ministerio de Educación de la Provincia de Córdoba"
+          "fuente": "Ministerio de Educación de la Provincia de Córdoba",
+          "contexto": "Documento marco que orienta la renovación curricular provincial. Destaca integración de saberes y trabajo por proyectos o situaciones problemáticas, desarrollo de capacidades fundamentales y temáticas contemporáneas."
         },
         {
           "titulo": "Orientaciones Pedagógicas y Didácticas",
           "categoria": "Inicial",
           "url": "https://curriculumcordoba.ar/orientaciones_pedagogicas_didacticas.html",
-          "fuente": "Ministerio de Educación de la Provincia de Córdoba"
+          "fuente": "Ministerio de Educación de la Provincia de Córdoba",
+          "contexto": "Documentos por nivel para Educación Inicial, Primaria y Secundaria. Presentan finalidades formativas y claves para una enseñanza situada y con sentido."
+        },
+        {
+          "titulo": "Orientaciones Pedagógicas y Didácticas",
+          "categoria": "Primaria",
+          "url": "https://curriculumcordoba.ar/orientaciones_educacion_primaria.html",
+          "fuente": "Ministerio de Educación de la Provincia de Córdoba",
+          "contexto": "La propuesta presenta la escuela como espacio donde el currículum se interpreta y coconstruye colectivamente, y orienta formas situadas de enseñar y aprender."
+        },
+        {
+          "titulo": "Progresiones de Aprendizaje — Educación Inicial",
+          "categoria": "Progresiones",
+          "url": "https://www.curriculumcordoba.ar/downloads/PdA-EDUCACION%20INICIAL.pdf",
+          "fuente": "Ministerio de Educación de la Provincia de Córdoba",
+          "contexto": "Las progresiones articulan metas por ciclo, aprendizajes y contenidos e indicadores de logro para acompañar decisiones didácticas y pedagógicas."
+        },
+        {
+          "titulo": "Progresiones de Aprendizaje — Educación Primaria",
+          "categoria": "Progresiones",
+          "url": "https://www.curriculumcordoba.ar/downloads/PdA-EDUCACION%20PRIMARIA.pdf",
+          "fuente": "Ministerio de Educación de la Provincia de Córdoba",
+          "contexto": "Las progresiones presentan aprendizajes secuenciados y articulan metas por ciclo, aprendizajes y contenidos e indicadores de logro."
+        },
+        {
+          "titulo": "Progresiones de Aprendizaje — Educación Secundaria",
+          "categoria": "Progresiones",
+          "url": "https://www.curriculumcordoba.ar/downloads/PdA-EDUCACION%20SECUNDARIA.pdf",
+          "fuente": "Ministerio de Educación de la Provincia de Córdoba",
+          "contexto": "Documento de progresiones para la trayectoria escolar y la toma de decisiones de enseñanza y evaluación."
+        },
+        {
+          "titulo": "Progresiones — Lenguaje/Lengua y Literatura",
+          "categoria": "Aprendizajes y Contenidos Fundamentales",
+          "url": "https://www.curriculumcordoba.ar/downloads/PROGRESIONES%20DE%20APRENDIZAJE%20DE%20LENGUAJE-LENGUA%20Y%20LITERATURA.pdf",
+          "fuente": "Ministerio de Educación de la Provincia de Córdoba",
+          "contexto": "Integra metas por ciclo, aprendizajes y contenidos e indicadores de logro para Lenguaje/Lengua y Literatura."
+        },
+        {
+          "titulo": "Progresiones — Educación Tecnológica y Ciencias de la Computación",
+          "categoria": "Actualización curricular",
+          "url": "https://curriculumcordoba.ar/downloads/PROGRESONES%20DE%20APRENDIZAJE%20DE%20EDUCACION%20TECNOLOGICA%20Y%20CIENCIAS%20DE%20LA%20COMPUTACION.pdf",
+          "fuente": "Ministerio de Educación de la Provincia de Córdoba",
+          "contexto": "Propone progresiones que articulan metas por ciclo, aprendizajes y contenidos e indicadores de logro, desde Inicial hasta Secundaria."
+        },
+        {
+          "titulo": "Orientaciones y Tecnicaturas",
+          "categoria": "Educación Técnico Profesional",
+          "url": "https://curriculumcordoba.ar/orientaciones_tecnicaturas.html",
+          "fuente": "Ministerio de Educación de la Provincia de Córdoba",
+          "contexto": "Materiales para orientaciones y tecnicaturas de Educación Secundaria, vinculados a la actualización curricular y a saberes y prácticas específicas."
+        },
+        {
+          "titulo": "Formación para la Vida y el Trabajo",
+          "categoria": "Secundaria",
+          "url": "https://curriculumcordoba.ar/progresiones_vida_trabajo.html",
+          "fuente": "Ministerio de Educación de la Provincia de Córdoba",
+          "contexto": "Progresiones para Formación para la Vida y el Trabajo, con metas, aprendizajes y contenidos e indicadores para el nivel secundario."
         }
       ]
     },
-    "santa-fe": {
-      "nombre": "Santa Fe",
-      "estado": "Próximamente",
-      "nota": "",
-      "documentos": []
-    },
-    "mendoza": {
-      "nombre": "Mendoza",
-      "estado": "Próximamente",
-      "nota": "",
+    "corrientes": {
+      "nombre": "Corrientes",
+      "estado": "Disponible",
+      "nota": "Jurisdicción habilitada. La biblioteca provincial específica se incorporará con documentación oficial; mientras tanto se pueden cargar materiales del docente.",
       "documentos": []
     },
     "entre-rios": {
       "nombre": "Entre Ríos",
-      "estado": "Próximamente",
-      "nota": "",
-      "documentos": []
-    },
-    "tucuman": {
-      "nombre": "Tucumán",
-      "estado": "Próximamente",
-      "nota": "",
-      "documentos": []
-    },
-    "salta": {
-      "nombre": "Salta",
-      "estado": "Próximamente",
-      "nota": "",
-      "documentos": []
-    },
-    "misiones": {
-      "nombre": "Misiones",
-      "estado": "Próximamente",
-      "nota": "",
-      "documentos": []
-    },
-    "chaco": {
-      "nombre": "Chaco",
-      "estado": "Próximamente",
-      "nota": "",
-      "documentos": []
-    },
-    "corrientes": {
-      "nombre": "Corrientes",
-      "estado": "Próximamente",
-      "nota": "",
-      "documentos": []
-    },
-    "santiago-del-estero": {
-      "nombre": "Santiago del Estero",
-      "estado": "Próximamente",
-      "nota": "",
-      "documentos": []
-    },
-    "san-juan": {
-      "nombre": "San Juan",
-      "estado": "Próximamente",
-      "nota": "",
-      "documentos": []
-    },
-    "jujuy": {
-      "nombre": "Jujuy",
-      "estado": "Próximamente",
-      "nota": "",
-      "documentos": []
-    },
-    "rio-negro": {
-      "nombre": "Río Negro",
-      "estado": "Próximamente",
-      "nota": "",
-      "documentos": []
-    },
-    "neuquen": {
-      "nombre": "Neuquén",
-      "estado": "Próximamente",
-      "nota": "",
-      "documentos": []
-    },
-    "chubut": {
-      "nombre": "Chubut",
-      "estado": "Próximamente",
-      "nota": "",
-      "documentos": []
-    },
-    "santa-cruz": {
-      "nombre": "Santa Cruz",
-      "estado": "Próximamente",
-      "nota": "",
-      "documentos": []
-    },
-    "tierra-del-fuego": {
-      "nombre": "Tierra del Fuego",
-      "estado": "Próximamente",
-      "nota": "",
-      "documentos": []
-    },
-    "la-pampa": {
-      "nombre": "La Pampa",
-      "estado": "Próximamente",
-      "nota": "",
-      "documentos": []
-    },
-    "san-luis": {
-      "nombre": "San Luis",
-      "estado": "Próximamente",
-      "nota": "",
-      "documentos": []
-    },
-    "catamarca": {
-      "nombre": "Catamarca",
-      "estado": "Próximamente",
-      "nota": "",
-      "documentos": []
-    },
-    "la-rioja": {
-      "nombre": "La Rioja",
-      "estado": "Próximamente",
-      "nota": "",
+      "estado": "Disponible",
+      "nota": "Jurisdicción habilitada. La biblioteca provincial específica se incorporará con documentación oficial; mientras tanto se pueden cargar materiales del docente.",
       "documentos": []
     },
     "formosa": {
       "nombre": "Formosa",
-      "estado": "Próximamente",
-      "nota": "",
+      "estado": "Disponible",
+      "nota": "Jurisdicción habilitada. La biblioteca provincial específica se incorporará con documentación oficial; mientras tanto se pueden cargar materiales del docente.",
+      "documentos": []
+    },
+    "jujuy": {
+      "nombre": "Jujuy",
+      "estado": "Disponible",
+      "nota": "Jurisdicción habilitada. La biblioteca provincial específica se incorporará con documentación oficial; mientras tanto se pueden cargar materiales del docente.",
+      "documentos": []
+    },
+    "la-pampa": {
+      "nombre": "La Pampa",
+      "estado": "Disponible",
+      "nota": "Jurisdicción habilitada. La biblioteca provincial específica se incorporará con documentación oficial; mientras tanto se pueden cargar materiales del docente.",
+      "documentos": []
+    },
+    "la-rioja": {
+      "nombre": "La Rioja",
+      "estado": "Disponible",
+      "nota": "Jurisdicción habilitada. La biblioteca provincial específica se incorporará con documentación oficial; mientras tanto se pueden cargar materiales del docente.",
+      "documentos": []
+    },
+    "mendoza": {
+      "nombre": "Mendoza",
+      "estado": "Disponible",
+      "nota": "Jurisdicción habilitada. La biblioteca provincial específica se incorporará con documentación oficial; mientras tanto se pueden cargar materiales del docente.",
+      "documentos": []
+    },
+    "misiones": {
+      "nombre": "Misiones",
+      "estado": "Disponible",
+      "nota": "Jurisdicción habilitada. La biblioteca provincial específica se incorporará con documentación oficial; mientras tanto se pueden cargar materiales del docente.",
+      "documentos": []
+    },
+    "neuquen": {
+      "nombre": "Neuquén",
+      "estado": "Disponible",
+      "nota": "Jurisdicción habilitada. La biblioteca provincial específica se incorporará con documentación oficial; mientras tanto se pueden cargar materiales del docente.",
+      "documentos": []
+    },
+    "rio-negro": {
+      "nombre": "Río Negro",
+      "estado": "Disponible",
+      "nota": "Jurisdicción habilitada. La biblioteca provincial específica se incorporará con documentación oficial; mientras tanto se pueden cargar materiales del docente.",
+      "documentos": []
+    },
+    "salta": {
+      "nombre": "Salta",
+      "estado": "Disponible",
+      "nota": "Jurisdicción habilitada. La biblioteca provincial específica se incorporará con documentación oficial; mientras tanto se pueden cargar materiales del docente.",
+      "documentos": []
+    },
+    "san-juan": {
+      "nombre": "San Juan",
+      "estado": "Disponible",
+      "nota": "Jurisdicción habilitada. La biblioteca provincial específica se incorporará con documentación oficial; mientras tanto se pueden cargar materiales del docente.",
+      "documentos": []
+    },
+    "san-luis": {
+      "nombre": "San Luis",
+      "estado": "Disponible",
+      "nota": "Jurisdicción habilitada. La biblioteca provincial específica se incorporará con documentación oficial; mientras tanto se pueden cargar materiales del docente.",
+      "documentos": []
+    },
+    "santa-cruz": {
+      "nombre": "Santa Cruz",
+      "estado": "Disponible",
+      "nota": "Jurisdicción habilitada. La biblioteca provincial específica se incorporará con documentación oficial; mientras tanto se pueden cargar materiales del docente.",
+      "documentos": []
+    },
+    "santa-fe": {
+      "nombre": "Santa Fe",
+      "estado": "Disponible",
+      "nota": "Jurisdicción habilitada. La biblioteca provincial específica se incorporará con documentación oficial; mientras tanto se pueden cargar materiales del docente.",
+      "documentos": []
+    },
+    "santiago-del-estero": {
+      "nombre": "Santiago del Estero",
+      "estado": "Disponible",
+      "nota": "Jurisdicción habilitada. La biblioteca provincial específica se incorporará con documentación oficial; mientras tanto se pueden cargar materiales del docente.",
+      "documentos": []
+    },
+    "tierra-del-fuego": {
+      "nombre": "Tierra del Fuego",
+      "estado": "Disponible",
+      "nota": "Jurisdicción habilitada. La biblioteca provincial específica se incorporará con documentación oficial; mientras tanto se pueden cargar materiales del docente.",
+      "documentos": []
+    },
+    "tucuman": {
+      "nombre": "Tucumán",
+      "estado": "Disponible",
+      "nota": "Jurisdicción habilitada. La biblioteca provincial específica se incorporará con documentación oficial; mientras tanto se pueden cargar materiales del docente.",
       "documentos": []
     },
     "caba": {
       "nombre": "Ciudad Autónoma de Buenos Aires",
-      "estado": "Próximamente",
-      "nota": "",
+      "estado": "Disponible",
+      "nota": "Jurisdicción habilitada. La biblioteca provincial específica se incorporará con documentación oficial; mientras tanto se pueden cargar materiales del docente.",
       "documentos": []
     }
   }
