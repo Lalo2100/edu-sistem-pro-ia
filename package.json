@@ -1,6 +1,6 @@
 {
   "name": "edu-sistem-pro-ia",
-  "version": "2.5.0",
+  "version": "2.1.0",
   "private": true,
   "description": "Edu.sistem Pro IA - asistente inteligente para docentes",
   "main": "server.js",

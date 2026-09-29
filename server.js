@@ -97,12 +97,9 @@ async function geminiGenerate(prompt) {
     throw err;
   }
 
-  const configured = process.env.GEMINI_MODEL;
-  const models = [
-    configured,
-    'gemini-2.5-flash',
-   gemini-3.8-flash
-  ].filter(Boolean).filter((v, i, a) => a.indexOf(v) === i);
+  // Usamos exclusivamente el modelo vigente configurado para esta versión.
+  // Ignoramos valores antiguos de GEMINI_MODEL (por ejemplo gemini-2.0-flash).
+  const models = ['gemini-3.8-flash'];
 
   let lastError = null;
   for (const model of models) {
@@ -144,7 +141,7 @@ app.get('/api/health', (req, res) => {
   res.json({
     ok: true,
     app: 'Edu.sistem Pro IA',
-    version: '2.5',
+    version: '2.1',
     geminiConfigured: Boolean(process.env.GEMINI_API_KEY),
     libraryConfigured: Array.isArray(library.categorias) && library.categorias.length === 12
   });
@@ -156,13 +153,13 @@ app.get('/api/biblioteca', (req, res) => {
 
 app.post('/api/generar', upload.array('materiales', 2), async (req, res) => {
   try {
-    const { tipo, nivel, grado, area, tema, duracion, indicaciones } = req.body || {};
+    const { provincia, tipo, nivel, grado, area, tema, duracion, indicaciones } = req.body || {};
     const categorias = Array.isArray(req.body?.bibliotecaCategorias)
       ? req.body.bibliotecaCategorias
       : (req.body?.bibliotecaCategorias ? [req.body.bibliotecaCategorias] : []);
 
-    if (!tipo || !nivel || !grado || !area || !tema) {
-      return res.status(400).json({ error: 'Completá tipo, nivel, grado/curso, área/materia y tema.' });
+    if (!provincia || !tipo || !nivel || !grado || !area || !tema) {
+      return res.status(400).json({ error: 'Completá provincia, tipo, nivel, grado/curso, área/materia y tema.' });
     }
 
     const files = req.files || [];
@@ -184,7 +181,7 @@ app.post('/api/generar', upload.array('materiales', 2), async (req, res) => {
       ? extracted.map(x => `MATERIAL DEL DOCENTE: ${x.name}\n${x.text}`).join('\n\n')
       : 'No se adjuntaron materiales del docente.';
 
-    const prompt = `Sos Edu.sistem Pro IA, un asistente para docentes de la Provincia de Córdoba, Argentina.\n\nGenerá un ${typeNames[tipo] || tipo} listo para usar en la práctica docente.\n\nDATOS:\nNivel: ${nivel}\nGrado/Curso: ${grado}\nÁrea/Materia: ${area}\nTema: ${tema}\nDuración: ${duracion || 'No indicada'}\nIndicaciones del docente: ${indicaciones || 'Sin indicaciones adicionales'}\n\nBIBLIOTECA CURRICULAR SELECCIONADA:\n${libraryContext}\n\nMATERIALES DEL DOCENTE:\n${materialsContext}\n\nCRITERIOS:\n- Escribí en español argentino claro y profesional.\n- Priorizá coherencia pedagógica, objetivos/aprendizajes, contenidos, actividades, evaluación y recursos cuando correspondan al tipo de trabajo.\n- Para una planificación anual, organizá por períodos/unidades de manera práctica.\n- Para una secuencia, presentá inicio, desarrollo y cierre, con evaluación.\n- Para un proyecto, incluí propósito, producto o producción final, etapas y evaluación.\n- Para una rúbrica, incluí criterios y niveles de logro claramente diferenciados.\n- Usá los materiales proporcionados como referencia, sin inventar citas ni atribuir textos inexistentes.\n- Si la biblioteca solo aporta orientación de categoría y no un documento específico, no afirmes que citaste un documento oficial concreto.\n- No uses Markdown con # o **. Entregá texto limpio, con títulos simples y listas legibles.\n- No agregues explicaciones sobre cómo funciona la IA; entregá directamente el trabajo docente.\n`;
+    const prompt = `Sos Edu.sistem Pro IA, un asistente para docentes de Argentina. La provincia seleccionada por el docente es ${provincia}. Adaptá la propuesta al contexto curricular de esa jurisdicción cuando corresponda, sin inventar normativa ni documentos oficiales.\n\nGenerá un ${typeNames[tipo] || tipo} listo para usar en la práctica docente.\n\nDATOS:\nProvincia: ${provincia}\nNivel: ${nivel}\nGrado/Curso: ${grado}\nÁrea/Materia: ${area}\nTema: ${tema}\nDuración: ${duracion || 'No indicada'}\nIndicaciones del docente: ${indicaciones || 'Sin indicaciones adicionales'}\n\nBIBLIOTECA CURRICULAR SELECCIONADA:\n${libraryContext}\n\nMATERIALES DEL DOCENTE:\n${materialsContext}\n\nCRITERIOS:\n- Escribí en español argentino claro y profesional.\n- Priorizá coherencia pedagógica, objetivos/aprendizajes, contenidos, actividades, evaluación y recursos cuando correspondan al tipo de trabajo.\n- Para una planificación anual, organizá por períodos/unidades de manera práctica.\n- Para una secuencia, presentá inicio, desarrollo y cierre, con evaluación.\n- Para un proyecto, incluí propósito, producto o producción final, etapas y evaluación.\n- Para una rúbrica, incluí criterios y niveles de logro claramente diferenciados.\n- Usá los materiales proporcionados como referencia, sin inventar citas ni atribuir textos inexistentes.\n- Si la biblioteca solo aporta orientación de categoría y no un documento específico, no afirmes que citaste un documento oficial concreto.\n- No uses Markdown con # o **. Entregá texto limpio, con títulos simples y listas legibles.\n- No agregues explicaciones sobre cómo funciona la IA; entregá directamente el trabajo docente.\n`;
 
     const result = await geminiGenerate(prompt);
 
