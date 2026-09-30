@@ -649,18 +649,75 @@ Compartir
 
 
 <section id="cuenta" class="card">
-<h2>👤 Mi cuenta</h2>
-<p class="small">Creá tu cuenta o iniciá sesión para guardar tu acceso a Edu.sistem Pro IA.</p>
-<div id="cuentaLogin">
+  <h2>👤 Mi cuenta</h2>
+  <p class="small">Creá tu cuenta o iniciá sesión para guardar tu acceso a Edu.sistem Pro IA.</p>
+  
+  <!-- Formulario de Login / Registro -->
+  <div id="cuentaLogin">
+    <div class="grid" style="margin-top:12px;">
+      <div>
+        <label>Correo electrónico</label>
+        <input type="email" id="authEmail" placeholder="tu@correo.com">
+      </div>
+      <div>
+        <label>Contraseña</label>
+        <input type="password" id="authPassword" placeholder="Mínimo 6 caracteres">
+      </div>
+    </div>
+    <div class="buttons" style="margin-top:12px;">
+      <button type="button" onclick="iniciarSesion()">Iniciar sesión</button>
+      <button type="button" class="secondary" onclick="crearCuenta()">Crear cuenta</button>
+    </div>
+    <div id="authEstado" class="state" style="margin-top:12px; display:none;"></div>
+  </div>
+
+  <!-- Vista con Sesión Activa (oculta por defecto hasta que inicias sesión) -->
+  <div id="cuentaActiva" style="display:none; margin-top:14px;">
+    <div class="grid">
+      <div>
+        <label>Correo</label>
+        <input type="text" id="cuentaEmail" readonly style="background:#f1f5f9;">
+      </div>
+      <div>
+        <label>Plan actual</label>
+        <input type="text" id="cuentaPlan" readonly style="background:#f1f5f9;">
+      </div>
+      <div>
+        <label>Límite de generación</label>
+        <input type="text" id="cuentaLimite" readonly style="background:#f1f5f9;">
+      </div>
+    </div>
+    <div class="buttons" style="margin-top:12px;">
+      <button type="button" class="danger" onclick="cerrarSesion()">Cerrar sesión</button>
+    </div>
+    <div id="cuentaEstado" class="state" style="margin-top:12px;"></div>
+  </div>
+</section>
+
+<!-- Sección de Planes de Mercado Pago separada y ordenada -->
 <section id="planes" class="card">
-<h2>💳 Planes Edu.sistem Pro IA</h2>
-<p class="small">Elegí la modalidad que mejor se adapte a tu uso.</p>
-<div class="plans">
-<div class="plan"><h3>👩‍🏫 Docente</h3><div class="price">$4.999 / mes</div><p>100 generaciones por mes.</p><a href="https://mpago.la/2X9cT72" target="_blank" rel="noopener noreferrer">Suscribirme</a></div>
-
-<div class="plan"><h3>💼 Profesional</h3><div class="price">$8.999 / mes</div><p>300 generaciones por mes.</p><a href="https://mpago.la/142hjdM" target="_blank" rel="noopener noreferrer">Suscribirme</a></div>
-
-<div class="plan"><h3>🏫 Institución</h3><div class="price">$24.999 / mes</div><p>1.000 generaciones por mes.</p><a href="https://mpago.la/2ECLDFR" target="_blank" rel="noopener noreferrer">Suscribirme</a></div>
+  <h2>💳 Planes Edu.sistem Pro IA</h2>
+  <p class="small">Elegí la modalidad que mejor se adapte a tu uso.</p>
+  <div class="plans" style="margin-top:14px;">
+    <div class="plan">
+      <h3>👩‍🏫 Docente</h3>
+      <div class="price">$4.999 / mes</div>
+      <p class="small">100 generaciones por mes.</p>
+      <a href="https://mpago.la/2X9cT72" target="_blank" rel="noopener noreferrer">Suscribirme</a>
+    </div>
+    <div class="plan">
+      <h3>💼 Profesional</h3>
+      <div class="price">$8.999 / mes</div>
+      <p class="small">300 generaciones por mes.</p>
+      <a href="https://mpago.la/142hjdM" target="_blank" rel="noopener noreferrer">Suscribirme</a>
+    </div>
+    <div class="plan">
+      <h3>🏫 Institución</h3>
+      <div class="price">$24.999 / mes</div>
+      <p class="small">1.000 generaciones por mes.</p>
+      <a href="https://mpago.la/2ECLDFR" target="_blank" rel="noopener noreferrer">Suscribirme</a>
+    </div>
+  </div>
 </section>
 
 </main>
