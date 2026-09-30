@@ -739,7 +739,17 @@ Consultá y administrá tu plan de Edu.sistem Pro IA.
 Edu.sistem Pro IA · Asistente inteligente para docentes
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+<script>
+const SUPABASE_URL = 'https://ceqjgbktfcjdfasfolhg.supabase.co';
+const SUPABASE_ANON_KEY = 'PEGÁ_ACÁ_TU_CLAVE_PÚBLICA';
+
+const supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+);
+</script>
 <script>
 
 let materiales = [];
