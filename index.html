@@ -1592,17 +1592,83 @@ function limpiar(){
 
 
 /* =====================================================
-   INICIO
+   MI CUENTA
 ===================================================== */
 
-renderMateriales();
+function guardarCuenta(){
 
-renderBiblioteca();
+  const email = $('cuentaEmail').value.trim();
+  const plan = $('cuentaPlan').value;
 
-health();
+  if(!email){
 
-</script>
+    $('cuentaEstado').textContent =
+      'Ingresá tu correo electrónico.';
+
+    $('cuentaEstado').className =
+      'state err';
+
+    return;
+
+  }
+
+  localStorage.setItem(
+    'eduSistemCuentaEmail',
+    email
+  );
+
+  localStorage.setItem(
+    'eduSistemCuentaPlan',
+    plan
+  );
+
+  actualizarCuenta();
+
+  $('cuentaEstado').textContent =
+    '✓ Datos de cuenta guardados.';
+
+  $('cuentaEstado').className =
+    'state ok';
+
+}
 
 
+function actualizarCuenta(){
 
-</body></html>
+  const email =
+    localStorage.getItem(
+      'eduSistemCuentaEmail'
+    );
+
+  const plan =
+    localStorage.getItem(
+      'eduSistemCuentaPlan'
+    ) || 'gratis';
+
+  if($('cuentaEmail') && email){
+
+    $('cuentaEmail').value = email;
+
+  }
+
+  if($('cuentaPlan')){
+
+    $('cuentaPlan').value = plan;
+
+  }
+
+  const limites = {
+    gratis:'5 generaciones',
+    docente:'100 generaciones',
+    profesional:'300 generaciones',
+    institucion:'1.000 generaciones'
+  };
+
+  if($('cuentaLimite')){
+
+    $('cuentaLimite').value =
+      limites[plan] || limites.gratis;
+
+  }
+
+}
