@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html lang="es"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-
+<html lang="es">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Edu.sistem Pro IA</title>
 
@@ -577,7 +578,7 @@ const $ = id => document.getElementById(id);
 
 function esc(s){
   return String(s).replace(/[&<>"']/g, c => ({
-    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\x27':'&#39;'
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
   }[c]));
 }
 
@@ -822,4 +823,5 @@ renderBiblioteca();
 health();
 </script>
 
-</body></html>
+</body>
+</html>
