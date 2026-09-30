@@ -62,15 +62,37 @@ async function extractFileText(file) {
 
 function buildLibraryContext(selected) {
   const library = readLibrary();
-  const wanted = Array.isArray(selected) ? selected : [selected].filter(Boolean);
-  if (!wanted.length) return 'No se seleccionaron referencias de la Biblioteca Curricular Argentina.';
+  const wanted = Array.isArray(selected)
+    ? selected
+    : [selected].filter(Boolean);
+
+  if (!wanted.length) {
+    return 'No se seleccionaron referencias de la Biblioteca Curricular Argentina.';
+  }
+
+  const categorias = Array.isArray(library.categorias)
+    ? library.categorias
+    : [];
+
   return wanted.map(name => {
-    const item = library.categorias.find(c => c.nombre === name);
-    if (!item) return `Categoría seleccionada: ${name}`;
+    const categoria = categorias.find(c =>
+      typeof c === 'string'
+        ? c === name
+        : c && c.nombre === name
+    );
+
+    if (!categoria) {
+      return `CATEGORÍA: ${name}`;
+    }
+
+    if (typeof categoria === 'string') {
+      return `CATEGORÍA: ${categoria}`;
+    }
+
     return [
-      `CATEGORÍA: ${item.nombre}`,
-      `DESCRIPCIÓN: ${item.descripcion}`,
-      `ORIENTACIÓN DE USO: ${item.orientacion}`
+      `CATEGORÍA: ${categoria.nombre}`,
+      `DESCRIPCIÓN: ${categoria.descripcion || ''}`,
+      `ORIENTACIÓN DE USO: ${categoria.orientacion || ''}`
     ].join('\n');
   }).join('\n\n');
 }
