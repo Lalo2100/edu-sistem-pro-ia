@@ -63,8 +63,7 @@ async function extractFileText(file) {
 function buildLibraryContext(selected) {
   const library = readLibrary();
   const wanted = Array.isArray(selected) ? selected : [selected].filter(Boolean);
- No se seleccionaron referencias de la Biblioteca Curricular Argentina.
-
+  if (!wanted.length) return 'No se seleccionaron referencias de la Biblioteca Curricular Argentina.';
   return wanted.map(name => {
     const item = library.categorias.find(c => c.nombre === name);
     if (!item) return `Categoría seleccionada: ${name}`;
