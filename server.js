@@ -21,8 +21,10 @@ const upload = multer({
 
 function readLibrary() {
   try {
-    return JSON.parse(fs.readFileSync(LIBRARY_FILE, 'utf8'));
-  } catch (_) {
+    return JSON.parse(
+      fs.readFileSync(LIBRARY_FILE, 'utf8')
+    );
+  } catch (error) {
     return {
       version: '2.2',
       nombre: 'Biblioteca Curricular Argentina',
@@ -52,8 +54,8 @@ async function extractFileText(file) {
       const pdfParse = require('pdf-parse');
       const result = await pdfParse(file.buffer);
       return cleanText(result.text);
-    } catch (e) {
-      return `[No se pudo extraer el texto de ${file.originalname}: ${e.message}]`;
+    } catch (error) {
+      return `[No se pudo extraer el texto de ${file.originalname}]`;
     }
   }
 
@@ -64,19 +66,14 @@ async function extractFileText(file) {
         buffer: file.buffer
       });
       return cleanText(result.value);
-    } catch (e) {
-      return `[No se pudo extraer el texto de ${file.originalname}: ${e.message}]`;
+    } catch (error) {
+      return `[No se pudo extraer el texto de ${file.originalname}]`;
     }
   }
 
   return '';
 }
 
-/*
- * Biblioteca Curricular Argentina
- * Compatible con categorías en formato string
- * y también con categorías en formato objeto.
- */
 function buildLibraryContext(selected) {
   const library = readLibrary();
 
@@ -92,12 +89,14 @@ function buildLibraryContext(selected) {
     ? library.categorias
     : [];
 
-  return wanted.map(name => {
-    const categoria = categorias.find(c =>
-      typeof c === 'string'
-        ? c === name
-        : c && c.nombre === name
-    );
+  return wanted.map(function (name) {
+    const categoria = categorias.find(function (item) {
+      if (typeof item === 'string') {
+        return item === name;
+      }
+
+      return item && item.nombre === name;
+    });
 
     if (!categoria) {
       return `CATEGORÍA: ${name}`;
@@ -115,10 +114,15 @@ function buildLibraryContext(selected) {
   }).join('\n\n');
 }
 
-/*
- * Obtiene información de la provincia seleccionada.
- * Esto permite utilizar la estructura nacional de biblioteca.json.
- */
+function normalizeKey(value) {
+  return String(value || '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+}
+
 function buildProvinceContext(provincia) {
   const library = readLibrary();
 
@@ -126,23 +130,14 @@ function buildProvinceContext(provincia) {
     return 'No hay información provincial específica seleccionada.';
   }
 
-  const normalize = value =>
-    String(value || '')
-      .toLowerCase()
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-|-$/g, '');
-
-  const key = normalize(provincia);
+  const key = normalizeKey(provincia);
 
   let province = library.provincias[key];
 
   if (!province) {
-    const found = Object.values(library.provincias).find(item =>
-      normalize(item.nombre) === key
-    );
-    province = found;
+    province = Object.values(library.provincias).find(function (item) {
+      return normalizeKey(item && item.nombre) === key;
+    });
   }
 
   if (!province) {
@@ -155,17 +150,20 @@ function buildProvinceContext(provincia) {
     `NOTA: ${province.nota || ''}`
   ];
 
-  if (Array.isArray(province.documentos) && province.documentos.length) {
+  if (
+    Array.isArray(province.documentos) &&
+    province.documentos.length
+  ) {
     lines.push(
       'DOCUMENTOS CURRICULARES DISPONIBLES:',
-      province.documentos.map(doc =>
-        [
+      province.documentos.map(function (doc) {
+        return [
           `Título: ${doc.titulo || ''}`,
           `Categoría: ${doc.categoria || ''}`,
           `Fuente: ${doc.fuente || ''}`,
           `Contexto: ${doc.contexto || ''}`
-        ].join('\n')
-      ).join('\n\n')
+        ].join('\n');
+      }).join('\n\n')
     );
   }
 
@@ -179,7 +177,7 @@ function stripMarkdown(text) {
     .replace(/__(.*?)__/g, '$1')
     .replace(/`([^`]+)`/g, '$1')
     .replace(/^\s*[-*]\s+/gm, '• ')
-    .replace(/^\s*\d+\.\s+/gm, match => match.trim() + ' ')
+    .replace(/^\s*\d+\.\s+/gm, '$&')
     .replace(/\n{3,}/g, '\n\n')
     .trim();
 }
@@ -189,26 +187,43 @@ async function listGeminiModels(key) {
     `https://generativelanguage.googleapis.com/v1beta/models?key=${encodeURIComponent(key)}`;
 
   const response = await fetch(url);
-  const data = await response.json().catch(() => ({}));
+  const data = await response.json().catch(function () {
+    return {};
+  });
 
-  if (!response.ok) return [];
+  if (!response.ok) {
+    return [];
+  }
 
-  return Array.isArray(data.models) ? data.models : [];
+  return Array.isArray(data.models)
+    ? data.models
+    : [];
 }
 
 function modelId(name) {
-  return String(name || '').replace(/^models\//, '');
+  return String(name || '')
+    .replace(/^models\//, '');
 }
 
 function rankModel(model) {
   const id = modelId(model.name).toLowerCase();
   const methods = model.supportedGenerationMethods || [];
 
-  if (!methods.includes('generateContent')) return -1;
+  if (!methods.includes('generateContent')) {
+    return -1;
+  }
 
-  if (id === 'gemini-3.8-flash') return 100;
-  if (id === 'gemini-3.6-flash') return 90;
-  if (id === 'gemini-3.5-flash-lite') return 80;
+  if (id === 'gemini-3.8-flash') {
+    return 100;
+  }
+
+  if (id === 'gemini-3.6-flash') {
+    return 90;
+  }
+
+  if (id === 'gemini-3.5-flash-lite') {
+    return 80;
+  }
 
   if (
     id.includes('flash') &&
@@ -234,29 +249,34 @@ function isTemporaryGeminiError(status, message) {
 }
 
 function wait(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise(function (resolve) {
+    setTimeout(resolve, ms);
+  });
 }
 
 async function geminiGenerate(prompt) {
   const key = process.env.GEMINI_API_KEY;
 
   if (!key) {
-    const err = new Error(
+    const error = new Error(
       'Falta configurar GEMINI_API_KEY en Vercel.'
     );
-    err.status = 503;
-    throw err;
+
+    error.status = 503;
+    throw error;
   }
 
   let available = [];
 
   try {
     available = await listGeminiModels(key);
-  } catch (_) {
+  } catch (error) {
     available = [];
   }
 
-  const envModel = modelId(process.env.GEMINI_MODEL);
+  const envModel = modelId(
+    process.env.GEMINI_MODEL
+  );
 
   const preferredIds = [
     envModel,
@@ -266,26 +286,39 @@ async function geminiGenerate(prompt) {
   ].filter(Boolean);
 
   const availableIds = available
-    .filter(m => rankModel(m) >= 0)
-    .sort((a, b) => rankModel(b) - rankModel(a))
-    .map(m => modelId(m.name));
+    .filter(function (model) {
+      return rankModel(model) >= 0;
+    })
+    .sort(function (a, b) {
+      return rankModel(b) - rankModel(a);
+    })
+    .map(function (model) {
+      return modelId(model.name);
+    });
 
   const models = [
     ...new Set([
-      ...preferredIds.filter(
-        id => !available.length || availableIds.includes(id)
-      ),
+      ...preferredIds.filter(function (id) {
+        return !available.length ||
+          availableIds.includes(id);
+      }),
       ...availableIds
     ])
   ].slice(0, 5);
 
   if (!models.length) {
-    models.push(...new Set(preferredIds));
+    models.push(
+      ...new Set(preferredIds)
+    );
   }
 
   let lastError = null;
 
-  for (let attempt = 0; attempt < models.length; attempt++) {
+  for (
+    let attempt = 0;
+    attempt < models.length;
+    attempt++
+  ) {
     const model = models[attempt];
 
     const url =
@@ -315,13 +348,23 @@ async function geminiGenerate(prompt) {
         })
       });
 
-      const data = await response.json().catch(() => ({}));
+      const data = await response.json().catch(function () {
+        return {};
+      });
 
       if (response.ok) {
         const text =
-          data?.candidates?.[0]?.content?.parts
-            ?.map(p => p.text || '')
-            .join('') || '';
+          data &&
+          data.candidates &&
+          data.candidates[0] &&
+          data.candidates[0].content &&
+          data.candidates[0].content.parts
+            ? data.candidates[0].content.parts
+                .map(function (part) {
+                  return part.text || '';
+                })
+                .join('')
+            : '';
 
         if (!text.trim()) {
           lastError = new Error(
@@ -330,13 +373,16 @@ async function geminiGenerate(prompt) {
         } else {
           return {
             text: stripMarkdown(text),
-            model
+            model: model
           };
         }
       } else {
         const apiMessage =
-          data?.error?.message ||
-          `HTTP ${response.status}`;
+          data &&
+          data.error &&
+          data.error.message
+            ? data.error.message
+            : `HTTP ${response.status}`;
 
         lastError = new Error(
           `${model}: ${apiMessage}`
@@ -351,6 +397,7 @@ async function geminiGenerate(prompt) {
           if (attempt < models.length - 1) {
             await wait(900);
           }
+
           continue;
         }
 
@@ -360,8 +407,8 @@ async function geminiGenerate(prompt) {
 
         break;
       }
-    } catch (e) {
-      lastError = e;
+    } catch (error) {
+      lastError = error;
 
       if (attempt < models.length - 1) {
         await wait(900);
@@ -369,39 +416,37 @@ async function geminiGenerate(prompt) {
     }
   }
 
-  const err =
+  const error =
     lastError ||
     new Error('No se pudo consultar Gemini.');
 
-  err.status = isTemporaryGeminiError(
-    err.status,
-    err.message
-  )
-    ? 503
-    : (err.status || 500);
+  error.status =
+    isTemporaryGeminiError(
+      error.status,
+      error.message
+    )
+      ? 503
+      : (error.status || 500);
 
-  throw err;
+  throw error;
 }
 
-/* =========================
-   HEALTH
-========================= */
-
-app.get('/api/health', (req, res) => {
+app.get('/api/health', function (req, res) {
   const library = readLibrary();
 
   res.json({
     ok: true,
     app: 'Edu.sistem Pro IA',
     version: '2.2',
-    geminiConfigured: Boolean(
-      process.env.GEMINI_API_KEY
-    ),
+    geminiConfigured:
+      Boolean(process.env.GEMINI_API_KEY),
     bibliotecaArgentina: true,
     provincias:
       library.provincias &&
       typeof library.provincias === 'object'
-        ? Object.keys(library.provincias).length
+        ? Object.keys(
+            library.provincias
+          ).length
         : 0,
     categorias:
       Array.isArray(library.categorias)
@@ -410,22 +455,14 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-/* =========================
-   BIBLIOTECA
-========================= */
-
-app.get('/api/biblioteca', (req, res) => {
+app.get('/api/biblioteca', function (req, res) {
   res.json(readLibrary());
 });
-
-/* =========================
-   GENERACIÓN
-========================= */
 
 app.post(
   '/api/generar',
   upload.array('materiales', 2),
-  async (req, res) => {
+  async function (req, res) {
     try {
       const {
         provincia,
@@ -438,15 +475,18 @@ app.post(
         indicaciones
       } = req.body || {};
 
-      const categorias = Array.isArray(
-        req.body?.bibliotecaCategorias
-      )
-        ? req.body.bibliotecaCategorias
-        : (
-            req.body?.bibliotecaCategorias
-              ? [req.body.bibliotecaCategorias]
-              : []
-          );
+      const categorias =
+        Array.isArray(
+          req.body &&
+          req.body.bibliotecaCategorias
+        )
+          ? req.body.bibliotecaCategorias
+          : (
+              req.body &&
+              req.body.bibliotecaCategorias
+                ? [req.body.bibliotecaCategorias]
+                : []
+            );
 
       if (
         !provincia ||
@@ -490,32 +530,29 @@ app.post(
 
       const materialsContext =
         extracted.length
-          ? extracted
-              .map(
-                x =>
-                  `MATERIAL DEL DOCENTE: ${x.name}\n${x.text}`
-              )
-              .join('\n\n')
+          ? extracted.map(function (item) {
+              return (
+                `MATERIAL DEL DOCENTE: ${item.name}\n` +
+                item.text
+              );
+            }).join('\n\n')
           : 'No se adjuntaron materiales del docente.';
 
       const prompt = `
 Sos Edu.sistem Pro IA, un asistente inteligente para docentes de Argentina.
 
-La provincia seleccionada por el docente es:
+La provincia seleccionada es:
 ${provincia}
 
 Adaptá la propuesta al contexto educativo y curricular de esa jurisdicción cuando corresponda.
 
-IMPORTANTE:
-- No inventes normativa.
-- No inventes documentos oficiales.
-- No atribuyas contenidos a organismos oficiales si no aparecen en la información proporcionada.
-- Si no existe documentación provincial específica disponible, trabajá con criterios pedagógicos generales y con los materiales cargados por el docente.
+No inventes normativa ni documentos oficiales.
+No atribuyas contenidos a organismos oficiales si no aparecen en la información proporcionada.
 
-GENERÁ:
+TIPO DE TRABAJO:
 ${typeNames[tipo] || tipo}
 
-DATOS DEL DOCENTE:
+DATOS:
 
 Provincia: ${provincia}
 Nivel: ${nivel}
@@ -525,11 +562,11 @@ Tema: ${tema}
 Duración: ${duracion || 'No indicada'}
 Indicaciones del docente: ${indicaciones || 'Sin indicaciones adicionales'}
 
-BIBLIOTECA CURRICULAR SELECCIONADA:
+BIBLIOTECA CURRICULAR:
 
 ${libraryContext}
 
-INFORMACIÓN CURRICULAR DE LA PROVINCIA:
+INFORMACIÓN DE LA PROVINCIA:
 
 ${provinceContext}
 
@@ -537,7 +574,7 @@ MATERIALES DEL DOCENTE:
 
 ${materialsContext}
 
-CRITERIOS DE ELABORACIÓN:
+CRITERIOS:
 
 - Escribí en español argentino claro y profesional.
 - Elaborá un material directamente utilizable por el docente.
@@ -548,29 +585,79 @@ CRITERIOS DE ELABORACIÓN:
 - Incluí evaluación.
 - Incluí recursos cuando correspondan.
 
-Para una planificación anual:
-- Organizá por períodos, unidades o etapas.
-- Presentá una estructura práctica.
+Para planificación anual:
+Organizá por períodos, unidades o etapas.
 
-Para una secuencia didáctica:
-- Incluí inicio, desarrollo y cierre.
-- Incluí estrategias de evaluación.
+Para secuencia didáctica:
+Incluí inicio, desarrollo, cierre y evaluación.
 
-Para un proyecto:
-- Incluí propósito.
-- Producto o producción final.
-- Etapas.
-- Actividades.
-- Evaluación.
+Para proyecto:
+Incluí propósito, producto final, etapas, actividades y evaluación.
 
-Para una rúbrica:
-- Incluí criterios claros.
-- Diferenciá niveles de logro.
+Para rúbrica:
+Incluí criterios y niveles de logro claramente diferenciados.
 
 Usá los materiales proporcionados por el docente como referencia.
 
-NO USES MARKDOWN.
+Entregá texto limpio.
+No uses Markdown.
+No uses # ni **.
+No expliques cómo funciona la IA.
+Entregá directamente el trabajo docente.
+`;
 
-No uses:
-#
-**
+      const result =
+        await geminiGenerate(prompt);
+
+      return res.json({
+        ok: true,
+        texto: result.text,
+        modelo: result.model,
+        materialesUsados:
+          extracted.map(function (item) {
+            return item.name;
+          }),
+        bibliotecaCategorias: categorias,
+        provincia: provincia
+      });
+
+    } catch (error) {
+      console.error(
+        'Error /api/generar:',
+        error
+      );
+
+      const status =
+        error.status || 500;
+
+      return res.status(status).json({
+        error:
+          status === 503
+            ? error.message
+            : `No se pudo generar el trabajo. ${error.message || ''}`.trim()
+      });
+    }
+  }
+);
+
+app.get('*', function (req, res) {
+  if (req.path.startsWith('/api/')) {
+    return res.status(404).json({
+      error: 'Endpoint no encontrado.'
+    });
+  }
+
+  return res.sendFile(
+    path.join(ROOT, 'index.html')
+  );
+});
+
+if (require.main === module) {
+  app.listen(PORT, function () {
+    console.log(
+      `Edu.sistem Pro IA escuchando en ${PORT}`
+    );
+  });
+}
+
+module.exports = app;
