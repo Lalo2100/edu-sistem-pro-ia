@@ -297,7 +297,19 @@ button.danger{
   padding:14px;
 }
 
-.plan a{display:block;margin-top:10px;padding:10px 12px;border-radius:10px;background:var(--primary);color:#fff;text-decoration:none;text-align:center;font-weight:700}.plan a:hover{opacity:.9}
+.plan button {
+  width: 100%;
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--primary);
+  color: #fff;
+  text-decoration: none;
+  text-align: center;
+  font-weight: 700;
+  cursor: pointer;
+}
+.plan button:hover { opacity: .9; }
 
 .price{
   font-weight:800;
@@ -518,7 +530,7 @@ footer{
 
 <section id="planes" class="card">
 <h2>💳 Planes Edu.sistem Pro IA</h2>
-<p class="small">Elegí la modalidad que mejor se adapte a tu uso. El plan se activará automáticamente con tu correo actual.</p>
+<p class="small">Elegí la modalidad que mejor se adapte a tu uso. El plan se asociará a tu correo activo.</p>
 <div class="plans">
   <div class="plan">
     <h3>🆓 Gratis</h3>
@@ -545,6 +557,7 @@ footer{
   </div>
 </div>
 </section>
+
 </main>
 
 <footer>
@@ -563,7 +576,7 @@ const $ = id => document.getElementById(id);
 
 // Configuración de Supabase
 const SUPABASE_URL = 'https://ceqjgbktfcjdfasfolhg.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNlcWpnYmt0ZmNqZGZhc2ZvbGhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA5ODIxOTgsImV4cCI6MjA4NjU1ODE5OH0.tu_anon_key_segura'; // Clave pública anónima estándar
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNlcWpnYmt0ZmNqZGZhc2ZvbGhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA5ODIxOTgsImV4cCI6MjA4NjU1ODE5OH0.tu_anon_key_segura';
 let supabaseClient = null;
 
 try {
@@ -624,6 +637,18 @@ async function cerrarSesion() {
   if (!supabaseClient) return;
   await supabaseClient.auth.signOut();
   location.reload();
+}
+
+function pagarPlan(planNombre, linkPago) {
+  const emailActual = $('userEmailDisplay') ?$('userEmailDisplay').textContent : '';
+  
+  if (!emailActual || emailActual === '') {
+    alert('Por favor, iniciá sesión en tu "Cuenta Docente" antes de suscribirte para asociar el pago.');
+    ir('authCard');
+    return;
+  }
+
+  window.open(linkPago, '_blank');
 }
 
 function esc(s){
