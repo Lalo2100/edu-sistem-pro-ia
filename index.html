@@ -204,12 +204,6 @@ button.danger{
   background:#fff;
 }
 
-.library-title{
-  font-weight:800;
-  font-size:15px;
-  margin-bottom:5px;
-}
-
 .library-select{
   display:flex;
   align-items:flex-start;
@@ -237,39 +231,6 @@ button.danger{
   color:var(--muted);
   line-height:1.4;
   min-height:34px;
-}
-
-.library-upload{
-  margin-top:10px;
-}
-
-.library-upload input{
-  font-size:12px;
-  padding:9px;
-}
-
-.library-files{
-  margin-top:8px;
-}
-
-.library-file{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:8px;
-  padding:7px 0;
-  border-bottom:1px solid var(--line);
-  font-size:12px;
-}
-
-.library-file:last-child{
-  border-bottom:0;
-}
-
-.library-file-name{
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
 }
 
 .library-info{
@@ -351,35 +312,15 @@ footer{
 }
 
 @media(max-width:700px){
-  header{
-    padding:12px 14px;
-  }
-  .logo{
-    width:44px;
-    height:44px;
-  }
-  .brand{
-    font-size:18px;
-  }
-  .grid{
-    grid-template-columns:1fr;
-  }
-  .full{
-    grid-column:auto;
-  }
-  .plans{
-    grid-template-columns:1fr 1fr;
-  }
-  .hero h1{
-    font-size:27px;
-  }
-  .badge{
-    display:block;
-    font-size:10px;
-  }
-  .library-grid{
-    grid-template-columns:1fr;
-  }
+  header{padding:12px 14px;}
+  .logo{width:44px;height:44px;}
+  .brand{font-size:18px;}
+  .grid{grid-template-columns:1fr;}
+  .full{grid-column:auto;}
+  .plans{grid-template-columns:1fr 1fr;}
+  .hero h1{font-size:27px;}
+  .badge{display:block;font-size:10px;}
+  .library-grid{grid-template-columns:1fr;}
 }
 </style>
 </head>
@@ -415,11 +356,39 @@ footer{
 <p>Simple, rápido y pensado para usar desde el celular.</p>
 </section>
 
+<!-- SECCIÓN DE CUENTA / ACCESO -->
+<section id="authCard" class="card">
+  <h2>👤 Cuenta Docente</h2>
+  <div id="authLogueado" style="display:none;">
+    <p class="small">Sesión iniciada como: <strong id="userEmailDisplay"></strong></p>
+    <p class="small">Plan actual: <strong id="userPlanDisplay" style="text-transform:uppercase;">Gratis</strong></p>
+    <div class="buttons">
+      <button type="button" class="danger" onclick="cerrarSesion()">Cerrar sesión</button>
+    </div>
+  </div>
+  <div id="authForm" class="grid">
+    <div class="full">
+      <p class="small">Iniciá sesión o creá tu cuenta para gestionar tus generaciones y planes.</p>
+    </div>
+    <div>
+      <label>Correo electrónico</label>
+      <input type="email" id="authEmail" placeholder="tu@correo.com">
+    </div>
+    <div>
+      <label>Contraseña</label>
+      <input type="password" id="authPassword" placeholder="••••••••">
+    </div>
+    <div class="buttons full">
+      <button type="button" onclick="iniciarSesion()">Iniciar sesión</button>
+      <button type="button" class="secondary" onclick="registrarUsuario()">Crear cuenta</button>
+    </div>
+    <div id="authMensaje" class="full small" style="color:var(--primary-dark); font-weight:bold;"></div>
+  </div>
+</section>
+
 <section id="biblioteca" class="card">
 <h2>📚 Biblioteca Curricular Argentina</h2>
-<p class="small">
-Elegí una o varias referencias. Edu.sistem Pro IA las consultará como contexto curricular al generar tu trabajo. No tenés que descargar ni subir estos documentos.
-</p>
+<p class="small">Elegí una o varias referencias. Edu.sistem Pro IA las consultará como contexto curricular.</p>
 
 <div class="library-grid">
 <div class="library-card"><label class="library-select"><input type="checkbox" class="biblioteca-check" value="Inicial"> <span>🟣 Inicial</span></label><div class="library-description">Referencias curriculares para Educación Inicial.</div></div>
@@ -430,21 +399,17 @@ Elegí una o varias referencias. Edu.sistem Pro IA las consultará como contexto
 <div class="library-card"><label class="library-select"><input type="checkbox" class="biblioteca-check" value="Jóvenes y Adultos"> <span>🟤 Jóvenes y Adultos</span></label><div class="library-description">Referencias para la modalidad de Jóvenes y Adultos.</div></div>
 <div class="library-card"><label class="library-select"><input type="checkbox" class="biblioteca-check" value="Educación Rural"> <span>🌾 Educación Rural</span></label><div class="library-description">Referencias específicas para Educación Rural.</div></div>
 <div class="library-card"><label class="library-select"><input type="checkbox" class="biblioteca-check" value="Técnico Profesional"> <span>🔧 Educación Técnico Profesional</span></label><div class="library-description">Materiales y referencias para la Educación Técnico Profesional.</div></div>
-<div class="library-card"><label class="library-select"><input type="checkbox" class="biblioteca-check" value="Progresiones"> <span>📈 Progresiones</span></label><div class="library-description">Metas, aprendizajes, contenidos e indicadores de las Progresiones de Aprendizaje.</div></div>
-<div class="library-card"><label class="library-select"><input type="checkbox" class="biblioteca-check" value="Aprendizajes y Contenidos Fundamentales"> <span>🎯 Aprendizajes y Contenidos Fundamentales</span></label><div class="library-description">Referencia vinculada a aprendizajes y contenidos curriculares.</div></div>
+<div class="library-card"><label class="library-select"><input type="checkbox" class="biblioteca-check" value="Progresiones"> <span>📈 Progresiones</span></label><div class="library-description">Metas, aprendizajes, contenidos e indicadores.</div></div>
+<div class="library-card"><label class="library-select"><input type="checkbox" class="biblioteca-check" value="Aprendizajes y Contenidos Fundamentales"> <span>🎯 Aprendizajes y Contenidos Fundamentales</span></label><div class="library-description">Referencia vinculada a contenidos curriculares.</div></div>
 <div class="library-card"><label class="library-select"><input type="checkbox" class="biblioteca-check" value="Actualización curricular"> <span>📘 Actualización curricular</span></label><div class="library-description">Referencias de actualización curricular.</div></div>
 <div class="library-card"><label class="library-select"><input type="checkbox" class="biblioteca-check" value="Referencias 2026"> <span>🏛️ Referencias 2026</span></label><div class="library-description">Referencias identificadas para el ciclo 2026.</div></div>
 </div>
 
 <div id="bibliotecaSeleccionadas" class="library-info">📚 No seleccionaste referencias todavía.</div>
 
-<div class="library-info">
-📌 <strong>Cómo funciona:</strong> las referencias oficiales disponibles se consultan desde el servidor cuando generás el trabajo. La aplicación no necesita que descargues los PDF ni que los subas a GitHub.
-</div>
-
 <div class="material-box">
 <h3>👨‍🏫 Materiales que carga el docente</h3>
-<p class="small">Acá podés agregar tus propios diseños, planificaciones, secuencias, programas, ejemplos o documentos institucionales.</p>
+<p class="small">Acá podés agregar tus propios diseños, planificaciones o secuencias.</p>
 <input id="archivo" type="file" accept=".pdf,.docx,.txt,.md,.csv,.html,.htm" multiple>
 <div class="buttons"><button type="button" class="secondary" onclick="agregarMaterial()">+ Agregar material</button></div>
 <div id="materialesLista"><p class="small">Todavía no agregaste materiales.</p></div>
@@ -528,7 +493,6 @@ Elegí una o varias referencias. Edu.sistem Pro IA las consultará como contexto
   <div class="full">
     <label>¿Cómo querés que lo realice?</label>
     <textarea id="indicaciones" placeholder="Ej.: incluir fundamentación, objetivos, actividades y evaluación, organizado en tablas."></textarea>
-    <p class="small">Podés escribirlo con tus palabras.</p>
   </div>
 </div>
 
@@ -569,12 +533,80 @@ Elegí una o varias referencias. Edu.sistem Pro IA las consultará como contexto
 Edu.sistem Pro IA · Asistente inteligente para docentes
 </footer>
 
+<!-- Supabase JS Client desde CDN -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
 let materiales = [];
 let bibliotecaCategoriasSeleccionadas = [];
 let ultimo = '';
 
 const $ = id => document.getElementById(id);
+
+// Configuración de Supabase
+const SUPABASE_URL = 'https://ceqjgbktfcjdfasfolhg.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNlcWpnYmt0ZmNqZGZhc2ZvbGhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA5ODIxOTgsImV4cCI6MjA4NjU1ODE5OH0.tu_anon_key_segura'; // Clave pública anónima estándar
+let supabaseClient = null;
+
+try {
+  if (window.supabase) {
+    supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  }
+} catch(e) {
+  console.error("Error al iniciar Supabase:", e);
+}
+
+async function verificarSesion() {
+  if (!supabaseClient) return;
+  try {
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    if (session && session.user) {
+      $('authForm').style.display = 'none';
+      $('authLogueado').style.display = 'block';$('userEmailDisplay').textContent = session.user.email;
+      
+      const { data: perfil } = await supabaseClient.from('profiles').select('plan').eq('id', session.user.id).single();
+      if (perfil && perfil.plan) {
+        $('userPlanDisplay').textContent = perfil.plan;
+      }
+    }
+  } catch(err) {
+    console.log("Sesión no iniciada o error de perfil");
+  }
+}
+
+async function registrarUsuario() {
+  if (!supabaseClient) { alert("Supabase no está conectado."); return; }
+  const email = $('authEmail').value.trim();
+  const password = $('authPassword').value.trim();
+  if(!email || !password) { $('authMensaje').textContent = 'Completá email y contraseña.'; return; }
+  
+  const { data, error } = await supabaseClient.auth.signUp({ email, password });
+  if (error) {
+    $('authMensaje').textContent = 'Error: ' + error.message;
+  } else {
+    $('authMensaje').textContent = '¡Cuenta creada con éxito! Ya podés iniciar sesión.';
+  }
+}
+
+async function iniciarSesion() {
+  if (!supabaseClient) { alert("Supabase no está conectado."); return; }
+  const email = $('authEmail').value.trim();
+  const password = $('authPassword').value.trim();
+  if(!email || !password) { $('authMensaje').textContent = 'Completá email y contraseña.'; return; }
+
+  const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+  if (error) {
+    $('authMensaje').textContent = 'Error: ' + error.message;
+  } else {
+    verificarSesion();
+  }
+}
+
+async function cerrarSesion() {
+  if (!supabaseClient) return;
+  await supabaseClient.auth.signOut();
+  location.reload();
+}
 
 function esc(s){
   return String(s).replace(/[&<>"']/g, c => ({
@@ -821,6 +853,7 @@ function limpiar(){
 renderMateriales();
 renderBiblioteca();
 health();
+verificarSesion();
 </script>
 
 </body>
