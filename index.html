@@ -655,56 +655,81 @@ Compartir
 
 </section>
 
+<section id="cuenta" class="card">
 
-<section id="planes" class="card">
-<h2>💳 Planes Edu.sistem Pro IA</h2>
-<p class="small">Elegí la modalidad que mejor se adapte a tu uso.</p>
+<h2>👤 Mi cuenta</h2>
 
-<div class="plans">
+<p class="small">
+Consultá y administrá tu plan de Edu.sistem Pro IA.
+</p>
 
-  <div class="plan">
-    <h3>🆓 Gratis</h3>
-    <div class="price">$0</div>
-    <p>5 generaciones por mes.</p>
-    <div class="plan-action">
-      <span class="free-plan">Plan actual</span>
-    </div>
+<div class="grid">
+
+  <div>
+    <label>Correo electrónico</label>
+    <input
+      id="cuentaEmail"
+      type="email"
+      placeholder="Tu correo electrónico"
+    >
   </div>
 
-  <div class="plan">
-    <h3>👩‍🏫 Docente</h3>
-    <div class="price">$4.999 / mes</div>
-    <p>100 generaciones por mes.</p>
-    <div class="plan-action">
-      <a class="plan-button" href="https://mpago.la/2X9cT72" target="_blank">
-        Suscribirme
-      </a>
-    </div>
+  <div>
+    <label>Plan</label>
+    <select id="cuentaPlan">
+      <option value="gratis">Gratis · 5 generaciones/mes</option>
+      <option value="docente">Docente · $4.999/mes</option>
+      <option value="profesional">Profesional · $8.999/mes</option>
+      <option value="institucion">Institución · $24.999/mes</option>
+    </select>
   </div>
 
-  <div class="plan">
-    <h3>💼 Profesional</h3>
-    <div class="price">$8.999 / mes</div>
-    <p>300 generaciones por mes.</p>
-    <div class="plan-action">
-      <a class="plan-button" href="https://mpago.la/142hjdM" target="_blank">
-        Suscribirme
-      </a>
-    </div>
+  <div>
+    <label>Generaciones utilizadas</label>
+    <input
+      id="cuentaGeneraciones"
+      type="text"
+      value="0"
+      readonly
+    >
   </div>
 
-  <div class="plan">
-    <h3>🏫 Institución</h3>
-    <div class="price">$24.999 / mes</div>
-    <p>1.000 generaciones por mes.</p>
-    <div class="plan-action">
-      <a class="plan-button" href="https://mpago.la/2ECLDFR" target="_blank">
-        Suscribirme
-      </a>
-    </div>
+  <div>
+    <label>Límite mensual</label>
+    <input
+      id="cuentaLimite"
+      type="text"
+      value="5 generaciones"
+      readonly
+    >
   </div>
 
 </div>
+
+<div class="buttons">
+
+  <button
+    type="button"
+    onclick="guardarCuenta()">
+    💾 Guardar datos
+  </button>
+
+  <button
+    type="button"
+    class="secondary"
+    onclick="ir('planes')">
+    💳 Ver planes
+  </button>
+
+</div>
+
+<div
+  id="cuentaEstado"
+  class="state"
+  style="margin-top:14px;">
+  👤 Cuenta lista para configurar.
+</div>
+
 </section>
 
 </main>
