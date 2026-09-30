@@ -652,25 +652,6 @@ Compartir
 <h2>👤 Mi cuenta</h2>
 <p class="small">Creá tu cuenta o iniciá sesión para guardar tu acceso a Edu.sistem Pro IA.</p>
 <div id="cuentaLogin">
-<div class="grid">
-<div><label>Correo electrónico</label><input id="authEmail" type="email" autocomplete="email" placeholder="tu correo electrónico"></div>
-<div><label>Contraseña</label><input id="authPassword" type="password" autocomplete="current-password" placeholder="Mínimo 6 caracteres"></div>
-</div>
-<div class="buttons"><button type="button" onclick="crearCuenta()">Crear cuenta</button><button type="button" class="secondary" onclick="iniciarSesion()">Iniciar sesión</button></div>
-<div id="authEstado" class="state" style="margin-top:14px;">👤 Todavía no iniciaste sesión.</div>
-</div>
-<div id="cuentaActiva" style="display:none;">
-<div class="grid">
-<div><label>Correo electrónico</label><input id="cuentaEmail" type="email" readonly></div>
-<div><label>Plan</label><input id="cuentaPlan" type="text" value="Gratis" readonly></div>
-<div><label>Generaciones utilizadas</label><input id="cuentaGeneraciones" type="text" value="0" readonly></div>
-<div><label>Límite mensual</label><input id="cuentaLimite" type="text" value="5 generaciones" readonly></div>
-</div>
-<div class="buttons"><button type="button" class="secondary" onclick="ir('planes')">💳 Ver planes</button><button type="button" class="ghost" onclick="cerrarSesion()">Cerrar sesión</button></div>
-<div id="cuentaEstado" class="state ok" style="margin-top:14px;">✓ Sesión iniciada.</div>
-</div>
-</section>
-
 <section id="planes" class="card">
 <h2>💳 Planes Edu.sistem Pro IA</h2>
 <p class="small">Elegí la modalidad que mejor se adapte a tu uso.</p>
