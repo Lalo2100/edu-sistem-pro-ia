@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0042)https://edu-sistem-pro-ia-zyjj.vercel.app/ -->
+<!-- Edu.sistem Pro IA · versión nacional -->
 <html lang="es"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -446,7 +446,7 @@ Simple, rápido y pensado para usar desde el celular.
 
 <section id="biblioteca" class="card">
 
-<h2>📚 Biblioteca Curricular Córdoba</h2>
+<h2>📚 Biblioteca Curricular Argentina</h2>
 
 <p class="small">
 Elegí una o varias referencias. Edu.sistem Pro IA las consultará como contexto curricular al generar tu trabajo. No tenés que descargar ni subir estos documentos.
@@ -491,14 +491,6 @@ Elegí una o varias referencias. Edu.sistem Pro IA las consultará como contexto
 <h2>✨ ¿Qué querés crear?</h2>
 
 <div class="grid">
-<div>
-<label>Provincia</label>
-<select id="provincia">
-<option value="Buenos Aires">Buenos Aires</option><option value="Catamarca">Catamarca</option><option value="Chaco">Chaco</option><option value="Chubut">Chubut</option><option value="Ciudad Autónoma de Buenos Aires">Ciudad Autónoma de Buenos Aires</option><option value="Córdoba" selected>Córdoba</option><option value="Corrientes">Corrientes</option><option value="Entre Ríos">Entre Ríos</option><option value="Formosa">Formosa</option><option value="Jujuy">Jujuy</option><option value="La Pampa">La Pampa</option><option value="La Rioja">La Rioja</option><option value="Mendoza">Mendoza</option><option value="Misiones">Misiones</option><option value="Neuquén">Neuquén</option><option value="Río Negro">Río Negro</option><option value="Salta">Salta</option><option value="San Juan">San Juan</option><option value="San Luis">San Luis</option><option value="Santa Cruz">Santa Cruz</option><option value="Santa Fe">Santa Fe</option><option value="Santiago del Estero">Santiago del Estero</option><option value="Tierra del Fuego, Antártida e Islas del Atlántico Sur">Tierra del Fuego, Antártida e Islas del Atlántico Sur</option><option value="Tucumán">Tucumán</option>
-</select>
-</div>
-
-
 
 <div>
 
@@ -655,81 +647,39 @@ Compartir
 
 </section>
 
+
 <section id="cuenta" class="card">
-
 <h2>👤 Mi cuenta</h2>
-
-<p class="small">
-Consultá y administrá tu plan de Edu.sistem Pro IA.
-</p>
-
+<p class="small">Creá tu cuenta o iniciá sesión para guardar tu acceso a Edu.sistem Pro IA.</p>
+<div id="cuentaLogin">
 <div class="grid">
-
-  <div>
-    <label>Correo electrónico</label>
-    <input
-      id="cuentaEmail"
-      type="email"
-      placeholder="Tu correo electrónico"
-    >
-  </div>
-
-  <div>
-    <label>Plan</label>
-    <select id="cuentaPlan">
-      <option value="gratis">Gratis · 5 generaciones/mes</option>
-      <option value="docente">Docente · $4.999/mes</option>
-      <option value="profesional">Profesional · $8.999/mes</option>
-      <option value="institucion">Institución · $24.999/mes</option>
-    </select>
-  </div>
-
-  <div>
-    <label>Generaciones utilizadas</label>
-    <input
-      id="cuentaGeneraciones"
-      type="text"
-      value="0"
-      readonly
-    >
-  </div>
-
-  <div>
-    <label>Límite mensual</label>
-    <input
-      id="cuentaLimite"
-      type="text"
-      value="5 generaciones"
-      readonly
-    >
-  </div>
-
+<div><label>Correo electrónico</label><input id="authEmail" type="email" autocomplete="email" placeholder="tu correo electrónico"></div>
+<div><label>Contraseña</label><input id="authPassword" type="password" autocomplete="current-password" placeholder="Mínimo 6 caracteres"></div>
 </div>
-
-<div class="buttons">
-
-  <button
-    type="button"
-    onclick="guardarCuenta()">
-    💾 Guardar datos
-  </button>
-
-  <button
-    type="button"
-    class="secondary"
-    onclick="ir('planes')">
-    💳 Ver planes
-  </button>
-
+<div class="buttons"><button type="button" onclick="crearCuenta()">Crear cuenta</button><button type="button" class="secondary" onclick="iniciarSesion()">Iniciar sesión</button></div>
+<div id="authEstado" class="state" style="margin-top:14px;">👤 Todavía no iniciaste sesión.</div>
 </div>
-
-<div
-  id="cuentaEstado"
-  class="state"
-  style="margin-top:14px;">
-  👤 Cuenta lista para configurar.
+<div id="cuentaActiva" style="display:none;">
+<div class="grid">
+<div><label>Correo electrónico</label><input id="cuentaEmail" type="email" readonly></div>
+<div><label>Plan</label><input id="cuentaPlan" type="text" value="Gratis" readonly></div>
+<div><label>Generaciones utilizadas</label><input id="cuentaGeneraciones" type="text" value="0" readonly></div>
+<div><label>Límite mensual</label><input id="cuentaLimite" type="text" value="5 generaciones" readonly></div>
 </div>
+<div class="buttons"><button type="button" class="secondary" onclick="ir('planes')">💳 Ver planes</button><button type="button" class="ghost" onclick="cerrarSesion()">Cerrar sesión</button></div>
+<div id="cuentaEstado" class="state ok" style="margin-top:14px;">✓ Sesión iniciada.</div>
+</div>
+</section>
 
+<section id="planes" class="card">
+<h2>💳 Planes Edu.sistem Pro IA</h2>
+<p class="small">Elegí la modalidad que mejor se adapte a tu uso.</p>
+<div class="plans">
+<div class="plan"><h3>🆓 Gratis</h3><div class="price">$0</div><p>5 generaciones por mes.</p></div>
+<div class="plan"><h3>👩‍🏫 Docente</h3><div class="price">$4.999 / mes</div><p>100 generaciones por mes.</p><a href="https://mpago.la/2ECLDFR" target="_blank" rel="noopener noreferrer">Suscribirme</a></div>
+<div class="plan"><h3>💼 Profesional</h3><div class="price">$8.999 / mes</div><p>300 generaciones por mes.</p><a href="https://mpago.la/2X9cT72" target="_blank" rel="noopener noreferrer">Suscribirme</a></div>
+<div class="plan"><h3>🏫 Institución</h3><div class="price">$24.999 / mes</div><p>1.000 generaciones por mes.</p><a href="https://mpago.la/142hjdM" target="_blank" rel="noopener noreferrer">Suscribirme</a></div>
+</div>
 </section>
 
 </main>
@@ -739,17 +689,14 @@ Consultá y administrá tu plan de Edu.sistem Pro IA.
 Edu.sistem Pro IA · Asistente inteligente para docentes
 </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const SUPABASE_URL = 'https://ceqjgbktfcjdfasfolhg.supabase.co';
-const SUPABASE_ANON_KEY = 'PEGÁ_ACÁ_TU_CLAVE_PÚBLICA';
-
-const supabaseClient = window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_ANON_KEY
-);
+const SUPABASE_ANON_KEY = 'PEGÁ_ACÁ_TU_CLAVE_PÚBLICA_DE_SUPABASE';
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 </script>
+
 <script>
 
 let materiales = [];
@@ -881,7 +828,7 @@ async function health(){
 
 
 /* =====================================================
-   BIBLIOTECA CURRICULAR CÓRDOBA
+   BIBLIOTECA CURRICULAR ARGENTINA
 ===================================================== */
 
 document.querySelectorAll('.biblioteca-check').forEach(check => {
@@ -956,12 +903,6 @@ function agregarMaterial(){
   input.value = '';
 
   renderMateriales();
-
-renderBiblioteca();
-
-actualizarCuenta();
-
-health();
 
 }
 
@@ -1156,12 +1097,6 @@ async function generar(){
 
   const fd =
     new FormData();
-
-
-  fd.append(
-    'provincia',
-    $('provincia').value
-  );
 
 
   fd.append(
@@ -1608,98 +1543,33 @@ function limpiar(){
 
 
 /* =====================================================
-   MI CUENTA
+   SUPABASE AUTH — MI CUENTA
+===================================================== */
+const PLANES = {gratis:{nombre:'Gratis',limite:'5 generaciones'},docente:{nombre:'Docente',limite:'100 generaciones'},profesional:{nombre:'Profesional',limite:'300 generaciones'},institucion:{nombre:'Institución',limite:'1.000 generaciones'}};
+function authMensaje(t,c=''){const x=$('authEstado');if(x){x.textContent=t;x.className='state '+c;}}
+function cuentaMensaje(t,c='ok'){const x=$('cuentaEstado');if(x){x.textContent=t;x.className='state '+c;}}
+function mostrarCuentaActiva(u,plan='gratis'){const x=$('cuentaLogin'),y=$('cuentaActiva');if(!x||!y)return;x.style.display='none';y.style.display='block';const p=PLANES[plan]||PLANES.gratis;$('cuentaEmail').value=u.email||'';$('cuentaPlan').value=p.nombre;$('cuentaLimite').value=p.limite;cuentaMensaje('✓ Sesión iniciada correctamente.','ok');}
+function mostrarCuentaDesconectada(){if($('cuentaLogin'))$('cuentaLogin').style.display='block';if($('cuentaActiva'))$('cuentaActiva').style.display='none';}
+async function crearCuenta(){const email=$('authEmail').value.trim(),password=$('authPassword').value;if(!email||!password)return authMensaje('Ingresá correo y contraseña.','err');if(password.length<6)return authMensaje('La contraseña debe tener al menos 6 caracteres.','err');authMensaje('Creando tu cuenta…');try{const {data,error}=await supabaseClient.auth.signUp({email,password});if(error)throw error;if(data.session&&data.user){await guardarPerfil(data.user);mostrarCuentaActiva(data.user);authMensaje('✓ Cuenta creada y sesión iniciada.','ok');}else authMensaje('✓ Cuenta creada. Revisá tu correo para confirmar la dirección y luego iniciá sesión.','ok');}catch(e){authMensaje('No se pudo crear la cuenta: '+e.message,'err');}}
+async function iniciarSesion(){const email=$('authEmail').value.trim(),password=$('authPassword').value;if(!email||!password)return authMensaje('Ingresá correo y contraseña.','err');authMensaje('Iniciando sesión…');try{const {data,error}=await supabaseClient.auth.signInWithPassword({email,password});if(error)throw error;if(data.user){await guardarPerfil(data.user);mostrarCuentaActiva(data.user);authMensaje('✓ Sesión iniciada.','ok');}}catch(e){authMensaje('No se pudo iniciar sesión: '+e.message,'err');}}
+async function cerrarSesion(){const {error}=await supabaseClient.auth.signOut();if(error)return cuentaMensaje('No se pudo cerrar la sesión: '+error.message,'err');mostrarCuentaDesconectada();authMensaje('Sesión cerrada.');$('authPassword').value='';}
+async function guardarPerfil(u){try{await supabaseClient.from('profiles').upsert({id:u.id,email:u.email,plan:'gratis'},{onConflict:'id'});}catch(e){console.warn('Perfil:',e);}}
+async function cargarCuenta(u){let plan='gratis';try{const {data,error}=await supabaseClient.from('profiles').select('plan').eq('id',u.id).maybeSingle();if(!error&&data&&data.plan)plan=String(data.plan).toLowerCase();}catch(e){console.warn('Perfil:',e);}mostrarCuentaActiva(u,plan);}
+async function inicializarSupabase(){try{const {data,error}=await supabaseClient.auth.getSession();if(error)throw error;if(data.session&&data.session.user)await cargarCuenta(data.session.user);else mostrarCuentaDesconectada();supabaseClient.auth.onAuthStateChange(async(_,session)=>{if(session&&session.user)await cargarCuenta(session.user);else mostrarCuentaDesconectada();});}catch(e){authMensaje('No se pudo conectar con Supabase: '+e.message,'err');}}
+
+/* =====================================================
+   INICIO
 ===================================================== */
 
-function guardarCuenta(){
+renderMateriales();
 
-  const email = $('cuentaEmail').value.trim();
-  const plan = $('cuentaPlan').value;
+renderBiblioteca();
 
-  if(!email){
+health();
+inicializarSupabase();
 
-    $('cuentaEstado').textContent =
-      'Ingresá tu correo electrónico.';
-
-    $('cuentaEstado').className =
-      'state err';
-
-    return;
-
-  }
-
-  localStorage.setItem(
-    'eduSistemCuentaEmail',
-    email
-  );
-
-  localStorage.setItem(
-    'eduSistemCuentaPlan',
-    plan
-  );
-
-  actualizarCuenta();
-
-  $('cuentaEstado').textContent =
-    '✓ Datos de cuenta guardados.';
-
-  $('cuentaEstado').className =
-    'state ok';
-
-}
-
-
-function actualizarCuenta(){
-
-  const email =
-    localStorage.getItem(
-      'eduSistemCuentaEmail'
-    );
-
-  const plan =
-    localStorage.getItem(
-      'eduSistemCuentaPlan'
-    ) || 'gratis';
-
-  if($('cuentaEmail') && email){
-
-    $('cuentaEmail').value = email;
-
-  }
-
-  if($('cuentaPlan')){
-
-    $('cuentaPlan').value = plan;
-
-  }
-
-  const limites = {
-    gratis:'5 generaciones',
-    docente:'100 generaciones',
-    profesional:'300 generaciones',
-    institucion:'1.000 generaciones'
-  };
-
-  if($('cuentaLimite')){
-
-    $('cuentaLimite').value =
-      limites[plan] || limites.gratis;
-
-  }
-
-}
 </script>
 
-<script>
-document.addEventListener('DOMContentLoaded', function(){
 
-  renderMateriales();
-  renderBiblioteca();
-  actualizarCuenta();
-  health();
 
-});
-</script>
-
-</body>
-</html>
+</body></html>
