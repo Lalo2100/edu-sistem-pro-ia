@@ -576,7 +576,8 @@ const $ = id => document.getElementById(id);
 
 // Configuración de Supabase
 const SUPABASE_URL = 'https://ceqjgbktfcjdfasfolhg.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'; // <-- sb_publishable_4Xp-hMkalW72ZNs8glcHzg_x0V6Pg8x
+const SUPABASE_ANON_KEY = 'sb_publishable_4Xp-hMkalW72ZNs8glcHzg_x0V6Pg8x';
+let supabaseClient = null;
 
 try {
   if (window.supabase) {
