@@ -10,11 +10,14 @@ const ROOT = __dirname;
 const LIBRARY_FILE = path.join(ROOT, 'biblioteca.json');
 
 // Inicializar cliente de Supabase para el servidor
-const { createClient } = require('@supabase/supabase-js');
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SECRET_KEY
-);
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_KEY;
+const supabaseUrl = process.env.SUPABASE_URL;
+
+if (!supabaseUrl || !supabaseKey) {
+  console.error("⚠️ ADVERTENCIA: Faltan las credenciales de Supabase en las variables de entorno.");
+}
+
+const supabase = createClient(supabaseUrl || '', supabaseKey || '');
 app.use(express.json({ limit: '2mb' }));
 app.use(express.static(ROOT));
 
