@@ -20,6 +20,32 @@ const LIBRARY_FILE = path.join(ROOT, 'biblioteca.json');
 app.use(express.json({ limit: '2mb' }));
 app.use(express.urlencoded({ extended: true }));
 
+// Inicialización ultra segura que NUNCA falla en la línea 13
+let supabase = null;
+try {
+  const supabaseUrl = process.env.SUPABASE_URL;
+  const supabaseKey = 
+    process.env.SUPABASE_SERVICE_ROLE_KEY || 
+    process.env.SUPABASE_SECRET_KEY || 
+    process.env.SUPABASE_KEY;
+
+  if (supabaseUrl && supabaseKey) {
+    supabase = createClient(supabaseUrl, supabaseKey);
+    console.log('Supabase conectado correctamente');
+  } else {
+    console.warn('⚠️ ATENCIÓN: Faltan credenciales de Supabase en las variables de entorno de Vercel.');
+  }
+} catch (err) {
+  console.error('Error al inicializar Supabase:', err.message);
+}
+
+// Configuración de Mercado Pago
+const mpAccessToken =
+  process.env.MERCADOPAGO_ACCESS_TOKEN ||
+  process.env.MP_ACCESS_TOKEN ||
+  '';
+app.use(express.urlencoded({ extended: true }));
+
 // Inicializar cliente de Supabase de forma segura y blindada
 const supabaseUrl = process.env.SUPABASE_URL || 'https://placeholder.supabase.co';
 const supabaseKey =
