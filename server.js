@@ -21,17 +21,20 @@ const upload = multer({
 
 function readLibrary() {
   try {
-    return JSON.parse(
-      fs.readFileSync(LIBRARY_FILE, 'utf8')
-    );
+    if (fs.existsSync(LIBRARY_FILE)) {
+      return JSON.parse(
+        fs.readFileSync(LIBRARY_FILE, 'utf8')
+      );
+    }
   } catch (error) {
-    return {
-      version: '2.2',
-      nombre: 'Biblioteca Curricular Argentina',
-      categorias: [],
-      provincias: {}
-    };
+    console.error('Aviso leyendo biblioteca.json:', error.message);
   }
+  return {
+    version: '2.2',
+    nombre: 'Biblioteca Curricular Argentina',
+    categorias: [],
+    provincias: {}
+  };
 }
 
 function cleanText(text) {
@@ -183,26 +186,25 @@ function stripMarkdown(text) {
 }
 
 async function listGeminiModels(key) {
-  const url =
-    `https://generativelanguage.googleapis.com/v1beta/models?key=${encodeURIComponent(key)}`;
+  try {
+    const url = `https://generativelanguage.googleapis.com/v1beta/models?key=${encodeURIComponent(key)}`;
+    const response = await fetch(url);
+    const data = await response.json().catch(function () {
+      return {};
+    });
 
-  const response = await fetch(url);
-  const data = await response.json().catch(function () {
-    return {};
-  });
+    if (!response.ok) {
+      return [];
+    }
 
-  if (!response.ok) {
+    return Array.isArray(data.models) ? data.models : [];
+  } catch (e) {
     return [];
   }
-
-  return Array.isArray(data.models)
-    ? data.models
-    : [];
 }
 
 function modelId(name) {
-  return String(name || '')
-    .replace(/^models\//, '');
+  return String(name || '').replace(/^models\//, '');
 }
 
 function rankModel(model) {
@@ -213,17 +215,9 @@ function rankModel(model) {
     return -1;
   }
 
-  if (id === 'gemini-3.8-flash') {
-    return 100;
-  }
-
-  if (id === 'gemini-3.6-flash') {
-    return 90;
-  }
-
-  if (id === 'gemini-3.5-flash-lite') {
-    return 80;
-  }
+  if (id === 'gemini-3.8-flash') return 100;
+  if (id === 'gemini-3.6-flash') return 90;
+  if (id === 'gemini-3.5-flash-lite') return 80;
 
   if (
     id.includes('flash') &&
@@ -238,7 +232,6 @@ function rankModel(model) {
 
 function isTemporaryGeminiError(status, message) {
   const text = String(message || '').toLowerCase();
-
   return (
     [429, 500, 502, 503, 504].includes(status) ||
     text.includes('high demand') ||
@@ -258,26 +251,19 @@ async function geminiGenerate(prompt) {
   const key = process.env.GEMINI_API_KEY;
 
   if (!key) {
-    const error = new Error(
-      'Falta configurar GEMINI_API_KEY en Vercel.'
-    );
-
+    const error = new Error('Falta configurar GEMINI_API_KEY en Vercel.');
     error.status = 503;
     throw error;
   }
 
   let available = [];
-
   try {
     available = await listGeminiModels(key);
   } catch (error) {
     available = [];
   }
 
-  const envModel = modelId(
-    process.env.GEMINI_MODEL
-  );
-
+  const envModel = modelId(process.env.GEMINI_MODEL);
   const preferredIds = [
     envModel,
     'gemini-3.8-flash',
@@ -299,30 +285,21 @@ async function geminiGenerate(prompt) {
   const models = [
     ...new Set([
       ...preferredIds.filter(function (id) {
-        return !available.length ||
-          availableIds.includes(id);
+        return !available.length || availableIds.includes(id);
       }),
       ...availableIds
     ])
   ].slice(0, 5);
 
   if (!models.length) {
-    models.push(
-      ...new Set(preferredIds)
-    );
+    models.push(...new Set(preferredIds));
   }
 
   let lastError = null;
 
-  for (
-    let attempt = 0;
-    attempt < models.length;
-    attempt++
-  ) {
+  for (let attempt = 0; attempt < models.length; attempt++) {
     const model = models[attempt];
-
-    const url =
-      `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(key)}`;
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(key)}`;
 
     try {
       const response = await fetch(url, {
@@ -367,9 +344,7 @@ async function geminiGenerate(prompt) {
             : '';
 
         if (!text.trim()) {
-          lastError = new Error(
-            `${model}: Gemini no devolvió contenido.`
-          );
+          lastError = new Error(`${model}: Gemini no devolvió contenido.`);
         } else {
           return {
             text: stripMarkdown(text),
@@ -378,26 +353,16 @@ async function geminiGenerate(prompt) {
         }
       } else {
         const apiMessage =
-          data &&
-          data.error &&
-          data.error.message
+          data && data.error && data.error.message
             ? data.error.message
             : `HTTP ${response.status}`;
 
-        lastError = new Error(
-          `${model}: ${apiMessage}`
-        );
+        lastError = new Error(`${model}: ${apiMessage}`);
 
-        if (
-          isTemporaryGeminiError(
-            response.status,
-            apiMessage
-          )
-        ) {
+        if (isTemporaryGeminiError(response.status, apiMessage)) {
           if (attempt < models.length - 1) {
             await wait(900);
           }
-
           continue;
         }
 
@@ -409,54 +374,48 @@ async function geminiGenerate(prompt) {
       }
     } catch (error) {
       lastError = error;
-
       if (attempt < models.length - 1) {
         await wait(900);
       }
     }
   }
 
-  const error =
-    lastError ||
-    new Error('No se pudo consultar Gemini.');
-
-  error.status =
-    isTemporaryGeminiError(
-      error.status,
-      error.message
-    )
-      ? 503
-      : (error.status || 500);
+  const error = lastError || new Error('No se pudo consultar Gemini.');
+  error.status = isTemporaryGeminiError(error.status, error.message)
+    ? 503
+    : error.status || 500;
 
   throw error;
 }
 
 app.get('/api/health', function (req, res) {
-  const library = readLibrary();
-
-  res.json({
-    ok: true,
-    app: 'Edu.sistem Pro IA',
-    version: '2.2',
-    geminiConfigured:
-      Boolean(process.env.GEMINI_API_KEY),
-    bibliotecaArgentina: true,
-    provincias:
-      library.provincias &&
-      typeof library.provincias === 'object'
-        ? Object.keys(
-            library.provincias
-          ).length
-        : 0,
-    categorias:
-      Array.isArray(library.categorias)
+  try {
+    const library = readLibrary();
+    res.json({
+      ok: true,
+      app: 'Edu.sistem Pro IA',
+      version: '2.2',
+      geminiConfigured: Boolean(process.env.GEMINI_API_KEY),
+      bibliotecaArgentina: true,
+      provincias:
+        library.provincias && typeof library.provincias === 'object'
+          ? Object.keys(library.provincias).length
+          : 0,
+      categorias: Array.isArray(library.categorias)
         ? library.categorias.length
         : 0
-  });
+    });
+  } catch (e) {
+    res.status(500).json({ ok: false, error: e.message });
+  }
 });
 
 app.get('/api/biblioteca', function (req, res) {
-  res.json(readLibrary());
+  try {
+    res.json(readLibrary());
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
 });
 
 app.post(
@@ -475,27 +434,15 @@ app.post(
         indicaciones
       } = req.body || {};
 
-      const categorias =
-        Array.isArray(
-          req.body &&
-          req.body.bibliotecaCategorias
-        )
-          ? req.body.bibliotecaCategorias
-          : (
-              req.body &&
-              req.body.bibliotecaCategorias
-                ? [req.body.bibliotecaCategorias]
-                : []
-            );
+      const categorias = Array.isArray(
+        req.body && req.body.bibliotecaCategorias
+      )
+        ? req.body.bibliotecaCategorias
+        : req.body && req.body.bibliotecaCategorias
+        ? [req.body.bibliotecaCategorias]
+        : [];
 
-      if (
-        !provincia ||
-        !tipo ||
-        !nivel ||
-        !grado ||
-        !area ||
-        !tema
-      ) {
+      if (!provincia || !tipo || !nivel || !grado || !area || !tema) {
         return res.status(400).json({
           error:
             'Completá provincia, tipo, nivel, grado/curso, área/materia y tema.'
@@ -506,9 +453,7 @@ app.post(
       const extracted = [];
 
       for (const file of files) {
-        const text =
-          await extractFileText(file);
-
+        const text = await extractFileText(file);
         extracted.push({
           name: file.originalname,
           text: text.slice(0, 90000)
@@ -522,21 +467,16 @@ app.post(
         rubrica: 'Rúbrica'
       };
 
-      const libraryContext =
-        buildLibraryContext(categorias);
+      const libraryContext = buildLibraryContext(categorias);
+      const provinceContext = buildProvinceContext(provincia);
 
-      const provinceContext =
-        buildProvinceContext(provincia);
-
-      const materialsContext =
-        extracted.length
-          ? extracted.map(function (item) {
-              return (
-                `MATERIAL DEL DOCENTE: ${item.name}\n` +
-                item.text
-              );
-            }).join('\n\n')
-          : 'No se adjuntaron materiales del docente.';
+      const materialsContext = extracted.length
+        ? extracted
+            .map(function (item) {
+              return `MATERIAL DEL DOCENTE: ${item.name}\n` + item.text;
+            })
+            .join('\n\n')
+        : 'No se adjuntaron materiales del docente.';
 
       const prompt = `
 Sos Edu.sistem Pro IA, un asistente inteligente para docentes de Argentina.
@@ -606,30 +546,21 @@ No expliques cómo funciona la IA.
 Entregá directamente el trabajo docente.
 `;
 
-      const result =
-        await geminiGenerate(prompt);
+      const result = await geminiGenerate(prompt);
 
       return res.json({
         ok: true,
         texto: result.text,
         modelo: result.model,
-        materialesUsados:
-          extracted.map(function (item) {
-            return item.name;
-          }),
+        materialesUsados: extracted.map(function (item) {
+          return item.name;
+        }),
         bibliotecaCategorias: categorias,
         provincia: provincia
       });
-
     } catch (error) {
-      console.error(
-        'Error /api/generar:',
-        error
-      );
-
-      const status =
-        error.status || 500;
-
+      console.error('Error /api/generar:', error);
+      const status = error.status || 500;
       return res.status(status).json({
         error:
           status === 503
@@ -647,16 +578,12 @@ app.get('*', function (req, res) {
     });
   }
 
-  return res.sendFile(
-    path.join(ROOT, 'index.html')
-  );
+  return res.sendFile(path.join(ROOT, 'index.html'));
 });
 
 if (require.main === module) {
   app.listen(PORT, function () {
-    console.log(
-      `Edu.sistem Pro IA escuchando en ${PORT}`
-    );
+    console.log(`Edu.sistem Pro IA escuchando en ${PORT}`);
   });
 }
 
