@@ -1,13 +1,11 @@
-JavaScript
 process.on('uncaughtException', (err) => {
-  console.error('🔥 ERROR CRÍTICO NO CAPTURADO:', err.stack || err);
+  console.error('🔥 ERROR CRÍTICO NO CAPTURADO (stack):', err.stack);
+  console.error('🔥 ERROR CRÍTICO NO CAPTURADO (message):', err.message);
 });
 
 process.on('unhandledRejection', (reason, promise) => {
-  console.error('🔥 PROMESA RECHAZADA NO CAPTURADA:', reason);
+  console.error('🔥 PROMESA RECHAZADA NO CAPTURADO:', reason);
 });
-
-const express = require('express');
 const path = require('path');
 const multer = require('multer');
 const fs = require('fs');
