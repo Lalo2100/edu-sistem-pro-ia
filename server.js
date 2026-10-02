@@ -1,11 +1,12 @@
 process.on('uncaughtException', (err) => {
-  console.error('🔥 ERROR CRÍTICO NO CAPTURADO (stack):', err.stack);
-  console.error('🔥 ERROR CRÍTICO NO CAPTURADO (message):', err.message);
+  console.error('🔥 ERROR CRÍTICO NO CAPTURADO:', err.stack || err);
 });
 
 process.on('unhandledRejection', (reason, promise) => {
-  console.error('🔥 PROMESA RECHAZADA NO CAPTURADO:', reason);
+  console.error('🔥 PROMESA RECHAZADA NO CAPTURADA:', reason);
 });
+
+const express = require('express');
 const path = require('path');
 const multer = require('multer');
 const fs = require('fs');
@@ -20,7 +21,7 @@ app.use(express.json({ limit: '2mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(ROOT));
 
-// --- INICIALIZACIÓN BLINDADA DE SUPABASE ---
+// --- INICIALIZACIÓN SEGURA DE SUPABASE (Evita el error 500 si faltan variables) ---
 const supabaseUrl = process.env.SUPABASE_URL || 'https://placeholder.supabase.co';
 const supabaseKey =
   process.env.SUPABASE_SERVICE_ROLE_KEY ||
@@ -30,17 +31,12 @@ const supabaseKey =
 
 let supabase = null;
 try {
-  if (supabaseUrl && supabaseKey) {
-    supabase = createClient(supabaseUrl, supabaseKey);
-    console.log('Supabase conectado correctamente');
-  } else {
-    console.warn('Supabase omitido: faltan credenciales');
-  }
+  supabase = createClient(supabaseUrl, supabaseKey);
 } catch (err) {
   console.error('Error al inicializar Supabase:', err.message);
 }
 
-// Configuración de Mercado Pago (aceptando múltiples variables posibles)
+// Configuración de Mercado Pago
 const mpAccessToken =
   process.env.MERCADOPAGO_ACCESS_TOKEN ||
   process.env.MP_ACCESS_TOKEN ||
@@ -519,13 +515,6 @@ app.post(
         });
       }
 
-      if (!supabase) {
-        return res.status(500).json({
-          error: 'Supabase no está inicializado correctamente en el servidor.'
-        });
-      }
-
-      // --- VALIDAR LÍMITE EN SUPABASE ---
       const { data: profile, error: profileError } = await supabase
         .from('profiles')
         .select('plan, generations_used, generation_limit')
@@ -543,7 +532,6 @@ app.post(
           error: '🚫 Límite de generaciones alcanzado. Actualizá tu plan para continuar.'
         });
       }
-      // ---------------------------------
 
       const categorias =
         Array.isArray(
@@ -679,14 +667,12 @@ Entregá directamente el trabajo docente.
       const result =
         await geminiGenerate(prompt);
 
-      // --- INCREMENTAR CONTADOR EN SUPABASE (+1) ---
       const nuevoConteo = (profile.generations_used || 0) + 1;
       
       await supabase
         .from('profiles')
         .update({ generations_used: nuevoConteo })
         .eq('id', userId);
-      // --------------------------------------------
 
       return res.json({
         ok: true,
@@ -721,8 +707,6 @@ Entregá directamente el trabajo docente.
   }
 );
 
-// --- ENDPOINTS DE MERCADO PAGO Y PAGOS ---
-
 app.post('/api/crear-preferencia', async function (req, res) {
   try {
     const { userId, email } = req.body;
@@ -732,7 +716,7 @@ app.post('/api/crear-preferencia', async function (req, res) {
     }
 
     if (!mpAccessToken) {
-      return res.status(503).json({ error: 'Falta configurar MP_ACCESS_TOKEN o MERCADOPAGO_ACCESS_TOKEN en Vercel.' });
+      return res.status(503).json({ error: 'Falta configurar el token de Mercado Pago en Vercel.' });
     }
 
     const preferenceData = {
