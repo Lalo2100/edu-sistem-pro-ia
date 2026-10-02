@@ -7,9 +7,6 @@ process.on('unhandledRejection', (reason, promise) => {
 });
 
 const express = require('express');
-const { createClient } = require('@supabase/supabase-js');
-// ... el resto de tu código ...
-const express = require('express');
 const path = require('path');
 const multer = require('multer');
 const fs = require('fs');
@@ -20,27 +17,34 @@ const PORT = process.env.PORT || 3000;
 const ROOT = __dirname;
 const LIBRARY_FILE = path.join(ROOT, 'biblioteca.json');
 
-// Inicializar cliente de Supabase para el servidor
-// Inicializar cliente de Supabase de forma segura
-const supabaseUrl = process.env.SUPABASE_URL || '';
+app.use(express.json({ limit: '2mb' }));
+app.use(express.urlencoded({ extended: true }));
+
+// Inicializar cliente de Supabase de forma segura y blindada
+const supabaseUrl = process.env.SUPABASE_URL || 'https://placeholder.supabase.co';
 const supabaseKey =
   process.env.SUPABASE_SERVICE_ROLE_KEY ||
   process.env.SUPABASE_SECRET_KEY ||
   process.env.SUPABASE_KEY ||
-  '';
+  'placeholder-key';
 
 let supabase = null;
-if (supabaseUrl && supabaseKey) {
-  try {
+try {
+  if (supabaseUrl && supabaseKey) {
     supabase = createClient(supabaseUrl, supabaseKey);
     console.log('Supabase conectado correctamente');
-  } catch (err) {
-    console.error('Error al inicializar Supabase:', err.message);
+  } else {
+    console.warn('Supabase omitido: faltan credenciales');
   }
-} else {
-  console.warn('Supabase no configurado: faltan SUPABASE_URL o la clave');
+} catch (err) {
+  console.error('Error al inicializar Supabase:', err.message);
 }
-const supabase = createClient(supabaseUrl || '', supabaseKey || '');
+
+// Configuración de Mercado Pago (aceptando tu variable de Vercel)
+const mpAccessToken =
+  process.env.MERCADOPAGO_ACCESS_TOKEN ||
+  process.env.MP_ACCESS_TOKEN ||
+  '';
 app.use(express.json({ limit: '2mb' }));
 app.use(express.static(ROOT));
 
