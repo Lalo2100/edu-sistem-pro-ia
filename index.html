@@ -1,903 +1,238 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Edu.sistem Pro IA</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edu.sistem Pro IA — Versión Nacional</title>
+  <style>
+    :root {
+      --primary: #0f172a;
+      --accent: #2563eb;
+      --accent-hover: #1d4ed8;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #334155;
+      --border: #cbd5e1;
+    }
 
-<style>
-:root{
-  --bg:#f5f7fb;
-  --card:#fff;
-  --text:#182230;
-  --muted:#667085;
-  --line:#e5e7eb;
-  --primary:#4f46e5;
-  --primary-dark:#3730a3;
-  --soft:#eef2ff;
-  --ok:#067647;
-  --ok-bg:#ecfdf3;
-  --err:#b42318;
-  --err-bg:#fef3f2;
-}
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+    body { background: var(--bg); color: var(--text); padding: 16px; line-height: 1.5; }
+    
+    .container { max-width: 800px; margin: 0 auto; background: var(--card-bg); padding: 24px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+    
+    h1 { font-size: 1.5rem; color: var(--primary); margin-bottom: 8px; text-align: center; }
+    .subtitle { text-align: center; font-size: 0.9rem; color: #64748b; margin-bottom: 20px; }
 
-*{box-sizing:border-box}
+    /* Panel de Estado y Suscripción */
+    .status-panel { background: #f1f5f9; border: 1px solid var(--border); padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+    .status-info { font-size: 0.95rem; font-weight: 500; color: var(--primary); }
+    .btn-upgrade { background: #009ee3; color: white; border: none; padding: 8px 14px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: background 0.2s; }
+    .btn-upgrade:hover { background: #0081be; }
 
-body{
-  margin:0;
-  font-family:Arial,sans-serif;
-  background:var(--bg);
-  color:var(--text);
-}
+    /* Formulario */
+    .form-group { margin-bottom: 16px; }
+    label { display: block; font-weight: 600; font-size: 0.9rem; margin-bottom: 6px; color: var(--primary); }
+    select, input, textarea { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 0.95rem; background: #fff; }
+    textarea { resize: vertical; min-height: 80px; }
+    
+    .btn-submit { width: 100%; background: var(--accent); color: white; border: none; padding: 12px; border-radius: 6px; font-size: 1rem; font-weight: bold; cursor: pointer; transition: background 0.2s; margin-top: 10px; }
+    .btn-submit:hover { background: var(--accent-hover); }
+    .btn-submit:disabled { background: var(--border); cursor: not-allowed; }
 
-header{
-  background:#fff;
-  border-bottom:1px solid var(--line);
-  padding:14px 20px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:14px;
-}
-
-.logo-wrap{
-  display:flex;
-  align-items:center;
-  gap:12px;
-}
-
-.logo{
-  width:48px;
-  height:48px;
-  flex:none;
-}
-
-.brand{
-  font-size:20px;
-  font-weight:800;
-}
-
-.subtitle{
-  font-size:12px;
-  color:var(--muted);
-  margin-top:2px;
-}
-
-.badge{
-  background:var(--soft);
-  color:var(--primary-dark);
-  padding:7px 10px;
-  border-radius:20px;
-  font-size:12px;
-  font-weight:700;
-  white-space:nowrap;
-}
-
-main{
-  max-width:1100px;
-  margin:25px auto;
-  padding:0 16px;
-}
-
-.hero{
-  margin-bottom:18px;
-}
-
-.hero h1{
-  font-size:32px;
-  margin:0 0 7px;
-}
-
-.hero p{
-  color:var(--muted);
-  margin:0;
-}
-
-.card{
-  background:var(--card);
-  border:1px solid var(--line);
-  border-radius:16px;
-  padding:20px;
-  margin-bottom:18px;
-  box-shadow:0 5px 20px #00000008;
-}
-
-h2{
-  margin:0 0 8px;
-  font-size:21px;
-}
-
-h3{
-  margin:0 0 7px;
-}
-
-.small{
-  font-size:13px;
-  color:var(--muted);
-  line-height:1.45;
-}
-
-.grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:15px;
-}
-
-.full{
-  grid-column:1/-1;
-}
-
-label{
-  font-weight:700;
-  font-size:14px;
-  display:block;
-  margin-bottom:7px;
-}
-
-input,
-select,
-textarea{
-  width:100%;
-  padding:12px;
-  border:1px solid #d0d5dd;
-  border-radius:10px;
-  font-size:15px;
-  background:#fff;
-}
-
-textarea{
-  min-height:110px;
-  resize:vertical;
-}
-
-.buttons{
-  display:flex;
-  gap:10px;
-  margin-top:16px;
-  flex-wrap:wrap;
-}
-
-button{
-  border:0;
-  border-radius:10px;
-  padding:12px 16px;
-  background:var(--primary);
-  color:#fff;
-  font-weight:700;
-  cursor:pointer;
-}
-
-button:disabled{
-  opacity:.6;
-  cursor:wait;
-}
-
-button.secondary{
-  background:var(--soft);
-  color:var(--primary-dark);
-}
-
-button.ghost{
-  background:#fff;
-  color:var(--primary-dark);
-  border:1px solid #c7d2fe;
-}
-
-button.danger{
-  background:#fee2e2;
-  color:#991b1b;
-  padding:7px 10px;
-  font-size:12px;
-}
-
-.library-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-  gap:12px;
-  margin-top:16px;
-}
-
-.library-card{
-  border:1px solid var(--line);
-  border-radius:14px;
-  padding:14px;
-  background:#fff;
-}
-
-.library-select{
-  display:flex;
-  align-items:flex-start;
-  gap:9px;
-  margin:0 0 7px;
-  cursor:pointer;
-}
-
-.library-select input{
-  width:20px;
-  height:20px;
-  margin:0;
-  flex:none;
-  accent-color:var(--primary);
-}
-
-.library-select span{
-  font-weight:800;
-  font-size:15px;
-  line-height:1.3;
-}
-
-.library-description{
-  font-size:12px;
-  color:var(--muted);
-  line-height:1.4;
-  min-height:34px;
-}
-
-.library-info{
-  margin-top:14px;
-  padding:12px;
-  border-radius:10px;
-  background:#f8fafc;
-  color:#475467;
-  font-size:13px;
-}
-
-.material-box{
-  margin-top:18px;
-  padding:16px;
-  border:1px dashed #cbd5e1;
-  border-radius:13px;
-  background:#f8fafc;
-}
-
-.material{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-  padding:9px 0;
-  border-bottom:1px solid #e5e7eb;
-}
-
-.material:last-child{
-  border-bottom:0;
-}
-
-.state{
-  padding:12px;
-  border-radius:10px;
-  background:#f8fafc;
-}
-
-.state.ok{
-  background:var(--ok-bg);
-  color:var(--ok);
-}
-
-.state.err{
-  background:var(--err-bg);
-  color:var(--err);
-}
-
-#resultadoTexto{
-  white-space:pre-wrap;
-  line-height:1.6;
-  min-height:20px;
-}
-
-.plans{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:10px;
-}
-
-.plan{
-  border:1px solid var(--line);
-  border-radius:12px;
-  padding:14px;
-}
-
-.plan button {
-  width: 100%;
-  margin-top: 10px;
-  padding: 10px 12px;
-  border-radius: 10px;
-  background: var(--primary);
-  color: #fff;
-  text-decoration: none;
-  text-align: center;
-  font-weight: 700;
-  cursor: pointer;
-}
-.plan button:hover { opacity: .9; }
-
-.price{
-  font-weight:800;
-  font-size:18px;
-}
-
-footer{
-  text-align:center;
-  color:var(--muted);
-  font-size:12px;
-  padding:25px;
-}
-
-@media(max-width:700px){
-  header{padding:12px 14px;}
-  .logo{width:44px;height:44px;}
-  .brand{font-size:18px;}
-  .grid{grid-template-columns:1fr;}
-  .full{grid-column:auto;}
-  .plans{grid-template-columns:1fr 1fr;}
-  .hero h1{font-size:27px;}
-  .badge{display:block;font-size:10px;}
-  .library-grid{grid-template-columns:1fr;}
-}
-</style>
+    /* Resultados y Carga */
+    .loader { display: none; text-align: center; margin: 20px 0; font-weight: 600; color: var(--accent); }
+    .result-box { display: none; margin-top: 24px; background: #f8fafc; border: 1px solid var(--border); padding: 20px; border-radius: 8px; white-space: pre-wrap; font-size: 0.95rem; }
+    
+    .error-banner { display: none; background: #fee2e2; border: 1px solid #f87171; color: #b91c1c; padding: 12px; border-radius: 6px; margin-bottom: 16px; font-weight: 500; text-align: center; }
+  </style>
 </head>
-
 <body>
 
-<header>
-<div class="logo-wrap">
-<svg class="logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-label="Logo Edu.sistem Pro IA">
-  <defs>
-    <lineargradient id="eduGradient" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#4f46e5"></stop>
-      <stop offset="100%" stop-color="#7c3aed"></stop>
-    </lineargradient>
-  </defs>
-  <rect x="4" y="4" width="92" height="92" rx="24" fill="url(#eduGradient)"></rect>
-  <path d="M20 34 L50 20 L80 34 L50 48 Z" fill="#ffffff"></path>
-  <path d="M30 43 V61 C30 69 39 76 50 76 C61 76 70 69 70 61 V43" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round"></path>
-  <circle cx="50" cy="60" r="5" fill="#ffffff"></circle>
-</svg>
-<div>
-  <div class="brand">Edu.sistem Pro IA</div>
-  <div class="subtitle">Asistente inteligente para docentes</div>
-</div>
-</div>
-<div id="status" class="badge" style="background: rgb(236, 253, 243); color: rgb(6, 118, 71);">🟢 Servidor conectado</div>
-</header>
+  <div class="container">
+    <h1>Edu.sistem Pro IA</h1>
+    <div class="subtitle">Generador Inteligente de Planificaciones y Materiales Curriculares</div>
 
-<main>
-
-<section class="hero">
-<h1>Creá tu trabajo docente con IA</h1>
-<p>Simple, rápido y pensado para usar desde el celular.</p>
-</section>
-
-<!-- SECCIÓN DE CUENTA / ACCESO -->
-<section id="authCard" class="card">
-  <h2>👤 Cuenta Docente</h2>
-  <div id="authLogueado" style="display:none;">
-    <p class="small">Sesión iniciada como: <strong id="userEmailDisplay"></strong></p>
-    <p class="small">Plan actual: <strong id="userPlanDisplay" style="text-transform:uppercase;">Gratis</strong></p>
-    <div class="buttons">
-      <button type="button" class="danger" onclick="cerrarSesion()">Cerrar sesión</button>
+    <!-- Panel de Plan y Consumo -->
+    <div class="status-panel">
+      <div class="status-info" id="status-text">Cargando estado de tu cuenta...</div>
+      <button id="btn-upgrade" class="btn-upgrade" onclick="pagarPlanPro()" style="display: none;">⭐ Actualizar a Pro ($5.000)</button>
     </div>
-  </div>
-  <div id="authForm" class="grid">
-    <div class="full">
-      <p class="small">Iniciá sesión o creá tu cuenta para gestionar tus generaciones y planes.</p>
-    </div>
-    <div>
-      <label>Correo electrónico</label>
-      <input type="email" id="authEmail" placeholder="tu@correo.com">
-    </div>
-    <div>
-      <label>Contraseña</label>
-      <input type="password" id="authPassword" placeholder="••••••••">
-    </div>
-    <div class="buttons full">
-      <button type="button" onclick="iniciarSesion()">Iniciar sesión</button>
-      <button type="button" class="secondary" onclick="registrarUsuario()">Crear cuenta</button>
-    </div>
-    <div id="authMensaje" class="full small" style="color:var(--primary-dark); font-weight:bold;"></div>
-  </div>
-</section>
 
-<section id="biblioteca" class="card">
-<h2>📚 Biblioteca Curricular Argentina</h2>
-<p class="small">Elegí una o varias referencias. Edu.sistem Pro IA las consultará como contexto curricular.</p>
+    <!-- Alerta de Errores o Límites -->
+    <div id="error-banner" class="error-banner"></div>
 
-<div class="library-grid">
-<div class="library-card"><label class="library-select"><input type="checkbox" class="biblioteca-check" value="Inicial"> <span>🟣 Inicial</span></label><div class="library-description">Referencias curriculares para Educación Inicial.</div></div>
-<div class="library-card"><label class="library-select"><input type="checkbox" class="biblioteca-check" value="Primaria"> <span>🔵 Primaria</span></label><div class="library-description">Referencias curriculares para Educación Primaria.</div></div>
-<div class="library-card"><label class="library-select"><input type="checkbox" class="biblioteca-check" value="Secundaria"> <span>🟢 Secundaria</span></label><div class="library-description">Referencias curriculares para Educación Secundaria.</div></div>
-<div class="library-card"><label class="library-select"><input type="checkbox" class="biblioteca-check" value="Superior"> <span>🟠 Superior</span></label><div class="library-description">Referencias para Educación Superior.</div></div>
-<div class="library-card"><label class="library-select"><input type="checkbox" class="biblioteca-check" value="Educación Especial"> <span>🟡 Educación Especial</span></label><div class="library-description">Referencias y orientaciones para esta modalidad.</div></div>
-<div class="library-card"><label class="library-select"><input type="checkbox" class="biblioteca-check" value="Jóvenes y Adultos"> <span>🟤 Jóvenes y Adultos</span></label><div class="library-description">Referencias para la modalidad de Jóvenes y Adultos.</div></div>
-<div class="library-card"><label class="library-select"><input type="checkbox" class="biblioteca-check" value="Educación Rural"> <span>🌾 Educación Rural</span></label><div class="library-description">Referencias específicas para Educación Rural.</div></div>
-<div class="library-card"><label class="library-select"><input type="checkbox" class="biblioteca-check" value="Técnico Profesional"> <span>🔧 Educación Técnico Profesional</span></label><div class="library-description">Materiales y referencias para la Educación Técnico Profesional.</div></div>
-<div class="library-card"><label class="library-select"><input type="checkbox" class="biblioteca-check" value="Progresiones"> <span>📈 Progresiones</span></label><div class="library-description">Metas, aprendizajes, contenidos e indicadores.</div></div>
-<div class="library-card"><label class="library-select"><input type="checkbox" class="biblioteca-check" value="Aprendizajes y Contenidos Fundamentales"> <span>🎯 Aprendizajes y Contenidos Fundamentales</span></label><div class="library-description">Referencia vinculada a contenidos curriculares.</div></div>
-<div class="library-card"><label class="library-select"><input type="checkbox" class="biblioteca-check" value="Actualización curricular"> <span>📘 Actualización curricular</span></label><div class="library-description">Referencias de actualización curricular.</div></div>
-<div class="library-card"><label class="library-select"><input type="checkbox" class="biblioteca-check" value="Referencias 2026"> <span>🏛️ Referencias 2026</span></label><div class="library-description">Referencias identificadas para el ciclo 2026.</div></div>
-</div>
+    <!-- Formulario Principal -->
+    <form id="generation-form">
+      <div class="form-group">
+        <label for="provincia">Jurisdicción / Provincia</label>
+        <select id="provincia" name="provincia" required>
+          <option value="">Seleccioná una provincia...</option>
+          <option value="Córdoba" selected>Córdoba</option>
+          <option value="Buenos Aires">Buenos Aires</option>
+          <option value="CABA">CABA</option>
+          <option value="Santa Fe">Santa Fe</option>
+          <option value="Mendoza">Mendoza</option>
+          <option value="Otras">Otras Jurisdicciones</option>
+        </select>
+      </div>
 
-<div id="bibliotecaSeleccionadas" class="library-info">📚 No seleccionaste referencias todavía.</div>
+      <div class="form-group">
+        <label for="tipo">Tipo de Trabajo</label>
+        <select id="tipo" name="tipo" required>
+          <option value="anual">Planificación anual</option>
+          <option value="secuencia">Secuencia didáctica</option>
+          <option value="proyecto">Proyecto</option>
+          <option value="rubrica">Rúbrica</option>
+        </select>
+      </div>
 
-<div class="material-box">
-<h3>👨‍🏫 Materiales que carga el docente</h3>
-<p class="small">Acá podés agregar tus propios diseños, planificaciones o secuencias.</p>
-<input id="archivo" type="file" accept=".pdf,.docx,.txt,.md,.csv,.html,.htm" multiple>
-<div class="buttons"><button type="button" class="secondary" onclick="agregarMaterial()">+ Agregar material</button></div>
-<div id="materialesLista"><p class="small">Todavía no agregaste materiales.</p></div>
-</div>
-</section>
+      <div class="form-group">
+        <label for="nivel">Nivel Educativo</label>
+        <input type="text" id="nivel" name="nivel" placeholder="Ej: Primario, Secundario, Inicial..." required>
+      </div>
 
-<section id="crear" class="card">
-<h2>✨ ¿Qué querés crear?</h2>
+      <div class="form-group">
+        <label for="grado">Grado / Curso</label>
+        <input type="text" id="grado" name="grado" placeholder="Ej: 5to Grado, 3er Año..." required>
+      </div>
 
-<div class="grid">
-  <div class="full">
-    <label>Provincia</label>
-    <select id="provincia">
-      <option value="Buenos Aires">Buenos Aires</option>
-      <option value="Catamarca">Catamarca</option>
-      <option value="Chaco">Chaco</option>
-      <option value="Chubut">Chubut</option>
-      <option value="Ciudad Autónoma de Buenos Aires">Ciudad Autónoma de Buenos Aires</option>
-      <option value="Córdoba" selected>Córdoba</option>
-      <option value="Corrientes">Corrientes</option>
-      <option value="Entre Ríos">Entre Ríos</option>
-      <option value="Formosa">Formosa</option>
-      <option value="Jujuy">Jujuy</option>
-      <option value="La Pampa">La Pampa</option>
-      <option value="La Rioja">La Rioja</option>
-      <option value="Mendoza">Mendoza</option>
-      <option value="Misiones">Misiones</option>
-      <option value="Neuquén">Neuquén</option>
-      <option value="Río Negro">Río Negro</option>
-      <option value="Salta">Salta</option>
-      <option value="San Juan">San Juan</option>
-      <option value="San Luis">San Luis</option>
-      <option value="Santa Cruz">Santa Cruz</option>
-      <option value="Santa Fe">Santa Fe</option>
-      <option value="Santiago del Estero">Santiago del Estero</option>
-      <option value="Tierra del Fuego, Antártida e Islas del Atlántico Sur">Tierra del Fuego, Antártida e Islas del Atlántico Sur</option>
-      <option value="Tucumán">Tucumán</option>
-    </select>
+      <div class="form-group">
+        <label for="area">Área / Materia</label>
+        <input type="text" id="area" name="area" placeholder="Ej: Matemáticas, Música, Lengua..." required>
+      </div>
+
+      <div class="form-group">
+        <label for="tema">Tema o Eje Central</label>
+        <input type="text" id="tema" name="tema" placeholder="Ej: Fracciones, El sonido y las ondas..." required>
+      </div>
+
+      <div class="form-group">
+        <label for="duracion">Duración estimada (Opcional)</label>
+        <input type="text" id="duracion" name="duracion" placeholder="Ej: 4 clases, 2 semanas...">
+      </div>
+
+      <div class="form-group">
+        <label for="indicaciones">Indicaciones adicionales (Opcional)</label>
+        <textarea id="indicaciones" name="indicaciones" placeholder="Detalles particulares que quieras incluir..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="materiales">Adjuntar materiales de referencia (Opcional - hasta 2 archivos)</label>
+        <input type="file" id="materiales" name="materiales" multiple accept=".pdf,.docx,.txt,.md,.csv">
+      </div>
+
+      <button type="submit" id="btn-submit" class="btn-submit">Generar Material Educativo</button>
+    </form>
+
+    <div id="loader" class="loader">Generando contenido pedagógico con IA... Por favor aguardá unos segundos.</div>
+    <div id="result-box" class="result-box"></div>
   </div>
 
-  <div>
-    <label>Tipo de trabajo</label>
-    <select id="tipo">
-      <option value="anual">Planificación anual</option>
-      <option value="secuencia">Secuencia didáctica</option>
-      <option value="proyecto">Proyecto</option>
-      <option value="rubrica">Rúbrica</option>
-    </select>
-  </div>
+  <script>
+    // Gestión automática del ID de usuario local
+    const USER_ID_KEY = 'edu_sistem_user_id';
+    let currentUserId = localStorage.getItem(USER_ID_KEY);
 
-  <div>
-    <label>Nivel</label>
-    <select id="nivel">
-      <option>Inicial</option>
-      <option selected>Primaria</option>
-      <option>Secundaria</option>
-      <option>Superior</option>
-    </select>
-  </div>
+    if (!currentUserId) {
+      currentUserId = 'user_' + Math.random().toString(36).substring(2, 11);
+      localStorage.setItem(USER_ID_KEY, currentUserId);
+    }
 
-  <div>
-    <label>Grado / Curso</label>
-    <input id="grado" placeholder="Ej.: 5.º grado">
-  </div>
-
-  <div>
-    <label>Área / Materia</label>
-    <input id="area" placeholder="Ej.: Lengua">
-  </div>
-
-  <div class="full">
-    <label>Tema</label>
-    <input id="tema" placeholder="¿Sobre qué necesitás trabajar?">
-  </div>
-
-  <div>
-    <label>Duración</label>
-    <input id="duracion" placeholder="Ej.: 4 semanas">
-  </div>
-
-  <div class="full">
-    <label>¿Cómo querés que lo realice?</label>
-    <textarea id="indicaciones" placeholder="Ej.: incluir fundamentación, objetivos, actividades y evaluación, organizado en tablas."></textarea>
-  </div>
-</div>
-
-<div class="buttons">
-  <button id="btnGenerar" onclick="generar()">✨ Crear con Gemini</button>
-  <button class="secondary" onclick="limpiar()">Limpiar</button>
-</div>
-</section>
-
-<section id="resultado" class="card">
-<h2>📄 Resultado</h2>
-<div id="estado" class="state">Todavía no generaste un trabajo.</div>
-<br>
-<div id="resultadoTexto"></div>
-<div class="buttons">
-  <button onclick="copiar()">Copiar</button>
-  <button class="secondary" onclick="descargar()">Descargar .txt</button>
-  <button class="secondary" onclick="descargarWord()">Descargar Word</button>
-  <button class="ghost" onclick="imprimir()">Imprimir / PDF</button>
-  <button class="ghost" onclick="compartir()">Compartir</button>
-</div>
-</section>
-
-<section id="planes" class="card">
-<h2>💳 Planes Edu.sistem Pro IA</h2>
-<p class="small">Elegí la modalidad que mejor se adapte a tu uso. El plan se asociará a tu correo activo.</p>
-<div class="plans">
-  <div class="plan">
-    <h3>🆓 Gratis</h3>
-    <div class="price">$0</div>
-    <p>5 generaciones por mes.</p>
-  </div>
-  <div class="plan">
-    <h3>👩‍🏫 Docente</h3>
-    <div class="price">$4.999 / mes</div>
-    <p>100 generaciones por mes.</p>
-    <button type="button" onclick="pagarPlan('docente', 'https://mpago.la/2ECLDFR')">Suscribirme</button>
-  </div>
-  <div class="plan">
-    <h3>💼 Profesional</h3>
-    <div class="price">$8.999 / mes</div>
-    <p>300 generaciones por mes.</p>
-    <button type="button" onclick="pagarPlan('profesional', 'https://mpago.la/2X9cT72')">Suscribirme</button>
-  </div>
-  <div class="plan">
-    <h3>🏫 Institución</h3>
-    <div class="price">$24.999 / mes</div>
-    <p>1.000 generaciones por mes.</p>
-    <button type="button" onclick="pagarPlan('institucion', 'https://mpago.la/142hjdM')">Suscribirme</button>
-  </div>
-</div>
-</section>
-
-</main>
-
-<footer>
-Edu.sistem Pro IA · Asistente inteligente para docentes
-</footer>
-
-<!-- Supabase JS Client desde CDN -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<script>
-let materiales = [];
-let bibliotecaCategoriasSeleccionadas = [];
-let ultimo = '';
-
-const $ = id => document.getElementById(id);
-
-// Configuración de Supabase
-const SUPABASE_URL = 'https://ceqjgbktfcjdfasfolhg.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_4Xp-hMkalW72ZNs8glcHzg_x0V6Pg8x';
-let supabaseClient = null;
-
-try {
-  if (window.supabase) {
-    supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-  }
-} catch(e) {
-  console.error("Error al iniciar Supabase:", e);
-}
-
-async function verificarSesion() {
-  if (!supabaseClient) return;
-  try {
-    const { data: { session } } = await supabaseClient.auth.getSession();
-    if (session && session.user) {
-      $('authForm').style.display = 'none';
-      $('authLogueado').style.display = 'block';$('userEmailDisplay').textContent = session.user.email;
+    // Al cargar la página, verificamos si venimos de un pago exitoso
+    window.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('pagado') === 'true') {
+        alert('¡Pago procesado con éxito! Tu cuenta ha sido actualizada al Plan Pro.');
+        window.history.replaceState({}, document.title, window.location.pathname); // Limpia la URL
+      }
       
-      const { data: perfil } = await supabaseClient.from('profiles').select('plan').eq('id', session.user.id).single();
-      if (perfil && perfil.plan) {
-        $('userPlanDisplay').textContent = perfil.plan;
+      // Estado por defecto en UI mientras se conecta con el server
+      document.getElementById('status-text').innerText = 'ID de Usuario activo | Listo para generar';
+    });
+
+    // Envío del formulario con control estricto de userId y límites
+    document.getElementById('generation-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const btnSubmit = document.getElementById('btn-submit');
+      const loader = document.getElementById('loader');
+      const resultBox = document.getElementById('result-box');
+      const errorBanner = document.getElementById('error-banner');
+
+      errorBanner.style.display = 'none';
+      resultBox.style.display = 'none';
+      btnSubmit.disabled = true;
+      loader.style.display = 'block';
+
+      const formData = new FormData(e.target);
+      formData.append('userId', currentUserId); // Inyectamos el ID de usuario obligatorio
+
+      try {
+        const response = await fetch('/api/generar', {
+          method: 'POST',
+          body: formData
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          // Si el servidor devuelve 403 (Límite alcanzado) o 401/500
+          if (response.status === 403) {
+            document.getElementById('btn-upgrade').style.display = 'inline-block';
+          }
+          throw new Error(data.error || 'Ocurrió un error al procesar la solicitud.');
+        }
+
+        // Mostrar resultado exitoso
+        resultBox.innerText = data.texto;
+        resultBox.style.display = 'block';
+
+        // Actualizar contadores si vienen del backend
+        if (data.generations_used !== undefined && data.generation_limit !== undefined) {
+          document.getElementById('status-text').innerText = `Plan Activo | Usadas: ${data.generations_used} / ${data.generation_limit}`;
+          if (data.generations_used >= data.generation_limit) {
+            document.getElementById('btn-upgrade').style.display = 'inline-block';
+          }
+        }
+
+      } catch (err) {
+        errorBanner.innerText = err.message;
+        errorBanner.style.display = 'block';
+      } finally {
+        loader.style.display = 'none';
+        btnSubmit.disabled = false;
+      }
+    });
+
+    // Función para iniciar el flujo de pago con Mercado Pago
+    async function pagarPlanPro() {
+      try {
+        const btn = document.getElementById('btn-upgrade');
+        btn.innerText = 'Conectando con Mercado Pago...';
+        btn.disabled = true;
+
+        const response = await fetch('/api/crear-preferencia', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId: currentUserId, email: 'docente@edu.sistem.pro' })
+        });
+
+        const data = await response.json();
+
+        if (data.ok && data.init_point) {
+          window.location.href = data.init_point;
+        } else {
+          alert(data.error || 'No se pudo iniciar la preferencia de pago.');
+          btn.innerText = '⭐ Actualizar a Pro ($5.000)';
+          btn.disabled = false;
+        }
+      } catch (e) {
+        console.error('Error de pago:', e);
+        alert('No se pudo conectar con la pasarela de pagos.');
+        document.getElementById('btn-upgrade').innerText = '⭐ Actualizar a Pro ($5.000)';
+        document.getElementById('btn-upgrade').disabled = false;
       }
     }
-  } catch(err) {
-    console.log("Sesión no iniciada o error de perfil");
-  }
-}
-
-async function registrarUsuario() {
-  if (!supabaseClient) { alert("Supabase no está conectado."); return; }
-  const email = $('authEmail').value.trim();
-  const password = $('authPassword').value.trim();
-  if(!email || !password) { $('authMensaje').textContent = 'Completá email y contraseña.'; return; }
-  
-  const { data, error } = await supabaseClient.auth.signUp({ email, password });
-  if (error) {
-    $('authMensaje').textContent = 'Error: ' + error.message;
-  } else {
-    $('authMensaje').textContent = '¡Cuenta creada con éxito! Ya podés iniciar sesión.';
-  }
-}
-
-async function iniciarSesion() {
-  if (!supabaseClient) { alert("Supabase no está conectado."); return; }
-  const email = $('authEmail').value.trim();
-  const password = $('authPassword').value.trim();
-  if(!email || !password) { $('authMensaje').textContent = 'Completá email y contraseña.'; return; }
-
-  const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
-  if (error) {
-    $('authMensaje').textContent = 'Error: ' + error.message;
-  } else {
-    verificarSesion();
-  }
-}
-
-async function cerrarSesion() {
-  if (!supabaseClient) return;
-  await supabaseClient.auth.signOut();
-  location.reload();
-}
-
-function pagarPlan(planNombre, linkPago) {
-  const emailActual = $('userEmailDisplay') ?$('userEmailDisplay').textContent : '';
-  
-  if (!emailActual || emailActual === '') {
-    alert('Por favor, iniciá sesión en tu "Cuenta Docente" antes de suscribirte para asociar el pago.');
-    ir('authCard');
-    return;
-  }
-
-  window.open(linkPago, '_blank');
-}
-
-function esc(s){
-  return String(s).replace(/[&<>"']/g, c => ({
-    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
-  }[c]));
-}
-
-function ir(id){
-  const elemento = $(id);
-  if(elemento){ elemento.scrollIntoView({behavior:'smooth'}); }
-}
-
-function setEstado(t,cl=''){
-  const estado = $('estado');
-  if(!estado)return;
-  estado.textContent = t;
-  estado.className = 'state ' + cl;
-}
-
-async function health(){
-  const status = $('status');
-  if(!status)return;
-  status.textContent = 'Comprobando conexión…';
-  try{
-    const r = await fetch('/api/health', {method:'GET', cache:'no-store'});
-    if(!r.ok) throw new Error('Servidor no disponible');
-    const data = await r.json();
-    if(data && data.ok){
-      status.textContent = '🟢 Servidor conectado';
-      status.style.background = '#ecfdf3';
-      status.style.color = '#067647';
-    }else{
-      status.textContent = '🔴 Servidor con problemas';
-    }
-  }catch(e){
-    status.textContent = '🔴 Error de conexión';
-    status.style.background = '#fef3f2';
-    status.style.color = '#b42318';
-  }
-}
-
-document.querySelectorAll('.biblioteca-check').forEach(check => {
-  check.addEventListener('change', function(){
-    const categoria = this.value;
-    if(this.checked){
-      if(!bibliotecaCategoriasSeleccionadas.includes(categoria)){
-        bibliotecaCategoriasSeleccionadas.push(categoria);
-      }
-    }else{
-      bibliotecaCategoriasSeleccionadas = bibliotecaCategoriasSeleccionadas.filter(x => x !== categoria);
-    }
-    renderBiblioteca();
-  });
-});
-
-function renderBiblioteca(){
-  const box = $('bibliotecaSeleccionadas');
-  if(!box)return;
-  if(!bibliotecaCategoriasSeleccionadas.length){
-    box.innerHTML = '📚 No seleccionaste referencias todavía.';
-    return;
-  }
-  box.innerHTML = '<strong>📚 Referencias seleccionadas:</strong> ' + bibliotecaCategoriasSeleccionadas.map(esc).join(' · ');
-}
-
-function agregarMaterial(){
-  const input = $('archivo');
-  const files = [...input.files];
-  if(!files.length){ alert('Seleccioná uno o más archivos.'); return; }
-  for(const f of files){
-    const existe = materiales.some(x => x.name === f.name && x.size === f.size);
-    if(!existe){ materiales.push(f); }
-  }
-  input.value = '';
-  renderMateriales();
-}
-
-function renderMateriales(){
-  const box = $('materialesLista');
-  if(!box)return;
-  if(!materiales.length){
-    box.innerHTML = '<p class="small">Todavía no agregaste materiales.</p>';
-    return;
-  }
-  box.innerHTML = materiales.map((m,i) => `
-    <div class="material">
-      <span>📄 ${esc(m.name)} <small>(${Math.round(m.size / 1024)} KB)</small></span>
-      <button type="button" class="danger" onclick="eliminarMaterial(${i})">Eliminar</button>
-    </div>
-  `).join('');
-}
-
-function eliminarMaterial(i){
-  materiales.splice(i,1);
-  renderMateriales();
-}
-
-async function generar(){
-  const tema = $('tema').value.trim();
-  if(!tema){
-    setEstado('Escribí el tema que necesitás trabajar.', 'err');
-    ir('crear');
-    return;
-  }
-
-  const btn = $('btnGenerar');
-  btn.disabled = true;
-  btn.textContent = '⏳ Generando…';
-  $('resultadoTexto').textContent = '';
-  setEstado('Preparando la solicitud…');
-
-  const MAX_TOTAL = 3 * 1024 * 1024;
-  const MAX_ARCHIVOS = 2;
-
-  const todosLosMateriales = materiales.map(f => ({file:f, categoria:'Materiales del docente', name:f.name, size:f.size}));
-
-  if(todosLosMateriales.length > MAX_ARCHIVOS){
-    setEstado('Podés enviar hasta 2 documentos por generación. Eliminá algún archivo y volvé a intentar.', 'err');
-    btn.disabled = false;
-    btn.textContent = '✨ Crear con Gemini';
-    return;
-  }
-
-  let totalBytes = 0;
-  for(const item of todosLosMateriales){ totalBytes += item.file.size; }
-
-  if(totalBytes > MAX_TOTAL){
-    const totalMB = (totalBytes / (1024 * 1024)).toFixed(2);
-    setEstado('Los documentos seleccionados ocupan ' + totalMB + ' MB. El máximo permitido es 3 MB.', 'err');
-    btn.disabled = false;
-    btn.textContent = '✨ Crear con Gemini';
-    return;
-  }
-
-  const fd = new FormData();
-  fd.append('provincia', $('provincia').value);
-  fd.append('tipo', $('tipo').value);
-  fd.append('nivel', $('nivel').value);
-  fd.append('grado', $('grado').value);
-  fd.append('area', $('area').value);
-  fd.append('tema', tema);
-  fd.append('duracion', $('duracion').value);
-  fd.append('indicaciones', $('indicaciones').value);
-
-  todosLosMateriales.forEach(item => { fd.append('materiales', item.file, item.file.name); });
-  bibliotecaCategoriasSeleccionadas.forEach(categoria => { fd.append('bibliotecaCategorias', categoria); });
-
-  try{
-    setEstado('Consultando Gemini y preparando el documento…');
-    const r = await fetch('/api/generar', {method:'POST', body:fd});
-    const raw = await r.text();
-    let j = {};
-    try{ j = JSON.parse(raw); }catch(e){ j = {error: raw || ('HTTP ' + r.status)}; }
-
-    if(!r.ok){ throw new Error(j.error || ('HTTP ' + r.status)); }
-
-    ultimo = j.texto || '';
-    $('resultadoTexto').textContent = ultimo;
-
-    let mensaje = '✓ Generado correctamente con ' + (j.modelo || 'Gemini');
-    if(todosLosMateriales.length){ mensaje += ' · Documentos enviados: ' + todosLosMateriales.length; }
-    if(bibliotecaCategoriasSeleccionadas.length){ mensaje += ' · Biblioteca: ' + bibliotecaCategoriasSeleccionadas.join(', '); }
-    if(j.materialesUsados && j.materialesUsados.length){ mensaje += ' · Materiales usados: ' + j.materialesUsados.join(', '); }
-
-    setEstado(mensaje, 'ok');
-    ir('resultado');
-  }catch(e){
-    setEstado('Error: ' + e.message, 'err');
-  }finally{
-    btn.disabled = false;
-    btn.textContent = '✨ Crear con Gemini';
-  }
-}
-
-async function copiar(){
-  if(!ultimo)return;
-  try{
-    await navigator.clipboard.writeText(ultimo);
-    setEstado('✓ Copiado al portapapeles.', 'ok');
-  }catch(e){
-    setEstado('No se pudo copiar automáticamente.', 'err');
-  }
-}
-
-function descargar(){
-  if(!ultimo)return;
-  const blob = new Blob([ultimo], {type:'text/plain;charset=utf-8'});
-  const u = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = u;
-  a.download = 'Edu.sistem_Pro_IA_resultado.txt';
-  a.click();
-  setTimeout(() => URL.revokeObjectURL(u), 1000);
-}
-
-function descargarWord(){
-  if(!ultimo)return;
-  const html = '<!doctype html><html><head><meta charset="utf-8"><title>Edu.sistem Pro IA</title></head><body style="font-family:Arial;line-height:1.55"><h1>Edu.sistem Pro IA</h1><div>' + esc(ultimo).replace(/\n/g,'<br>') + '</div></body></html>';
-  const blob = new Blob(['\ufeff',html], {type:'application/msword'});
-  const u = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = u;
-  a.download = 'Edu.sistem_Pro_IA_resultado.doc';
-  a.click();
-  setTimeout(() => URL.revokeObjectURL(u), 1000);
-}
-
-function imprimir(){
-  if(!ultimo)return;
-  const w = window.open('', '_blank');
-  if(!w){
-    setEstado('El navegador bloqueó la ventana de impresión. Permitila para descargar PDF.', 'err');
-    return;
-  }
-  w.document.write('<html><head><title>Edu.sistem Pro IA</title><style>body{font-family:Arial;line-height:1.55;padding:35px;white-space:pre-wrap}</style></head><body>' + esc(ultimo) + '</body></html>');
-  w.document.close();
-  w.focus();
-  w.print();
-}
-
-async function compartir(){
-  if(!ultimo)return;
-  if(navigator.share){
-    try{ await navigator.share({title:'Edu.sistem Pro IA', text:ultimo}); }catch(e){}
-  }else{
-    copiar();
-  }
-}
-
-function limpiar(){
-  $('tema').value = '';$('grado').value = '';
-  $('area').value = '';$('duracion').value = '';
-  $('indicaciones').value = '';$('resultadoTexto').textContent = '';
-  ultimo = '';
-  materiales = [];
-  bibliotecaCategoriasSeleccionadas = [];
-  document.querySelectorAll('.biblioteca-check').forEach(c => c.checked = false);
-  renderMateriales();
-  renderBiblioteca();
-  setEstado('Formulario limpiado.');
-  ir('crear');
-}
-
-renderMateriales();
-renderBiblioteca();
-health();
-verificarSesion();
-</script>
-
+  </script>
 </body>
 </html>
