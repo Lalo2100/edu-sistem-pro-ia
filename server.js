@@ -704,5 +704,114 @@ if (require.main === module) {
     );
   });
 }
+// --- ENDPOINTS DE MERCADO PAGO Y PAGOS ---
 
+// 1. Crear preferencia de pago (Inicia el Checkout Pro)
+app.post('/api/crear-preferencia', async function (req, res) {
+  try {
+    const { userId, email } = req.body;
+
+    if (!userId) {
+      return res.status(401).json({ error: 'Usuario no autenticado.' });
+    }
+
+    const mpAccessToken = process.env.MP_ACCESS_TOKEN;
+    if (!mpAccessToken) {
+      return res.status(503).json({ error: 'Falta configurar MP_ACCESS_TOKEN en Vercel.' });
+    }
+
+    const preferenceData = {
+      items: [
+        {
+          title: 'Edu.sistem Pro IA - Plan Pro (Ilimitado)',
+          quantity: 1,
+          currency_id: 'ARS',
+          unit_price: 5000.00 // Ajustá el precio según tu conveniencia
+        }
+      ],
+      payer: {
+        email: email || 'docente@edu.sistem.pro'
+      },
+      external_reference: userId, // Vinculamos el pago directamente con el ID del usuario en Supabase
+      back_urls: {
+        success: `${req.protocol}://${req.get('host')}?pagado=true`,
+        failure: `${req.protocol}://${req.get('host')}?pagado=false`,
+        pending: `${req.protocol}://${req.get('host')}?pagado=pending`
+      },
+      auto_return: 'approved'
+    };
+
+    const mpResponse = await fetch('https://api.mercadopago.com/checkout/preferences', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${mpAccessToken}`
+      },
+      body: JSON.stringify(preferenceData)
+    });
+
+    const mpResult = await mpResponse.json();
+
+    if (!mpResponse.ok) {
+      throw new Error(mpResult.message || 'Error al crear la preferencia en Mercado Pago.');
+    }
+
+    return res.json({
+      ok: true,
+      init_point: mpResult.init_point // Link de pago para redirigir al usuario
+    });
+
+  } catch (error) {
+    console.error('Error /api/crear-preferencia:', error);
+    return res.status(500).json({ error: error.message || 'No se pudo iniciar el pago.' });
+  }
+});
+
+// 2. Webhook para recibir la confirmación de pago de Mercado Pago
+app.post('/api/webhook', async function (req, res) {
+  try {
+    const event = req.body;
+
+    // Verificamos si la notificación corresponde a un pago aprobado
+    if (event && (event.type === 'payment' || event.action === 'payment.created')) {
+      const paymentId = event.data && event.data.id;
+
+      if (paymentId) {
+        const mpAccessToken = process.env.MP_ACCESS_TOKEN;
+        
+        // Consultamos el detalle del pago a la API de Mercado Pago
+        const payResponse = await fetch(`https://api.mercadopago.com/v1/payments/${paymentId}`, {
+          headers: {
+            'Authorization': `Bearer ${mpAccessToken}`
+          }
+        });
+
+        const payData = await payResponse.json();
+
+        if (payResponse.ok && payData.status === 'approved') {
+          const userId = payData.external_reference; // Recuperamos el UUID del usuario guardado en la preferencia
+
+          if (userId) {
+            // Actualizamos el perfil en Supabase: Plan Pro e incrementamos el límite a ilimitado o un número alto
+            await supabase
+              .from('profiles')
+              .update({
+                plan: 'pro',
+                generation_limit: 9999, // Límite amplio o ilimitado para cuentas pagas
+                generations_used: 0     // Reseteamos el contador actual al pagar
+              })
+              .eq('id', userId);
+          }
+        }
+      }
+    }
+
+    // Respondemos siempre 200 a Mercado Pago para confirmar recepción
+    return res.status(200).json({ received: true });
+
+  } catch (error) {
+    console.error('Error en /api/webhook:', error);
+    return res.status(500).json({ error: 'Error procesando webhook.' });
+  }
+});
 module.exports = app;
