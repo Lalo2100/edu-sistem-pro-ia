@@ -12,9 +12,8 @@ const LIBRARY_FILE = path.join(ROOT, 'biblioteca.json');
 // Inicializar cliente de Supabase para el servidor
 const supabase = createClient(
   process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SECRET_KEY
+  process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_KEY
 );
-
 app.use(express.json({ limit: '2mb' }));
 app.use(express.static(ROOT));
 
