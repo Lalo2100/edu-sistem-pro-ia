@@ -10,16 +10,24 @@ const ROOT = __dirname;
 const LIBRARY_FILE = path.join(ROOT, 'biblioteca.json');
 
 // Inicializar cliente de Supabase para el servidor
-const { createClient } = require('@supabase/supabase-js');
-
+// Inicializar cliente de Supabase de forma segura
 const supabaseUrl = process.env.SUPABASE_URL || '';
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_KEY || '';
+const supabaseKey =
+  process.env.SUPABASE_SERVICE_ROLE_KEY ||
+  process.env.SUPABASE_SECRET_KEY ||
+  process.env.SUPABASE_KEY ||
+  '';
 
-let supabase;
-try {
-  supabase = createClient(supabaseUrl, supabaseKey);
-} catch (err) {
-  console.error("Error al inicializar Supabase:", err.message);
+let supabase = null;
+if (supabaseUrl && supabaseKey) {
+  try {
+    supabase = createClient(supabaseUrl, supabaseKey);
+    console.log('Supabase conectado correctamente');
+  } catch (err) {
+    console.error('Error al inicializar Supabase:', err.message);
+  }
+} else {
+  console.warn('Supabase no configurado: faltan SUPABASE_URL o la clave');
 }
 const supabase = createClient(supabaseUrl || '', supabaseKey || '');
 app.use(express.json({ limit: '2mb' }));
