@@ -1,16 +1,7 @@
-process.on('uncaughtException', (err) => {
-  console.error('🔥 ERROR CRÍTICO NO CAPTURADO:', err.stack || err);
-});
-
-process.on('unhandledRejection', (reason, promise) => {
-  console.error('🔥 PROMESA RECHAZADA NO CAPTURADA:', reason);
-});
-
 const express = require('express');
 const path = require('path');
 const multer = require('multer');
 const fs = require('fs');
-const { createClient } = require('@supabase/supabase-js');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -18,29 +9,7 @@ const ROOT = __dirname;
 const LIBRARY_FILE = path.join(ROOT, 'biblioteca.json');
 
 app.use(express.json({ limit: '2mb' }));
-app.use(express.urlencoded({ extended: true }));
 app.use(express.static(ROOT));
-
-// --- INICIALIZACIÓN SEGURA DE SUPABASE (Evita el error 500 si faltan variables) ---
-const supabaseUrl = process.env.SUPABASE_URL || 'https://placeholder.supabase.co';
-const supabaseKey =
-  process.env.SUPABASE_SERVICE_ROLE_KEY ||
-  process.env.SUPABASE_SECRET_KEY ||
-  process.env.SUPABASE_KEY ||
-  'placeholder-key';
-
-let supabase = null;
-try {
-  supabase = createClient(supabaseUrl, supabaseKey);
-} catch (err) {
-  console.error('Error al inicializar Supabase:', err.message);
-}
-
-// Configuración de Mercado Pago
-const mpAccessToken =
-  process.env.MERCADOPAGO_ACCESS_TOKEN ||
-  process.env.MP_ACCESS_TOKEN ||
-  '';
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -469,8 +438,6 @@ app.get('/api/health', function (req, res) {
     ok: true,
     app: 'Edu.sistem Pro IA',
     version: '2.2',
-    supabaseConfigured: !!supabase,
-    mercadopagoConfigured: !!mpAccessToken,
     geminiConfigured:
       Boolean(process.env.GEMINI_API_KEY),
     bibliotecaArgentina: true,
@@ -498,7 +465,6 @@ app.post(
   async function (req, res) {
     try {
       const {
-        userId,
         provincia,
         tipo,
         nivel,
@@ -508,30 +474,6 @@ app.post(
         duracion,
         indicaciones
       } = req.body || {};
-
-      if (!userId) {
-        return res.status(401).json({
-          error: 'Usuario no autenticado. Iniciá sesión para continuar.'
-        });
-      }
-
-      const { data: profile, error: profileError } = await supabase
-        .from('profiles')
-        .select('plan, generations_used, generation_limit')
-        .eq('id', userId)
-        .single();
-
-      if (profileError || !profile) {
-        return res.status(404).json({
-          error: 'No se encontró el perfil del usuario en la base de datos.'
-        });
-      }
-
-      if (profile.generations_used >= profile.generation_limit) {
-        return res.status(403).json({
-          error: '🚫 Límite de generaciones alcanzado. Actualizá tu plan para continuar.'
-        });
-      }
 
       const categorias =
         Array.isArray(
@@ -667,19 +609,10 @@ Entregá directamente el trabajo docente.
       const result =
         await geminiGenerate(prompt);
 
-      const nuevoConteo = (profile.generations_used || 0) + 1;
-      
-      await supabase
-        .from('profiles')
-        .update({ generations_used: nuevoConteo })
-        .eq('id', userId);
-
       return res.json({
         ok: true,
         texto: result.text,
         modelo: result.model,
-        generations_used: nuevoConteo,
-        generation_limit: profile.generation_limit,
         materialesUsados:
           extracted.map(function (item) {
             return item.name;
@@ -706,106 +639,6 @@ Entregá directamente el trabajo docente.
     }
   }
 );
-
-app.post('/api/crear-preferencia', async function (req, res) {
-  try {
-    const { userId, email } = req.body;
-
-    if (!userId) {
-      return res.status(401).json({ error: 'Usuario no autenticado.' });
-    }
-
-    if (!mpAccessToken) {
-      return res.status(503).json({ error: 'Falta configurar el token de Mercado Pago en Vercel.' });
-    }
-
-    const preferenceData = {
-      items: [
-        {
-          title: 'Edu.sistem Pro IA - Plan Pro (Ilimitado)',
-          quantity: 1,
-          currency_id: 'ARS',
-          unit_price: 5000.00
-        }
-      ],
-      payer: {
-        email: email || 'docente@edu.sistem.pro'
-      },
-      external_reference: userId,
-      back_urls: {
-        success: `${req.protocol}://${req.get('host')}?pagado=true`,
-        failure: `${req.protocol}://${req.get('host')}?pagado=false`,
-        pending: `${req.protocol}://${req.get('host')}?pagado=pending`
-      },
-      auto_return: 'approved'
-    };
-
-    const mpResponse = await fetch('https://api.mercadopago.com/checkout/preferences', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${mpAccessToken}`
-      },
-      body: JSON.stringify(preferenceData)
-    });
-
-    const mpResult = await mpResponse.json();
-
-    if (!mpResponse.ok) {
-      throw new Error(mpResult.message || 'Error al crear la preferencia en Mercado Pago.');
-    }
-
-    return res.json({
-      ok: true,
-      init_point: mpResult.init_point
-    });
-
-  } catch (error) {
-    console.error('Error /api/crear-preferencia:', error);
-    return res.status(500).json({ error: error.message || 'No se pudo iniciar el pago.' });
-  }
-});
-
-app.post('/api/webhook', async function (req, res) {
-  try {
-    const event = req.body;
-
-    if (event && (event.type === 'payment' || event.action === 'payment.created')) {
-      const paymentId = event.data && event.data.id;
-
-      if (paymentId && mpAccessToken && supabase) {
-        const payResponse = await fetch(`https://api.mercadopago.com/v1/payments/${paymentId}`, {
-          headers: {
-            'Authorization': `Bearer ${mpAccessToken}`
-          }
-        });
-
-        const payData = await payResponse.json();
-
-        if (payResponse.ok && payData.status === 'approved') {
-          const userId = payData.external_reference;
-
-          if (userId) {
-            await supabase
-              .from('profiles')
-              .update({
-                plan: 'pro',
-                generation_limit: 9999,
-                generations_used: 0
-              })
-              .eq('id', userId);
-          }
-        }
-      }
-    }
-
-    return res.status(200).json({ received: true });
-
-  } catch (error) {
-    console.error('Error en /api/webhook:', error);
-    return res.status(500).json({ error: 'Error procesando webhook.' });
-  }
-});
 
 app.get('*', function (req, res) {
   if (req.path.startsWith('/api/')) {
