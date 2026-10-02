@@ -2,11 +2,18 @@ const express = require('express');
 const path = require('path');
 const multer = require('multer');
 const fs = require('fs');
+const { createClient } = require('@supabase/supabase-js');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 const ROOT = __dirname;
 const LIBRARY_FILE = path.join(ROOT, 'biblioteca.json');
+
+// Inicializar cliente de Supabase para el servidor
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_ROLE_KEY
+);
 
 app.use(express.json({ limit: '2mb' }));
 app.use(express.static(ROOT));
@@ -465,6 +472,7 @@ app.post(
   async function (req, res) {
     try {
       const {
+        userId,
         provincia,
         tipo,
         nivel,
@@ -474,6 +482,32 @@ app.post(
         duracion,
         indicaciones
       } = req.body || {};
+
+      if (!userId) {
+        return res.status(401).json({
+          error: 'Usuario no autenticado. Iniciá sesión para continuar.'
+        });
+      }
+
+      // --- VALIDAR LÍMITE EN SUPABASE ---
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('plan, generations_used, generation_limit')
+        .eq('id', userId)
+        .single();
+
+      if (profileError || !profile) {
+        return res.status(404).json({
+          error: 'No se encontró el perfil del usuario en la base de datos.'
+        });
+      }
+
+      if (profile.generations_used >= profile.generation_limit) {
+        return res.status(403).json({
+          error: '🚫 Límite de generaciones alcanzado. Actualizá tu plan para continuar.'
+        });
+      }
+      // ---------------------------------
 
       const categorias =
         Array.isArray(
@@ -609,10 +643,21 @@ Entregá directamente el trabajo docente.
       const result =
         await geminiGenerate(prompt);
 
+      // --- INCREMENTAR CONTADOR EN SUPABASE (+1) ---
+      const nuevoConteo = (profile.generations_used || 0) + 1;
+      
+      await supabase
+        .from('profiles')
+        .update({ generations_used: nuevoConteo })
+        .eq('id', userId);
+      // --------------------------------------------
+
       return res.json({
         ok: true,
         texto: result.text,
         modelo: result.model,
+        generations_used: nuevoConteo,
+        generation_limit: profile.generation_limit,
         materialesUsados:
           extracted.map(function (item) {
             return item.name;
