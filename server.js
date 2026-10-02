@@ -1,3 +1,14 @@
+process.on('uncaughtException', (err) => {
+  console.error('🔥 ERROR CRÍTICO NO CAPTURADO:', err.stack || err);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('🔥 PROMESA RECHAZADA NO CAPTURADA:', reason);
+});
+
+const express = require('express');
+const { createClient } = require('@supabase/supabase-js');
+// ... el resto de tu código ...
 const express = require('express');
 const path = require('path');
 const multer = require('multer');
