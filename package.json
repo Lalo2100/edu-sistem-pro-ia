@@ -1,10 +1,14 @@
 {
   "name": "edu-sistem-pro-ia",
   "version": "2.2.0",
-  "description": "Edu.sistem Pro IA - Versión Nacional",
+  "private": true,
   "main": "server.js",
+  "type": "commonjs",
   "scripts": {
     "start": "node server.js"
+  },
+  "engines": {
+    "node": "18.x"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.39.0",
