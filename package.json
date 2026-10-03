@@ -1,13 +1,16 @@
-{{
-  "name": "educ-pro-ia",
-  "version": "2.2",
+{
+  "name": "edu-sistem-pro-ia",
+  "version": "2.2.0",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.57.0",
     "express": "^4.19.2",
     "multer": "^1.4.5-lts.1",
-    "dotenv": "^16.4.5"
+    "dotenv": "^16.4.5",
+    "pdf-parse": "^1.1.1",
+    "mammoth": "^1.8.0"
   }
 }
