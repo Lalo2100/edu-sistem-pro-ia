@@ -199,20 +199,25 @@ module.exports = async function handler(req, res) {
           continue;
         }
 
-        const text =
-          (result?.candidates?.[0]?.content?.parts || [])
-            .map(part => part.text || "")
-            .join("\n")
-            .trim();
+       const text =
+  (result?.candidates?.[0]?.content?.parts || [])
+    .map(part => part.text || "")
+    .join("\n")
+    .trim();
 
-        if (text) {
-          return res.json({
-            ok: true,
-            texto: text,
-            modelo: model,
-            materialesUsados: used
-          });
-        }
+if (text) {
+  const textoLimpio = text
+    .replace(/\*\*(.*?)\*\*/g, "$1")
+    .replace(/^#{1,6}\s*/gm, "")
+    .replace(/^\s*[-*]\s+/gm, "• ");
+
+  return res.json({
+    ok: true,
+    texto: textoLimpio,
+    modelo: model,
+    materialesUsados: used
+  });
+}
 
         lastError =
           "Gemini no devolvió contenido.";
