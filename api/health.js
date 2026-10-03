@@ -1,0 +1,1 @@
+module.exports=async(req,res)=>{res.setHeader('Cache-Control','no-store');res.setHeader('Access-Control-Allow-Origin','*');if(req.method==='OPTIONS')return res.status(204).end();res.json({ok:true,app:'Edu.sistem pro ia',version:'2.4',provider:'Gemini',geminiConfigured:Boolean(process.env.GEMINI_API_KEY),model:process.env.GEMINI_MODEL||'auto'});};
