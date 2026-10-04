@@ -786,22 +786,70 @@ async function actualizarInterfaz() {
 
 async function cargarCuenta() {
   if (!currentSession) return;
+
   try {
     const response = await fetch("/api/cuenta", {
-      headers: { "Authorization": "Bearer " + currentSession.access_token }
+      headers: {
+        "Authorization": "Bearer " + currentSession.access_token
+      }
     });
+
     const data = await response.json();
-    if (!response.ok) throw new Error(data.error || "No se pudo consultar la cuenta.");
+
+    if (!response.ok) {
+      throw new Error(data.error || "No se pudo consultar la cuenta.");
+    }
 
     const profile = data.profile || data;
-    const plan = profile.plan || "gratis";
-    const used = Number(profile.generations_used || 0);
-    const limit = Number(profile.generation_limit || 5);
-    const remaining = Math.max(0, limit - used);
 
-    document.getElementById("account-plan").innerText = plan.charAt(0).toUpperCase() + plan.slice(1);
+    // Admite tanto la respuesta actual en español
+    // como la estructura interna en inglés.
+    const plan =
+      profile.plan ||
+      profile.nombrePlan ||
+      "gratis";
+
+    const used = Number(
+      profile.generacionesUsadas ??
+      profile.generations_used ??
+      0
+    );
+
+    const limit = Number(
+      profile.generacionesLimite ??
+      profile.generations_limit ??
+      profile.generation_limit ??
+      5
+    );
+
+    const remaining = Number(
+      profile.generacionesDisponibles ??
+      profile.remaining ??
+      Math.max(0, limit - used)
+    );
+
+    document.getElementById("account-plan").innerText =
+      String(plan).charAt(0).toUpperCase() +
+      String(plan).slice(1);
+
     document.getElementById("account-used").innerText = used;
-    document.getElementById("account-remaining").innerText = remaining;
+
+    document.getElementById("account-remaining").innerText =
+      Math.max(0, remaining);
+
+    // Actualizar también el botón cuando se alcanza el límite.
+    const submitButton = document.getElementById("btn-submit");
+
+    if (submitButton) {
+      if (remaining <= 0) {
+        submitButton.disabled = true;
+        submitButton.innerText = "🔒 Límite de generaciones alcanzado";
+      } else {
+        submitButton.disabled = false;
+        submitButton.innerText = "✨ Generar material educativo con IA";
+      }
+    }
+
   } catch (error) {
     console.error("Error cargando cuenta:", error);
   }
