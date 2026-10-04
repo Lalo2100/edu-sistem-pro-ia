@@ -3,38 +3,40 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>Edu.sistem Pro IA — Asistente inteligente para docentes</title>
-
+  
+  <!-- Tipografía moderna Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     :root {
-      --primary: #0f172a;
-      --accent: #2563eb;
-      --accent-hover: #1d4ed8;
-      --success: #15803d;
-      --danger: #b91c1c;
-      --bg: #f1f5f9;
-      --card: #ffffff;
-      --text: #334155;
-      --muted: #64748b;
-      --border: #cbd5e1;
-      --mp: #009ee3;
+      --primary: #0F172A;
+      --accent: #2563EB;
+      --accent-hover: #1D4ED8;
+      --success: #15803D;
+      --danger: #DC2626;
+      --bg: #F8FAFC;
+      --card: #FFFFFF;
+      --text: #1E293B;
+      --muted: #64748B;
+      --border: #E2E8F0;
+      --mp: #009EE3;
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
     }
 
     body {
       background: var(--bg);
       color: var(--text);
-      line-height: 1.5;
-      padding: 16px;
+      line-height: 1.6;
+      padding: 24px 16px;
+      -webkit-font-smoothing: antialiased;
     }
 
     .container {
@@ -44,21 +46,28 @@
 
     .card {
       background: var(--card);
-      border-radius: 16px;
-      padding: 24px;
-      margin-bottom: 18px;
-      box-shadow: 0 5px 20px rgba(15, 23, 42, .08);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 28px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.01);
+      transition: box-shadow 0.2s ease;
+    }
+
+    .card:hover {
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.04);
     }
 
     header {
       text-align: center;
-      padding: 28px 20px;
+      padding: 10px 0;
     }
 
     h1 {
       color: var(--primary);
-      font-size: 2rem;
-      margin-bottom: 6px;
+      font-size: 2.2rem;
+      font-weight: 700;
+      margin-bottom: 8px;
     }
 
     .subtitle {
@@ -67,22 +76,23 @@
     }
 
     .brand {
-      font-weight: 800;
+      font-weight: 700;
       color: var(--accent);
     }
 
     .section-title {
-      font-size: 1.2rem;
+      font-size: 1.25rem;
       color: var(--primary);
-      margin-bottom: 16px;
+      font-weight: 700;
+      margin-bottom: 18px;
     }
 
     label {
       display: block;
-      font-weight: 700;
+      font-weight: 600;
       font-size: .9rem;
       color: var(--primary);
-      margin-bottom: 6px;
+      margin-bottom: 8px;
     }
 
     input,
@@ -91,26 +101,34 @@
       width: 100%;
       border: 1px solid var(--border);
       border-radius: 8px;
-      padding: 11px;
-      background: white;
+      padding: 12px;
+      background: #FFFFFF;
       color: var(--text);
       font-size: .95rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
     }
 
     textarea {
-      min-height: 100px;
+      min-height: 110px;
       resize: vertical;
     }
 
     .form-group {
-      margin-bottom: 16px;
+      margin-bottom: 18px;
     }
 
     button {
       border: 0;
       cursor: pointer;
       border-radius: 8px;
-      font-weight: 700;
+      font-weight: 600;
+      transition: background-color 0.2s;
     }
 
     .btn-primary {
@@ -126,20 +144,25 @@
     }
 
     .btn-primary:disabled {
-      background: #94a3b8;
+      background: #94A3B8;
       cursor: not-allowed;
     }
 
     .btn-secondary {
-      background: #e2e8f0;
+      background: #F1F5F9;
       color: var(--primary);
-      padding: 9px 14px;
+      padding: 10px 16px;
     }
 
     .btn-logout {
-      background: #fee2e2;
+      background: #FEF2F2;
       color: var(--danger);
-      padding: 8px 12px;
+      border: 1px solid #FCA5A5;
+      padding: 8px 14px;
+    }
+
+    .btn-logout:hover {
+      background: #FEE2E2;
     }
 
     .account-panel {
@@ -149,55 +172,62 @@
     .account-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin-top: 15px;
+      gap: 14px;
+      margin-top: 18px;
     }
 
     .account-box {
-      background: #f8fafc;
+      background: var(--bg);
       border: 1px solid var(--border);
       border-radius: 10px;
-      padding: 12px;
+      padding: 16px;
       text-align: center;
     }
 
     .account-box strong {
       display: block;
       color: var(--primary);
-      font-size: 1.1rem;
+      font-size: 1.2rem;
+      font-weight: 700;
     }
 
     .account-box span {
       color: var(--muted);
-      font-size: .8rem;
+      font-size: .85rem;
     }
 
     .auth-panel {
       max-width: 500px;
-      margin: 0 auto 18px;
+      margin: 0 auto 20px;
     }
 
     .auth-tabs {
       display: flex;
       gap: 8px;
-      margin-bottom: 18px;
+      margin-bottom: 20px;
+      background: var(--bg);
+      padding: 4px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
     }
 
     .auth-tabs button {
       flex: 1;
       padding: 10px;
-      background: #e2e8f0;
-      color: var(--primary);
+      background: transparent;
+      color: var(--muted);
+      font-weight: 600;
     }
 
     .auth-tabs button.active {
-      background: var(--accent);
-      color: white;
+      background: white;
+      color: var(--primary);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
     }
 
     .auth-message {
-      margin-top: 12px;
-      padding: 10px;
+      margin-top: 14px;
+      padding: 12px;
       border-radius: 8px;
       display: none;
       font-size: .9rem;
@@ -205,38 +235,39 @@
 
     .auth-message.success {
       display: block;
-      background: #dcfce7;
+      background: #DCFCE7;
       color: var(--success);
     }
 
     .auth-message.error {
       display: block;
-      background: #fee2e2;
+      background: #FEF2F2;
       color: var(--danger);
     }
 
     .library {
-      background: #f8fafc;
+      background: var(--bg);
       border: 1px solid var(--border);
       border-radius: 10px;
-      padding: 14px;
+      padding: 16px;
     }
 
     .library-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 8px;
+      gap: 10px;
     }
 
     .library-item {
       display: flex;
       align-items: center;
-      gap: 8px;
-      padding: 8px;
+      gap: 10px;
+      padding: 10px;
       background: white;
-      border: 1px solid #e2e8f0;
-      border-radius: 7px;
-      font-size: .88rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: .9rem;
+      cursor: pointer;
     }
 
     .library-item input {
@@ -246,50 +277,58 @@
     .plans {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
+      gap: 16px;
     }
 
     .plan {
       border: 1px solid var(--border);
       border-radius: 12px;
-      padding: 18px;
+      padding: 24px 18px;
       text-align: center;
       background: white;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .plan:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
     }
 
     .plan h3 {
       color: var(--primary);
-      margin-bottom: 5px;
+      font-size: 1.2rem;
+      margin-bottom: 8px;
     }
 
     .price {
-      font-size: 1.4rem;
+      font-size: 1.6rem;
       font-weight: 800;
-      margin: 8px 0;
+      margin: 10px 0;
       color: var(--accent);
     }
 
     .plan p {
-      font-size: .85rem;
+      font-size: .88rem;
       color: var(--muted);
-      margin-bottom: 14px;
+      margin-bottom: 18px;
     }
 
     .btn-mp {
       width: 100%;
-      padding: 10px;
+      padding: 12px;
       background: var(--mp);
       color: white;
+      font-weight: 700;
     }
 
     .btn-mp:hover {
-      background: #008ac7;
+      background: #008AC7;
     }
 
     .loader {
       display: none;
       text-align: center;
-      padding: 20px;
+      padding: 24px;
       color: var(--accent);
       font-weight: 700;
     }
@@ -300,33 +339,34 @@
       background: white;
       border: 1px solid var(--border);
       border-radius: 10px;
-      padding: 20px;
+      padding: 24px;
       white-space: pre-wrap;
       font-size: .95rem;
-      line-height: 1.65;
+      line-height: 1.7;
     }
 
     .result-actions {
       display: none;
-      gap: 8px;
-      margin-top: 10px;
+      gap: 10px;
+      margin-top: 14px;
       flex-wrap: wrap;
     }
 
     .result-actions button {
-      padding: 9px 13px;
-      background: #e2e8f0;
+      padding: 10px 16px;
+      background: var(--bg);
+      border: 1px solid var(--border);
       color: var(--primary);
     }
 
     .error-banner {
       display: none;
-      background: #fee2e2;
-      border: 1px solid #f87171;
+      background: #FEF2F2;
+      border: 1px solid #F87171;
       color: var(--danger);
-      padding: 12px;
+      padding: 14px;
       border-radius: 8px;
-      margin-bottom: 16px;
+      margin-bottom: 18px;
     }
 
     .hidden {
@@ -334,21 +374,21 @@
     }
 
     .small {
-      font-size: .82rem;
+      font-size: .85rem;
       color: var(--muted);
     }
 
     @media (max-width: 700px) {
       body {
-        padding: 8px;
+        padding: 10px;
       }
 
       .card {
-        padding: 18px;
+        padding: 20px;
       }
 
       h1 {
-        font-size: 1.55rem;
+        font-size: 1.7rem;
       }
 
       .account-grid,
@@ -364,6 +404,7 @@
 
 <div class="container">
 
+  <!-- HEADER -->
   <header class="card">
     <h1>Edu.sistem Pro IA</h1>
     <div class="subtitle">
@@ -374,200 +415,104 @@
     </p>
   </header>
 
-
-  <!-- =========================
-       AUTENTICACIÓN
-  ========================== -->
-
+  <!-- AUTENTICACIÓN -->
   <section class="card auth-panel" id="auth-panel">
-
     <h2 class="section-title">👤 Mi cuenta</h2>
 
     <div class="auth-tabs">
-      <button id="tab-login" class="active" type="button">
-        Iniciar sesión
-      </button>
-
-      <button id="tab-register" type="button">
-        Crear cuenta
-      </button>
+      <button id="tab-login" class="active" type="button">Iniciar sesión</button>
+      <button id="tab-register" type="button">Crear cuenta</button>
     </div>
 
     <form id="auth-form">
-
       <div class="form-group">
         <label for="auth-email">Correo electrónico</label>
-        <input
-          type="email"
-          id="auth-email"
-          required
-          placeholder="tuemail@gmail.com"
-        >
+        <input type="email" id="auth-email" required placeholder="tuemail@gmail.com">
       </div>
 
       <div class="form-group">
         <label for="auth-password">Contraseña</label>
-        <input
-          type="password"
-          id="auth-password"
-          required
-          minlength="6"
-          placeholder="Mínimo 6 caracteres"
-        >
+        <input type="password" id="auth-password" required minlength="6" placeholder="Mínimo 6 caracteres">
       </div>
 
-      <button class="btn-primary" type="submit" id="auth-button">
-        Iniciar sesión
-      </button>
-
+      <button class="btn-primary" type="submit" id="auth-button">Iniciar sesión</button>
     </form>
 
     <div id="auth-message" class="auth-message"></div>
-
-    <p class="small" style="margin-top:12px;">
+    <p class="small" style="margin-top:14px;">
       Tu cuenta permite guardar tu acceso y controlar tus generaciones mensuales.
     </p>
-
   </section>
 
-
-  <!-- =========================
-       CUENTA
-  ========================== -->
-
+  <!-- CUENTA -->
   <section class="card account-panel" id="account-panel">
-
     <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;">
-
       <div>
-        <h2 class="section-title" style="margin-bottom:2px;">
-          👤 Mi cuenta
-        </h2>
-
-        <div class="small" id="account-email">
-          —
-        </div>
+        <h2 class="section-title" style="margin-bottom:2px;">👤 Mi cuenta</h2>
+        <div class="small" id="account-email">—</div>
       </div>
-
-      <button
-        class="btn-logout"
-        type="button"
-        id="logout-button"
-      >
-        Cerrar sesión
-      </button>
-
+      <button class="btn-logout" type="button" id="logout-button">Cerrar sesión</button>
     </div>
 
     <div class="account-grid">
-
       <div class="account-box">
         <strong id="account-plan">Gratis</strong>
         <span>Plan</span>
       </div>
-
       <div class="account-box">
         <strong id="account-used">0</strong>
         <span>Generaciones usadas</span>
       </div>
-
       <div class="account-box">
         <strong id="account-remaining">5</strong>
         <span>Disponibles</span>
       </div>
-
     </div>
-
   </section>
 
-
-  <!-- =========================
-       PLANES
-  ========================== -->
-
+  <!-- PLANES -->
   <section class="card account-panel" id="plans-panel">
-
-    <h2 class="section-title">
-      💳 Planes de Edu.sistem Pro IA
-    </h2>
+    <h2 class="section-title">💳 Planes de Edu.sistem Pro IA</h2>
 
     <div class="plans">
-
       <div class="plan">
         <h3>Docente</h3>
         <div class="price">$4.999</div>
         <p>100 generaciones por mes.</p>
-
-        <button
-          class="btn-mp"
-          onclick="window.open('https://mpago.la/2ECLDFR','_blank')"
-        >
-          Suscribirme
-        </button>
+        <button class="btn-mp" onclick="window.open('https://mpago.la/2ECLDFR','_blank')">Suscribirme</button>
       </div>
 
-
-      <div class="plan">
-        <h3>Profesional</h3>
+      <div class="plan" style="border-color: var(--accent);">
+        <h3 style="color: var(--accent);">Profesional</h3>
         <div class="price">$8.999</div>
         <p>300 generaciones por mes.</p>
-
-        <button
-          class="btn-mp"
-          onclick="window.open('https://mpago.la/2X9cT72','_blank')"
-        >
-          Suscribirme
-        </button>
+        <button class="btn-mp" onclick="window.open('https://mpago.la/2X9cT72','_blank')">Suscribirme</button>
       </div>
-
 
       <div class="plan">
         <h3>Institución</h3>
         <div class="price">$24.999</div>
         <p>1.000 generaciones por mes.</p>
-
-        <button
-          class="btn-mp"
-        onclick="window.open('https://mpago.la/142hjdM','_blank')"
-        >
-          Suscribirme
-        </button>
+        <button class="btn-mp" onclick="window.open('https://mpago.la/142hjdM','_blank')">Suscribirme</button>
       </div>
-
     </div>
 
-    <p class="small" style="margin-top:12px;text-align:center;">
-      El pago se realiza mediante Mercado Pago.
+    <p class="small" style="margin-top:16px;text-align:center;">
+      El pago se realiza de forma segura mediante Mercado Pago.
     </p>
-
   </section>
 
-
-  <!-- =========================
-       GENERADOR
-  ========================== -->
-
+  <!-- GENERADOR -->
   <section class="card account-panel" id="generator-panel">
-
-    <h2 class="section-title">
-      🤖 Generar material educativo
-    </h2>
+    <h2 class="section-title">🤖 Generar material educativo</h2>
 
     <div id="error-banner" class="error-banner"></div>
 
     <form id="generation-form">
-
       <div class="form-group">
-        <label for="provincia">
-          Jurisdicción / Provincia
-        </label>
-
+        <label for="provincia">Jurisdicción / Provincia</label>
         <select id="provincia" name="provincia" required>
-
-          <option value="">
-            Seleccioná una jurisdicción...
-          </option>
-
+          <option value="">Seleccioná una jurisdicción...</option>
           <option value="Buenos Aires">Buenos Aires</option>
           <option value="Catamarca">Catamarca</option>
           <option value="Chaco">Chaco</option>
@@ -592,1064 +537,353 @@
           <option value="Santiago del Estero">Santiago del Estero</option>
           <option value="Tierra del Fuego">Tierra del Fuego</option>
           <option value="Tucumán">Tucumán</option>
-
         </select>
       </div>
 
-
       <div class="form-group">
-
-        <label for="tipo">
-          Tipo de trabajo
-        </label>
-
+        <label for="tipo">Tipo de trabajo</label>
         <select id="tipo" name="tipo" required>
-
-          <option value="anual">
-            Planificación anual
-          </option>
-
-          <option value="secuencia">
-            Secuencia didáctica
-          </option>
-
-          <option value="proyecto">
-            Proyecto educativo
-          </option>
-
-          <option value="rubrica">
-            Rúbrica de evaluación
-          </option>
-
+          <option value="anual">Planificación anual</option>
+          <option value="secuencia">Secuencia didáctica</option>
+          <option value="proyecto">Proyecto educativo</option>
+          <option value="rubrica">Rúbrica de evaluación</option>
         </select>
-
       </div>
 
-
       <div class="form-group">
-
-        <label for="nivel">
-          Nivel educativo
-        </label>
-
-        <input
-          id="nivel"
-          name="nivel"
-          required
-          placeholder="Ej.: Inicial, Primaria, Secundaria"
-        >
-
+        <label for="nivel">Nivel educativo</label>
+        <input id="nivel" name="nivel" required placeholder="Ej.: Inicial, Primaria, Secundaria">
       </div>
 
-
       <div class="form-group">
-
-        <label for="grado">
-          Grado / Curso
-        </label>
-
-        <input
-          id="grado"
-          name="grado"
-          required
-          placeholder="Ej.: 5.º grado, 3.º año"
-        >
-
+        <label for="grado">Grado / Curso</label>
+        <input id="grado" name="grado" required placeholder="Ej.: 5.º grado, 3.º año">
       </div>
 
-
       <div class="form-group">
-
-        <label for="area">
-          Área / Materia
-        </label>
-
-        <input
-          id="area"
-          name="area"
-          required
-          placeholder="Ej.: Matemática, Música, Lengua"
-        >
-
+        <label for="area">Área / Materia</label>
+        <input id="area" name="area" required placeholder="Ej.: Matemática, Música, Lengua">
       </div>
 
-
       <div class="form-group">
-
-        <label for="tema">
-          Tema o eje central
-        </label>
-
-        <input
-          id="tema"
-          name="tema"
-          required
-          placeholder="¿Qué querés trabajar?"
-        >
-
+        <label for="tema">Tema o eje central</label>
+        <input id="tema" name="tema" required placeholder="¿Qué querés trabajar?">
       </div>
 
-
       <div class="form-group">
-
-        <label for="duracion">
-          Duración
-        </label>
-
-        <input
-          id="duracion"
-          name="duracion"
-          placeholder="Ej.: 4 clases, 2 semanas"
-        >
-
+        <label for="duracion">Duración</label>
+        <input id="duracion" name="duracion" placeholder="Ej.: 4 clases, 2 semanas">
       </div>
 
-
       <div class="form-group">
-
-        <label for="indicaciones">
-          ¿Cómo querés que lo realice?
-        </label>
-
-        <textarea
-          id="indicaciones"
-          name="indicaciones"
-          placeholder="Escribí cualquier indicación especial para tu propuesta..."
-        ></textarea>
-
+        <label for="indicaciones">¿Cómo querés que lo realice?</label>
+        <textarea id="indicaciones" name="indicaciones" placeholder="Escribí cualquier indicación especial para tu propuesta..."></textarea>
       </div>
 
-
-      <!-- =========================
-           BIBLIOTECA
-      ========================== -->
-
       <div class="form-group">
-
-        <label>
-          📚 Biblioteca Curricular Argentina
-        </label>
-
+        <label>📚 Biblioteca Curricular Argentina</label>
         <div class="library">
-
-          <div
-            id="library-container"
-            class="library-grid"
-          >
-
-            <div class="small">
-              Cargando biblioteca...
-            </div>
-
+          <div id="library-container" class="library-grid">
+            <div class="small">Cargando biblioteca...</div>
           </div>
-
         </div>
-
       </div>
-
-
-      <!-- =========================
-           MATERIALES
-      ========================== -->
 
       <div class="form-group">
-
-        <label for="materiales">
-          📎 Materiales de referencia
-        </label>
-
-        <input
-          type="file"
-          id="materiales"
-          name="materiales"
-          multiple
-          accept=".pdf,.docx,.txt,.md,.csv,.html,.htm"
-        >
-
-        <div class="small" style="margin-top:5px;">
-          Podés adjuntar hasta 2 archivos de referencia.
-        </div>
-
+        <label for="materiales">📎 Materiales de referencia</label>
+        <input type="file" id="materiales" name="materiales" multiple accept=".pdf,.docx,.txt,.md,.csv,.html,.htm">
+        <div class="small" style="margin-top:6px;">Podés adjuntar hasta 2 archivos de referencia.</div>
       </div>
 
-
-      <button
-        type="submit"
-        class="btn-primary"
-        id="btn-submit"
-      >
+      <button type="submit" class="btn-primary" id="btn-submit">
         ✨ Generar material educativo
       </button>
-
     </form>
 
-
-    <div id="loader" class="loader">
-      ⏳ Generando tu material educativo con IA...
+    <div id="loader" class="loader">⏳ Generando tu material educativo con IA...</div>
+    <div id="result-box" class="result-box"></div>
+    
+    <div id="result-actions" class="result-actions">
+      <button type="button" onclick="copiarResultado()">📋 Copiar</button>
+      <button type="button" onclick="descargarTXT()">📄 Descargar TXT</button>
+      <button type="button" onclick="imprimirResultado()">🖨️ Imprimir / PDF</button>
     </div>
-
-
-    <div
-      id="result-box"
-      class="result-box"
-    ></div>
-
-
-    <div
-      id="result-actions"
-      class="result-actions"
-    >
-
-      <button type="button" onclick="copiarResultado()">
-        📋 Copiar
-      </button>
-
-      <button type="button" onclick="descargarTXT()">
-        📄 Descargar TXT
-      </button>
-
-      <button type="button" onclick="imprimirResultado()">
-        🖨️ Imprimir / PDF
-      </button>
-
-    </div>
-
   </section>
 
 </div>
 
-
 <script>
-
-/* =========================================================
-   CONFIGURACIÓN SUPABASE
-   =========================================================
-
-   IMPORTANTE:
-   Acá va solamente la ANON KEY / PUBLIC KEY.
-
-   NO pongas nunca:
-   SUPABASE_SERVICE_ROLE_KEY
-
-   Esa clave queda solamente en Vercel.
-========================================================= */
-
-const SUPABASE_URL =
-  "https://ceqjgbktfcjdfasfolhg.supabase.co";
-
-const SUPABASE_ANON_KEY =
-  "sb_publishable_4Xp-hMkalW72ZNs8glcHzg_x0V6Pg8x";
-const supabaseClient =
-  window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_ANON_KEY
-  );
-
+const SUPABASE_URL = "https://ceqjgbktfcjdfasfolhg.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_4Xp-hMkalW72ZNs8glcHzg_x0V6Pg8x";
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 let currentSession = null;
 let currentResult = "";
 
-
-/* =========================================================
-   ELEMENTOS
-========================================================= */
-
-const authPanel =
-  document.getElementById("auth-panel");
-
-const accountPanel =
-  document.getElementById("account-panel");
-
-const plansPanel =
-  document.getElementById("plans-panel");
-
-const generatorPanel =
-  document.getElementById("generator-panel");
-
-const authForm =
-  document.getElementById("auth-form");
-
-const authButton =
-  document.getElementById("auth-button");
-
-const authMessage =
-  document.getElementById("auth-message");
-
-const tabLogin =
-  document.getElementById("tab-login");
-
-const tabRegister =
-  document.getElementById("tab-register");
-
+const authPanel = document.getElementById("auth-panel");
+const accountPanel = document.getElementById("account-panel");
+const plansPanel = document.getElementById("plans-panel");
+const generatorPanel = document.getElementById("generator-panel");
+const authForm = document.getElementById("auth-form");
+const authButton = document.getElementById("auth-button");
+const authMessage = document.getElementById("auth-message");
+const tabLogin = document.getElementById("tab-login");
+const tabRegister = document.getElementById("tab-register");
 let authMode = "login";
 
-
-/* =========================================================
-   CAMBIAR LOGIN / REGISTRO
-========================================================= */
-
 tabLogin.addEventListener("click", function () {
-
   authMode = "login";
-
   tabLogin.classList.add("active");
   tabRegister.classList.remove("active");
-
-  authButton.innerText =
-    "Iniciar sesión";
-
+  authButton.innerText = "Iniciar sesión";
 });
-
 
 tabRegister.addEventListener("click", function () {
-
   authMode = "register";
-
   tabRegister.classList.add("active");
   tabLogin.classList.remove("active");
-
-  authButton.innerText =
-    "Crear cuenta";
-
+  authButton.innerText = "Crear cuenta";
 });
 
-
-/* =========================================================
-   MENSAJE DE AUTENTICACIÓN
-========================================================= */
-
 function showAuthMessage(message, type) {
-
   authMessage.innerText = message;
-
-  authMessage.className =
-    "auth-message " + type;
-
+  authMessage.className = "auth-message " + type;
 }
 
+authForm.addEventListener("submit", async function (event) {
+  event.preventDefault();
+  const email = document.getElementById("auth-email").value.trim();
+  const password = document.getElementById("auth-password").value;
+  authButton.disabled = true;
 
-/* =========================================================
-   REGISTRO / LOGIN
-========================================================= */
-
-authForm.addEventListener(
-  "submit",
-  async function (event) {
-
-    event.preventDefault();
-
-    const email =
-      document.getElementById("auth-email")
-        .value
-        .trim();
-
-    const password =
-      document.getElementById("auth-password")
-        .value;
-
-    authButton.disabled = true;
-
-    try {
-
-      if (authMode === "register") {
-
-        const result =
-          await supabaseClient.auth.signUp({
-            email,
-            password
-          });
-
-        if (result.error) {
-          throw result.error;
-        }
-
-        if (!result.data.session) {
-
-          showAuthMessage(
-            "Cuenta creada. Revisá tu correo para confirmar la cuenta.",
-            "success"
-          );
-
-        } else {
-
-          showAuthMessage(
-            "Cuenta creada correctamente.",
-            "success"
-          );
-
-        }
-
+  try {
+    if (authMode === "register") {
+      const result = await supabaseClient.auth.signUp({ email, password });
+      if (result.error) throw result.error;
+      if (!result.data.session) {
+        showAuthMessage("Cuenta creada. Revisá tu correo para confirmar la cuenta.", "success");
       } else {
-
-        const result =
-          await supabaseClient.auth.signInWithPassword({
-            email,
-            password
-          });
-
-        if (result.error) {
-          throw result.error;
-        }
-
-        showAuthMessage(
-          "Sesión iniciada correctamente.",
-          "success"
-        );
-
+        showAuthMessage("Cuenta creada correctamente.", "success");
       }
-
-    } catch (error) {
-
-      showAuthMessage(
-        error.message ||
-        "No se pudo completar la operación.",
-        "error"
-      );
-
-    } finally {
-
-      authButton.disabled = false;
-
+    } else {
+      const result = await supabaseClient.auth.signInWithPassword({ email, password });
+      if (result.error) throw result.error;
+      showAuthMessage("Sesión iniciada correctamente.", "success");
     }
-
+  } catch (error) {
+    showAuthMessage(error.message || "No se pudo completar la operación.", "error");
+  } finally {
+    authButton.disabled = false;
   }
-);
-
-
-/* =========================================================
-   SESIÓN ACTUAL
-========================================================= */
+});
 
 async function cargarSesion() {
-
-  const result =
-    await supabaseClient.auth.getSession();
-
+  const result = await supabaseClient.auth.getSession();
   if (result.error) {
-
-    console.error(
-      result.error
-    );
-
+    console.error(result.error);
     return;
-
   }
-
-  currentSession =
-    result.data.session;
-
+  currentSession = result.data.session;
   actualizarInterfaz();
-
 }
 
-
-/* =========================================================
-   CAMBIOS DE SESIÓN
-========================================================= */
-
-supabaseClient.auth.onAuthStateChange(
-  function (_event, session) {
-
-    currentSession = session;
-
-    actualizarInterfaz();
-
-  }
-);
-
-
-/* =========================================================
-   INTERFAZ SEGÚN SESIÓN
-========================================================= */
+supabaseClient.auth.onAuthStateChange(function (_event, session) {
+  currentSession = session;
+  actualizarInterfaz();
+});
 
 async function actualizarInterfaz() {
-
   if (!currentSession) {
-
     authPanel.style.display = "block";
-
     accountPanel.style.display = "none";
     plansPanel.style.display = "none";
     generatorPanel.style.display = "none";
-
     return;
-
   }
-
   authPanel.style.display = "none";
-
   accountPanel.style.display = "block";
   plansPanel.style.display = "block";
   generatorPanel.style.display = "block";
-
-  document.getElementById(
-    "account-email"
-  ).innerText =
-    currentSession.user.email || "";
-
+  document.getElementById("account-email").innerText = currentSession.user.email || "";
   await cargarCuenta();
-
 }
-
-
-/* =========================================================
-   CUENTA DESDE SERVER
-========================================================= */
 
 async function cargarCuenta() {
-
-  if (!currentSession) {
-    return;
-  }
-
+  if (!currentSession) return;
   try {
+    const response = await fetch("/api/cuenta", {
+      headers: { "Authorization": "Bearer " + currentSession.access_token }
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || "No se pudo consultar la cuenta.");
 
-    const response =
-      await fetch(
-        "/api/cuenta",
-        {
-          headers: {
-            "Authorization":
-              "Bearer " +
-              currentSession.access_token
-          }
-        }
-      );
+    const profile = data.profile || data;
+    const plan = profile.plan || "gratis";
+    const used = Number(profile.generations_used || 0);
+    const limit = Number(profile.generation_limit || 5);
+    const remaining = Math.max(0, limit - used);
 
-    const data =
-      await response.json();
-
-    if (!response.ok) {
-
-      throw new Error(
-        data.error ||
-        "No se pudo consultar la cuenta."
-      );
-
-    }
-
-    const profile =
-      data.profile || data;
-
-    const plan =
-      profile.plan ||
-      "gratis";
-
-    const used =
-      Number(
-        profile.generations_used || 0
-      );
-
-    const limit =
-      Number(
-        profile.generation_limit || 5
-      );
-
-    const remaining =
-      Math.max(
-        0,
-        limit - used
-      );
-
-    document.getElementById(
-      "account-plan"
-    ).innerText =
-      plan.charAt(0).toUpperCase() +
-      plan.slice(1);
-
-    document.getElementById(
-      "account-used"
-    ).innerText =
-      used;
-
-    document.getElementById(
-      "account-remaining"
-    ).innerText =
-      remaining;
-
+    document.getElementById("account-plan").innerText = plan.charAt(0).toUpperCase() + plan.slice(1);
+    document.getElementById("account-used").innerText = used;
+    document.getElementById("account-remaining").innerText = remaining;
   } catch (error) {
-
-    console.error(
-      "Error cargando cuenta:",
-      error
-    );
-
+    console.error("Error cargando cuenta:", error);
   }
-
 }
 
-
-/* =========================================================
-   CERRAR SESIÓN
-========================================================= */
-
-document.getElementById(
-  "logout-button"
-).addEventListener(
-  "click",
-  async function () {
-
-    await supabaseClient.auth.signOut();
-
-  }
-);
-
-
-/* =========================================================
-   BIBLIOTECA
-========================================================= */
+document.getElementById("logout-button").addEventListener("click", async function () {
+  await supabaseClient.auth.signOut();
+});
 
 async function cargarBiblioteca() {
-
-  const container =
-    document.getElementById(
-      "library-container"
-    );
-
+  const container = document.getElementById("library-container");
   try {
+    const response = await fetch("/api/biblioteca");
+    const data = await response.json();
+    if (!response.ok) throw new Error("No se pudo cargar la biblioteca.");
 
-    const response =
-      await fetch(
-        "/api/biblioteca"
-      );
-
-    const data =
-      await response.json();
-
-    if (!response.ok) {
-      throw new Error(
-        "No se pudo cargar la biblioteca."
-      );
-    }
-
-    const categorias =
-      Array.isArray(data.categorias)
-        ? data.categorias
-        : [];
-
+    const categorias = Array.isArray(data.categorias) ? data.categorias : [];
     if (!categorias.length) {
-
-      container.innerHTML =
-        '<div class="small">No hay categorías disponibles.</div>';
-
+      container.innerHTML = '<div class="small">No hay categorías disponibles.</div>';
       return;
-
     }
 
-    container.innerHTML =
-      categorias.map(
-        function (item, index) {
-
-          const nombre =
-            typeof item === "string"
-              ? item
-              : item.nombre || "";
-
-          const id =
-            "categoria-" + index;
-
-          return `
-            <label
-              class="library-item"
-              for="${id}"
-            >
-              <input
-                type="checkbox"
-                id="${id}"
-                name="bibliotecaCategorias"
-                value="${escapeHtml(nombre)}"
-              >
-              <span>${escapeHtml(nombre)}</span>
-            </label>
-          `;
-
-        }
-      ).join("");
-
+    container.innerHTML = categorias.map(function (item, index) {
+      const nombre = typeof item === "string" ? item : item.nombre || "";
+      const id = "categoria-" + index;
+      return `
+        <label class="library-item" for="${id}">
+          <input type="checkbox" id="${id}" name="bibliotecaCategorias" value="${escapeHtml(nombre)}">
+          <span>${escapeHtml(nombre)}</span>
+        </label>
+      `;
+    }).join("");
   } catch (error) {
-
-    console.error(
-      error
-    );
-
-    container.innerHTML =
-      '<div class="small">No se pudo cargar la biblioteca.</div>';
-
+    console.error(error);
+    container.innerHTML = '<div class="small">No se pudo cargar la biblioteca.</div>';
   }
-
 }
-
-
-/* =========================================================
-   ESCAPAR HTML
-========================================================= */
 
 function escapeHtml(value) {
-
-  return String(value || "")
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-
+  return String(value || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
 }
 
-
-/* =========================================================
-   GENERACIÓN
-========================================================= */
-
-document.getElementById(
-  "generation-form"
-).addEventListener(
-  "submit",
-  async function (event) {
-
-    event.preventDefault();
-
-    if (!currentSession) {
-
-      mostrarError(
-        "Primero iniciá sesión para generar materiales."
-      );
-
-      return;
-
-    }
-
-    const form =
-      event.target;
-
-    const button =
-      document.getElementById(
-        "btn-submit"
-      );
-
-    const loader =
-      document.getElementById(
-        "loader"
-      );
-
-    const resultBox =
-      document.getElementById(
-        "result-box"
-      );
-
-    const actions =
-      document.getElementById(
-        "result-actions"
-      );
-
-    ocultarError();
-
-    resultBox.style.display =
-      "none";
-
-    actions.style.display =
-      "none";
-
-    button.disabled =
-      true;
-
-    loader.style.display =
-      "block";
-
-
-    try {
-
-      const formData =
-        new FormData(form);
-
-
-      /*
-       * IMPORTANTE:
-       * El servidor SaaS toma el usuario
-       * del token de Supabase.
-       */
-
-      const response =
-        await fetch(
-          "/api/generar",
-          {
-            method: "POST",
-
-            headers: {
-              "Authorization":
-                "Bearer " +
-                currentSession.access_token
-            },
-
-            body: formData
-          }
-        );
-
-
-      const data =
-        await response.json();
-
-
-      if (!response.ok) {
-
-        if (
-          response.status === 401
-        ) {
-
-          await supabaseClient.auth.signOut();
-
-          throw new Error(
-            "Tu sesión venció. Volvé a iniciar sesión."
-          );
-
-        }
-
-        if (
-          response.status === 403
-        ) {
-
-          throw new Error(
-            data.error ||
-            "Alcanzaste el límite de generaciones de tu plan."
-          );
-
-        }
-
-        throw new Error(
-          data.error ||
-          "No se pudo generar el material."
-        );
-
-      }
-
-
-      currentResult =
-        data.texto || "";
-
-
-      resultBox.innerText =
-        currentResult;
-
-      resultBox.style.display =
-        "block";
-
-      actions.style.display =
-        "flex";
-
-
-      await cargarCuenta();
-
-
-    } catch (error) {
-
-      mostrarError(
-        error.message ||
-        "Ocurrió un error."
-      );
-
-    } finally {
-
-      loader.style.display =
-        "none";
-
-      button.disabled =
-        false;
-
-    }
-
-  }
-);
-
-
-/* =========================================================
-   ERROR
-========================================================= */
-
-function mostrarError(message) {
-
-  const banner =
-    document.getElementById(
-      "error-banner"
-    );
-
-  banner.innerText =
-    message;
-
-  banner.style.display =
-    "block";
-
-}
-
-
-function ocultarError() {
-
-  const banner =
-    document.getElementById(
-      "error-banner"
-    );
-
-  banner.style.display =
-    "none";
-
-}
-
-
-/* =========================================================
-   COPIAR
-========================================================= */
-
-async function copiarResultado() {
-
-  if (!currentResult) {
+document.getElementById("generation-form").addEventListener("submit", async function (event) {
+  event.preventDefault();
+  if (!currentSession) {
+    mostrarError("Primero iniciá sesión para generar materiales.");
     return;
   }
+
+  const form = event.target;
+  const button = document.getElementById("btn-submit");
+  const loader = document.getElementById("loader");
+  const resultBox = document.getElementById("result-box");
+  const actions = document.getElementById("result-actions");
+
+  ocultarError();
+  resultBox.style.display = "none";
+  actions.style.display = "none";
+  button.disabled = true;
+  loader.style.display = "block";
 
   try {
+    const formData = new FormData(form);
+    const response = await fetch("/api/generar", {
+      method: "POST",
+      headers: { "Authorization": "Bearer " + currentSession.access_token },
+      body: formData
+    });
 
-    await navigator.clipboard.writeText(
-      currentResult
-    );
+    const data = await response.json();
+    if (!response.ok) {
+      if (response.status === 401) {
+        await supabaseClient.auth.signOut();
+        throw new Error("Tu sesión venció. Volvé a iniciar sesión.");
+      }
+      if (response.status === 403) {
+        throw new Error(data.error || "Alcanzaste el límite de generaciones de tu plan.");
+      }
+      throw new Error(data.error || "No se pudo generar el material.");
+    }
 
-    alert(
-      "Material copiado correctamente."
-    );
-
+    currentResult = data.texto || "";
+    resultBox.innerText = currentResult;
+    resultBox.style.display = "block";
+    actions.style.display = "flex";
+    await cargarCuenta();
   } catch (error) {
-
-    alert(
-      "No se pudo copiar automáticamente."
-    );
-
+    mostrarError(error.message || "Ocurrió un error.");
+  } finally {
+    loader.style.display = "none";
+    button.disabled = false;
   }
+});
 
+function mostrarError(message) {
+  const banner = document.getElementById("error-banner");
+  banner.innerText = message;
+  banner.style.display = "block";
 }
 
+function ocultarError() {
+  const banner = document.getElementById("error-banner");
+  banner.style.display = "none";
+}
 
-/* =========================================================
-   DESCARGAR TXT
-========================================================= */
+async function copiarResultado() {
+  if (!currentResult) return;
+  try {
+    await navigator.clipboard.writeText(currentResult);
+    alert("Material copiado correctamente.");
+  } catch (error) {
+    alert("No se pudo copiar automáticamente.");
+  }
+}
 
 function descargarTXT() {
-
-  if (!currentResult) {
-    return;
-  }
-
-  const blob =
-    new Blob(
-      [currentResult],
-      {
-        type: "text/plain;charset=utf-8"
-      }
-    );
-
-  const url =
-    URL.createObjectURL(blob);
-
-  const a =
-    document.createElement("a");
-
-  a.href =
-    url;
-
-  a.download =
-    "Edu.sistem-Pro-IA-material.txt";
-
+  if (!currentResult) return;
+  const blob = new Blob([currentResult], { type: "text/plain;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "Edu.sistem-Pro-IA-material.txt";
   document.body.appendChild(a);
-
   a.click();
-
   a.remove();
-
   URL.revokeObjectURL(url);
-
 }
 
-
-/* =========================================================
-   IMPRIMIR
-========================================================= */
-
 function imprimirResultado() {
-
-  if (!currentResult) {
-    return;
-  }
-
-  const ventana =
-    window.open(
-      "",
-      "_blank"
-    );
-
+  if (!currentResult) return;
+  const ventana = window.open("", "_blank");
   ventana.document.write(`
     <!DOCTYPE html>
     <html lang="es">
     <head>
       <meta charset="UTF-8">
       <title>Edu.sistem Pro IA</title>
-
       <style>
-        body {
-          font-family: Arial, sans-serif;
-          max-width: 850px;
-          margin: 40px auto;
-          padding: 20px;
-          line-height: 1.6;
-          color: #222;
-        }
-
-        h1 {
-          text-align: center;
-        }
-
-        .contenido {
-          white-space: pre-wrap;
-        }
+        body { font-family: 'Inter', Arial, sans-serif; max-width: 850px; margin: 40px auto; padding: 20px; line-height: 1.6; color: #1E293B; }
+        h1 { text-align: center; color: #0F172A; }
+        .contenido { white-space: pre-wrap; }
       </style>
-
     </head>
-
     <body>
-
       <h1>Edu.sistem Pro IA</h1>
-
-      <div class="contenido">
-        ${escapeHtml(currentResult)}
-      </div>
-
+      <div class="contenido">${escapeHtml(currentResult)}</div>
     </body>
     </html>
   `);
-
   ventana.document.close();
-
   ventana.focus();
-
-  setTimeout(
-    function () {
-      ventana.print();
-    },
-    300
-  );
-
+  setTimeout(function () { ventana.print(); }, 300);
 }
 
-
-/* =========================================================
-   INICIALIZACIÓN
-========================================================= */
-
-window.addEventListener(
-  "DOMContentLoaded",
-  async function () {
-
-    await cargarBiblioteca();
-
-    await cargarSesion();
-
-  }
-);
-
+window.addEventListener("DOMContentLoaded", async function () {
+  await cargarBiblioteca();
+  await cargarSesion();
+});
 </script>
 
 </body>
