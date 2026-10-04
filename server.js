@@ -1,10 +1,11 @@
- const express = require('express');
+const express = require('express');
 const path = require('path');
 const multer = require('multer');
 const fs = require('fs');
 const { createClient } = require('@supabase/supabase-js');
 
 const app = express();
+
 const PORT = process.env.PORT || 3000;
 const ROOT = __dirname;
 const LIBRARY_FILE = path.join(ROOT, 'biblioteca.json');
@@ -12,13 +13,20 @@ const LIBRARY_FILE = path.join(ROOT, 'biblioteca.json');
 app.use(express.json({ limit: '2mb' }));
 app.use(express.static(ROOT));
 
-/* =========================
+/* =========================================================
    SUPABASE
-========================= */
+========================================================= */
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
+
+/*
+  Compatibilidad con los dos nombres que pueden existir
+  actualmente en Vercel.
+*/
 const SUPABASE_SERVICE_ROLE_KEY =
-  process.env.SUPABASE_SERVICE_ROLE_KEY;
+  process.env.SUPABASE_SERVICE_ROLE_KEY ||
+  process.env.SUPABASE_SECRET_KEY ||
+  '';
 
 const supabase =
   SUPABASE_URL && SUPABASE_SERVICE_ROLE_KEY
@@ -34,9 +42,9 @@ const supabase =
       )
     : null;
 
-/* =========================
+/* =========================================================
    PLANES
-========================= */
+========================================================= */
 
 const PLAN_LIMITS = {
   gratis: 5,
@@ -45,9 +53,9 @@ const PLAN_LIMITS = {
   institucion: 1000
 };
 
-/* =========================
+/* =========================================================
    ARCHIVOS
-========================= */
+========================================================= */
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -57,15 +65,18 @@ const upload = multer({
   }
 });
 
-/* =========================
+/* =========================================================
    BIBLIOTECA
-========================= */
+========================================================= */
 
 function readLibrary() {
   try {
     if (fs.existsSync(LIBRARY_FILE)) {
       return JSON.parse(
-        fs.readFileSync(LIBRARY_FILE, 'utf8')
+        fs.readFileSync(
+          LIBRARY_FILE,
+          'utf8'
+        )
       );
     }
   } catch (error) {
@@ -103,22 +114,25 @@ function buildLibraryContext(selected) {
     return 'No se seleccionaron referencias de la Biblioteca Curricular Argentina.';
   }
 
-  const categorias = Array.isArray(library.categorias)
-    ? library.categorias
-    : [];
+  const categorias =
+    Array.isArray(library.categorias)
+      ? library.categorias
+      : [];
 
   return wanted
     .map((name) => {
-      const categoria = categorias.find((item) => {
-        if (typeof item === 'string') {
-          return item === name;
-        }
+      const categoria = categorias.find(
+        (item) => {
+          if (typeof item === 'string') {
+            return item === name;
+          }
 
-        return (
-          item &&
-          item.nombre === name
-        );
-      });
+          return (
+            item &&
+            item.nombre === name
+          );
+        }
+      );
 
       if (!categoria) {
         return `CATEGORÍA: ${name}`;
@@ -140,25 +154,30 @@ function buildLibraryContext(selected) {
 function buildProvinceContext(provincia) {
   const library = readLibrary();
 
-  if (!provincia || !library.provincias) {
+  if (
+    !provincia ||
+    !library.provincias
+  ) {
     return 'No hay información provincial específica seleccionada.';
   }
 
-  const key = normalizeKey(provincia);
+  const key =
+    normalizeKey(provincia);
 
   let province =
     library.provincias[key];
 
   if (!province) {
-    province = Object.values(
-      library.provincias
-    ).find((item) => {
-      return (
-        normalizeKey(
-          item && item.nombre
-        ) === key
-      );
-    });
+    province =
+      Object.values(
+        library.provincias
+      ).find((item) => {
+        return (
+          normalizeKey(
+            item && item.nombre
+          ) === key
+        );
+      });
   }
 
   if (!province) {
@@ -172,7 +191,9 @@ function buildProvinceContext(provincia) {
   ];
 
   if (
-    Array.isArray(province.documentos) &&
+    Array.isArray(
+      province.documentos
+    ) &&
     province.documentos.length
   ) {
     lines.push(
@@ -193,9 +214,9 @@ function buildProvinceContext(provincia) {
   return lines.join('\n');
 }
 
-/* =========================
+/* =========================================================
    ARCHIVOS DEL DOCENTE
-========================= */
+========================================================= */
 
 function cleanText(text) {
   return String(text || '')
@@ -233,8 +254,15 @@ async function extractFileText(file) {
       const result =
         await pdfParse(file.buffer);
 
-      return cleanText(result.text);
+      return cleanText(
+        result.text
+      );
     } catch (error) {
+      console.error(
+        `Error leyendo PDF ${file.originalname}:`,
+        error.message
+      );
+
       return `[No se pudo extraer el texto de ${file.originalname}]`;
     }
   }
@@ -249,8 +277,15 @@ async function extractFileText(file) {
           buffer: file.buffer
         });
 
-      return cleanText(result.value);
+      return cleanText(
+        result.value
+      );
     } catch (error) {
+      console.error(
+        `Error leyendo DOCX ${file.originalname}:`,
+        error.message
+      );
+
       return `[No se pudo extraer el texto de ${file.originalname}]`;
     }
   }
@@ -258,17 +293,19 @@ async function extractFileText(file) {
   return '';
 }
 
-/* =========================
+/* =========================================================
    AUTENTICACIÓN
-========================= */
+========================================================= */
 
 async function authenticatedUser(req) {
   if (!supabase) {
-    const error = new Error(
-      'Supabase no está configurado en Vercel.'
-    );
+    const error =
+      new Error(
+        'Supabase no está configurado en Vercel.'
+      );
 
     error.status = 503;
+
     throw error;
   }
 
@@ -278,23 +315,29 @@ async function authenticatedUser(req) {
   if (
     !header.startsWith('Bearer ')
   ) {
-    const error = new Error(
-      'Necesitás iniciar sesión.'
-    );
+    const error =
+      new Error(
+        'Necesitás iniciar sesión.'
+      );
 
     error.status = 401;
+
     throw error;
   }
 
   const token =
-    header.substring(7).trim();
+    header
+      .substring(7)
+      .trim();
 
   if (!token) {
-    const error = new Error(
-      'Token de acceso inválido.'
-    );
+    const error =
+      new Error(
+        'Token de acceso inválido.'
+      );
 
     error.status = 401;
+
     throw error;
   }
 
@@ -305,21 +348,70 @@ async function authenticatedUser(req) {
     token
   );
 
-  if (error || !data || !data.user) {
-    const authError = new Error(
-      'La sesión no es válida o expiró.'
-    );
+  if (
+    error ||
+    !data ||
+    !data.user
+  ) {
+    const authError =
+      new Error(
+        'La sesión no es válida o expiró.'
+      );
 
     authError.status = 401;
+
     throw authError;
   }
 
   return data.user;
 }
 
-/* =========================
+/* =========================================================
    PERFIL
-========================= */
+========================================================= */
+
+function normalizeProfile(profile) {
+  if (!profile) {
+    return null;
+  }
+
+  /*
+    La aplicación trabajará con generations_limit.
+
+    Si una instalación antigua todavía tiene
+    generation_limit, usamos ese valor como respaldo.
+  */
+
+  const rawLimit =
+    profile.generations_limit ??
+    profile.generation_limit ??
+    PLAN_LIMITS[
+      profile.plan || 'gratis'
+    ] ??
+    PLAN_LIMITS.gratis;
+
+  const limit =
+    Number(rawLimit) ||
+    PLAN_LIMITS.gratis;
+
+  const used =
+    Number(
+      profile.generations_used
+    ) || 0;
+
+  return {
+    ...profile,
+
+    generations_limit: limit,
+    generations_used: used,
+
+    /*
+      Alias temporal para compatibilidad
+      con el frontend anterior.
+    */
+    generation_limit: limit
+  };
+}
 
 async function getProfile(
   userId,
@@ -354,9 +446,15 @@ async function getProfile(
         id: userId,
         email: email || '',
         plan: 'gratis',
-        generation_limit:
+
+        /*
+          Nombre correcto.
+        */
+        generations_limit:
           PLAN_LIMITS.gratis,
+
         generations_used: 0,
+
         billing_period_start:
           new Date().toISOString()
       })
@@ -370,16 +468,29 @@ async function getProfile(
     data = created;
   }
 
-  return data;
+  return normalizeProfile(
+    data
+  );
 }
 
-/* =========================
+/* =========================================================
    CONSUMO DE GENERACIÓN
-========================= */
+========================================================= */
 
 async function consumeGeneration(
   userId
 ) {
+  if (!supabase) {
+    const error =
+      new Error(
+        'Supabase no está configurado.'
+      );
+
+    error.status = 503;
+
+    throw error;
+  }
+
   const {
     data,
     error
@@ -391,6 +502,11 @@ async function consumeGeneration(
   );
 
   if (error) {
+    console.error(
+      'Error consume_generation:',
+      error
+    );
+
     throw error;
   }
 
@@ -409,34 +525,87 @@ async function consumeGeneration(
     throw limitError;
   }
 
-  return data;
+  /*
+    Normalizamos la respuesta para que
+    el frontend siempre reciba el mismo formato.
+  */
+
+  const limit =
+    Number(
+      data.generations_limit ??
+      data.generation_limit
+    ) || 5;
+
+  const used =
+    Number(
+      data.generations_used
+    ) || 0;
+
+  const remaining =
+    Math.max(
+      0,
+      Number(
+        data.remaining
+      ) ||
+        limit - used
+    );
+
+  return {
+    ...data,
+
+    generations_used: used,
+    generations_limit: limit,
+
+    /*
+      Compatibilidad.
+    */
+    generation_limit: limit,
+
+    remaining
+  };
 }
 
 async function releaseGeneration(
   userId
 ) {
+  if (!supabase) {
+    return;
+  }
+
   try {
-    await supabase.rpc(
+    const {
+      error
+    } = await supabase.rpc(
       'release_generation',
       {
         p_user_id: userId
       }
     );
+
+    if (error) {
+      console.error(
+        'No se pudo devolver la generación:',
+        error.message
+      );
+    }
   } catch (error) {
     console.error(
-      'No se pudo devolver la generación:',
+      'Error liberando generación:',
       error.message
     );
   }
 }
 
-/* =========================
+/* =========================================================
    GEMINI
-========================= */
+========================================================= */
 
 function stripMarkdown(text) {
   return String(text || '')
-    .replace(/^#{1,6}\s*/gm, '')
+    .replace(
+      /^#{1,6}\s*/gm,
+      ''
+    )
     .replace(
       /\*\*(.*?)\*\*/g,
       '$1'
@@ -467,11 +636,13 @@ async function geminiGenerate(
     process.env.GEMINI_API_KEY;
 
   if (!key) {
-    const error = new Error(
-      'Falta configurar GEMINI_API_KEY en Vercel.'
-    );
+    const error =
+      new Error(
+        'Falta configurar GEMINI_API_KEY en Vercel.'
+      );
 
     error.status = 503;
+
     throw error;
   }
 
@@ -483,33 +654,42 @@ async function geminiGenerate(
     `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(key)}`;
 
   const response =
-    await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type':
-          'application/json'
-      },
-      body: JSON.stringify({
-        contents: [
-          {
-            parts: [
-              {
-                text: prompt
-              }
-            ]
+    await fetch(
+      url,
+      {
+        method: 'POST',
+
+        headers: {
+          'Content-Type':
+            'application/json'
+        },
+
+        body: JSON.stringify({
+          contents: [
+            {
+              parts: [
+                {
+                  text: prompt
+                }
+              ]
+            }
+          ],
+
+          generationConfig: {
+            temperature: 0.55,
+            topP: 0.9,
+            maxOutputTokens: 7000
           }
-        ],
-        generationConfig: {
-          temperature: 0.55,
-          topP: 0.9,
-          maxOutputTokens: 7000
-        }
-      })
-    });
+        })
+      }
+    );
 
   const data =
-    await response.json()
-      .catch(() => ({}));
+    await response
+      .json()
+      .catch(
+        () => ({})
+      );
 
   if (!response.ok) {
     const message =
@@ -548,23 +728,27 @@ async function geminiGenerate(
       : '';
 
   if (!text.trim()) {
-    const error = new Error(
-      'Gemini no devolvió contenido.'
-    );
+    const error =
+      new Error(
+        'Gemini no devolvió contenido.'
+      );
 
     error.status = 503;
+
     throw error;
   }
 
   return {
-    text: stripMarkdown(text),
+    text:
+      stripMarkdown(text),
+
     model
   };
 }
 
-/* =========================
+/* =========================================================
    HEALTH
-========================= */
+========================================================= */
 
 app.get(
   '/api/health',
@@ -574,18 +758,27 @@ app.get(
 
     res.json({
       ok: true,
-      app: 'Edu.sistem Pro IA',
-      version: '2.2-SaaS',
+
+      app:
+        'Edu.sistem Pro IA',
+
+      version:
+        '2.3-SaaS',
+
       geminiConfigured:
         Boolean(
           process.env.GEMINI_API_KEY
         ),
+
       supabaseConfigured:
         Boolean(
           SUPABASE_URL &&
           SUPABASE_SERVICE_ROLE_KEY
         ),
-      bibliotecaArgentina: true,
+
+      bibliotecaArgentina:
+        true,
+
       provincias:
         library.provincias &&
         typeof library.provincias ===
@@ -594,20 +787,23 @@ app.get(
               library.provincias
             ).length
           : 0,
+
       categorias:
         Array.isArray(
           library.categorias
         )
           ? library.categorias.length
           : 0,
-      planes: PLAN_LIMITS
+
+      planes:
+        PLAN_LIMITS
     });
   }
 );
 
-/* =========================
+/* =========================================================
    BIBLIOTECA
-========================= */
+========================================================= */
 
 app.get(
   '/api/biblioteca',
@@ -618,9 +814,9 @@ app.get(
   }
 );
 
-/* =========================
+/* =========================================================
    CUENTA
-========================= */
+========================================================= */
 
 app.get(
   '/api/cuenta',
@@ -637,13 +833,46 @@ app.get(
           user.email
         );
 
+      const limit =
+        Number(
+          profile.generations_limit
+        ) ||
+        PLAN_LIMITS.gratis;
+
+      const used =
+        Number(
+          profile.generations_used
+        ) || 0;
+
       res.json({
         ok: true,
+
         user: {
           id: user.id,
           email: user.email
         },
-        profile
+
+        profile: {
+          ...profile,
+
+          generations_used:
+            used,
+
+          generations_limit:
+            limit,
+
+          /*
+            Compatibilidad con frontend antiguo.
+          */
+          generation_limit:
+            limit,
+
+          remaining:
+            Math.max(
+              0,
+              limit - used
+            )
+        }
       });
     } catch (error) {
       console.error(
@@ -661,28 +890,41 @@ app.get(
     }
   }
 );
-/* =========================
+
+/* =========================================================
    GENERAR
-========================= */
+========================================================= */
 
 app.post(
   '/api/generar',
+
   upload.array(
     'materiales',
     2
   ),
+
   async (req, res) => {
     let userId = null;
+
     let generationConsumed =
       false;
 
     try {
+      /*
+        1. Autenticación
+      */
+
       const user =
         await authenticatedUser(
           req
         );
 
-      userId = user.id;
+      userId =
+        user.id;
+
+      /*
+        2. Datos del formulario
+      */
 
       const {
         provincia,
@@ -693,7 +935,12 @@ app.post(
         tema,
         duracion,
         indicaciones
-      } = req.body || {};
+      } =
+        req.body || {};
+
+      /*
+        3. Biblioteca
+      */
 
       const categorias =
         Array.isArray(
@@ -710,6 +957,10 @@ app.post(
               ]
             : [];
 
+      /*
+        4. Validación
+      */
+
       if (
         !provincia ||
         !tipo ||
@@ -718,11 +969,18 @@ app.post(
         !area ||
         !tema
       ) {
-        return res.status(400).json({
-          error:
-            'Completá provincia, tipo, nivel, grado/curso, área/materia y tema.'
-        });
+        return res
+          .status(400)
+          .json({
+            error:
+              'Completá provincia, tipo, nivel, grado/curso, área/materia y tema.'
+          });
       }
+
+      /*
+        5. Consumir generación
+           ANTES de llamar a Gemini.
+      */
 
       const usage =
         await consumeGeneration(
@@ -731,6 +989,10 @@ app.post(
 
       generationConsumed =
         true;
+
+      /*
+        6. Materiales
+      */
 
       const files =
         req.files || [];
@@ -748,23 +1010,36 @@ app.post(
         extracted.push({
           name:
             file.originalname,
-          text: text.slice(
-            0,
-            90000
-          )
+
+          text:
+            text.slice(
+              0,
+              90000
+            )
         });
       }
+
+      /*
+        7. Tipos de trabajo
+      */
 
       const typeNames = {
         anual:
           'Planificación anual',
+
         secuencia:
           'Secuencia didáctica',
+
         proyecto:
           'Proyecto educativo',
+
         rubrica:
           'Rúbrica de evaluación'
       };
+
+      /*
+        8. Contextos
+      */
 
       const libraryContext =
         buildLibraryContext(
@@ -786,21 +1061,28 @@ app.post(
               .join('\n\n')
           : 'No se adjuntaron materiales del docente.';
 
+      /*
+        9. Prompt
+      */
+
       const prompt = `
 Sos Edu.sistem Pro IA, un asistente inteligente para docentes de Argentina.
 
 La provincia seleccionada es:
+
 ${provincia}
 
 Adaptá la propuesta al contexto educativo y curricular de esa jurisdicción cuando corresponda.
 
 No inventes normativa ni documentos oficiales.
+
 No atribuyas contenidos a organismos oficiales si no aparecen en la información proporcionada.
 
 TIPO DE TRABAJO:
+
 ${typeNames[tipo] || tipo}
 
-DATOS:
+DATOS DEL DOCENTE:
 
 Provincia: ${provincia}
 Nivel: ${nivel}
@@ -827,6 +1109,7 @@ CRITERIOS:
 - Escribí en español argentino claro y profesional.
 - Elaborá un material directamente utilizable por el docente.
 - Priorizá coherencia pedagógica.
+- Evitá información inventada.
 - Incluí objetivos o propósitos cuando correspondan.
 - Incluí aprendizajes y contenidos cuando correspondan.
 - Incluí actividades concretas.
@@ -834,55 +1117,97 @@ CRITERIOS:
 - Incluí recursos cuando correspondan.
 
 Para planificación anual:
+
 Organizá por períodos, unidades o etapas.
 
 Para secuencia didáctica:
+
 Incluí inicio, desarrollo, cierre y evaluación.
 
 Para proyecto:
+
 Incluí propósito, producto final, etapas, actividades y evaluación.
 
 Para rúbrica:
+
 Incluí criterios y niveles de logro claramente diferenciados.
 
 Usá los materiales proporcionados por el docente como referencia.
 
 Entregá texto limpio.
+
 No uses Markdown.
+
 No uses # ni **.
+
 No expliques cómo funciona la IA.
+
+No agregues introducciones innecesarias.
+
 Entregá directamente el trabajo docente.
 `;
+
+      /*
+        10. Gemini
+      */
 
       const result =
         await geminiGenerate(
           prompt
         );
 
+      /*
+        11. Respuesta
+      */
+
       res.json({
         ok: true,
-        texto: result.text,
-        modelo: result.model,
+
+        texto:
+          result.text,
+
+        modelo:
+          result.model,
+
         materialesUsados:
           extracted.map(
             (item) =>
               item.name
           ),
+
         bibliotecaCategorias:
           categorias,
+
         provincia,
+
         generations_used:
           usage.generations_used,
+
+        generations_limit:
+          usage.generations_limit,
+
+        /*
+          Compatibilidad.
+        */
         generation_limit:
-          usage.generation_limit,
+          usage.generations_limit,
+
         remaining:
           usage.remaining
       });
+
     } catch (error) {
+
       console.error(
         'Error /api/generar:',
         error
       );
+
+      /*
+        Si Gemini falla después de
+        consumir la generación,
+        intentamos devolverla.
+      */
 
       if (
         generationConsumed &&
@@ -893,24 +1218,27 @@ Entregá directamente el trabajo docente.
         );
       }
 
-      res.status(
-        error.status || 500
-      ).json({
-        error:
-          error.message ||
-          'No se pudo generar el trabajo.'
-      });
+      res
+        .status(
+          error.status || 500
+        )
+        .json({
+          error:
+            error.message ||
+            'No se pudo generar el trabajo.'
+        });
     }
   }
 );
 
-/* =========================
+/* =========================================================
    RUTA PRINCIPAL
-========================= */
+========================================================= */
 
 app.get(
   '*',
   (req, res) => {
+
     if (
       req.path.startsWith(
         '/api/'
@@ -933,9 +1261,9 @@ app.get(
   }
 );
 
-/* =========================
+/* =========================================================
    SERVIDOR
-========================= */
+========================================================= */
 
 if (
   require.main === module
