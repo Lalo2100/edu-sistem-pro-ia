@@ -6,21 +6,24 @@
   <title>Edu.sistem Pro IA — Asistente inteligente para docentes</title>
   
   <!-- Tipografía moderna Inter -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     :root {
-      --primary: #0F172A;
-      --accent: #2563EB;
-      --accent-hover: #1D4ED8;
-      --success: #15803D;
-      --danger: #DC2626;
-      --bg: #F8FAFC;
-      --card: #FFFFFF;
-      --text: #1E293B;
-      --muted: #64748B;
-      --border: #E2E8F0;
+      --primary: #090D16;
+      --card-bg: #111827;
+      --card-border: rgba(255, 255, 255, 0.08);
+      --accent: #3B82F6;
+      --accent-hover: #2563EB;
+      --accent-glow: rgba(59, 130, 246, 0.35);
+      --success: #10B981;
+      --success-glow: rgba(16, 185, 129, 0.25);
+      --danger: #EF4444;
+      --bg: #05070B;
+      --text: #F3F4F6;
+      --muted: #9CA3AF;
+      --input-bg: #1F2937;
       --mp: #009EE3;
     }
 
@@ -35,44 +38,55 @@
       background: var(--bg);
       color: var(--text);
       line-height: 1.6;
-      padding: 24px 16px;
+      padding: 32px 16px;
       -webkit-font-smoothing: antialiased;
+      background-image: 
+        radial-gradient(circle at 15% 15%, rgba(59, 130, 246, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 85% 85%, rgba(16, 185, 129, 0.05) 0%, transparent 40%);
+      background-attachment: fixed;
     }
 
     .container {
-      max-width: 900px;
+      max-width: 920px;
       margin: 0 auto;
     }
 
     .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 28px;
-      margin-bottom: 20px;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.01);
-      transition: box-shadow 0.2s ease;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 32px;
+      margin-bottom: 24px;
+      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(10px);
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
     }
 
     .card:hover {
-      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.04);
+      box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.7), 0 0 15px rgba(59, 130, 246, 0.05);
     }
 
     header {
       text-align: center;
-      padding: 10px 0;
+      padding: 16px 0;
+      background: linear-gradient(135deg, #111827 0%, #1F2937 100%);
+      border: 1px solid rgba(59, 130, 246, 0.2);
     }
 
     h1 {
-      color: var(--primary);
-      font-size: 2.2rem;
-      font-weight: 700;
-      margin-bottom: 8px;
+      color: #FFFFFF;
+      font-size: 2.5rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 6px;
+      background: linear-gradient(to right, #FFFFFF, #93C5FD);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
     .subtitle {
       color: var(--muted);
-      font-size: 1rem;
+      font-size: 1.05rem;
     }
 
     .brand {
@@ -81,17 +95,21 @@
     }
 
     .section-title {
-      font-size: 1.25rem;
-      color: var(--primary);
+      font-size: 1.35rem;
+      color: #FFFFFF;
       font-weight: 700;
-      margin-bottom: 18px;
+      margin-bottom: 20px;
+      letter-spacing: -0.01em;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
     label {
       display: block;
       font-weight: 600;
       font-size: .9rem;
-      color: var(--primary);
+      color: #E5E7EB;
       margin-bottom: 8px;
     }
 
@@ -99,70 +117,88 @@
     select,
     textarea {
       width: 100%;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 12px;
-      background: #FFFFFF;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 13px 16px;
+      background: var(--input-bg);
       color: var(--text);
       font-size: .95rem;
       outline: none;
-      transition: border-color 0.2s;
+      transition: all 0.2s ease;
     }
 
     input:focus, select:focus, textarea:focus {
       border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+      background: #111827;
+      box-shadow: 0 0 0 4px var(--accent-glow);
     }
 
     textarea {
-      min-height: 110px;
+      min-height: 120px;
       resize: vertical;
     }
 
     .form-group {
-      margin-bottom: 18px;
+      margin-bottom: 20px;
     }
 
     button {
       border: 0;
       cursor: pointer;
-      border-radius: 8px;
+      border-radius: 10px;
       font-weight: 600;
-      transition: background-color 0.2s;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .btn-primary {
       width: 100%;
-      padding: 13px;
-      background: var(--accent);
+      padding: 14px;
+      background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
       color: white;
-      font-size: 1rem;
+      font-size: 1.05rem;
+      font-weight: 700;
+      box-shadow: 0 4px 14px var(--accent-glow);
     }
 
     .btn-primary:hover {
-      background: var(--accent-hover);
+      background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
+      box-shadow: 0 6px 20px rgba(59, 130, 246, 0.5);
+      transform: translateY(-1px);
+    }
+
+    .btn-primary:active {
+      transform: translateY(1px);
     }
 
     .btn-primary:disabled {
-      background: #94A3B8;
+      background: #374151;
+      color: #9CA3AF;
+      box-shadow: none;
       cursor: not-allowed;
     }
 
     .btn-secondary {
-      background: #F1F5F9;
-      color: var(--primary);
-      padding: 10px 16px;
+      background: #1F2937;
+      color: var(--text);
+      padding: 10px 18px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .btn-secondary:hover {
+      background: #374151;
+      border-color: rgba(255, 255, 255, 0.2);
     }
 
     .btn-logout {
-      background: #FEF2F2;
-      color: var(--danger);
-      border: 1px solid #FCA5A5;
-      padding: 8px 14px;
+      background: rgba(239, 68, 68, 0.1);
+      color: #F87171;
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      padding: 8px 16px;
     }
 
     .btn-logout:hover {
-      background: #FEE2E2;
+      background: rgba(239, 68, 68, 0.2);
+      color: #EF4444;
     }
 
     .account-panel {
@@ -172,201 +208,241 @@
     .account-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 14px;
-      margin-top: 18px;
+      gap: 16px;
+      margin-top: 20px;
     }
 
     .account-box {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 16px;
+      background: #0B0F19;
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 18px;
       text-align: center;
+      transition: border-color 0.2s;
+    }
+
+    .account-box:hover {
+      border-color: rgba(59, 130, 246, 0.3);
     }
 
     .account-box strong {
       display: block;
-      color: var(--primary);
-      font-size: 1.2rem;
-      font-weight: 700;
+      color: #FFFFFF;
+      font-size: 1.4rem;
+      font-weight: 800;
+      margin-bottom: 2px;
     }
 
     .account-box span {
       color: var(--muted);
       font-size: .85rem;
+      font-weight: 500;
     }
 
     .auth-panel {
       max-width: 500px;
-      margin: 0 auto 20px;
+      margin: 0 auto 24px;
     }
 
     .auth-tabs {
       display: flex;
-      gap: 8px;
-      margin-bottom: 20px;
-      background: var(--bg);
-      padding: 4px;
-      border-radius: 10px;
-      border: 1px solid var(--border);
+      gap: 6px;
+      margin-bottom: 24px;
+      background: #0B0F19;
+      padding: 6px;
+      border-radius: 12px;
+      border: 1px solid var(--card-border);
     }
 
     .auth-tabs button {
       flex: 1;
-      padding: 10px;
+      padding: 11px;
       background: transparent;
       color: var(--muted);
       font-weight: 600;
     }
 
     .auth-tabs button.active {
-      background: white;
-      color: var(--primary);
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      background: var(--input-bg);
+      color: #FFFFFF;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
     }
 
     .auth-message {
-      margin-top: 14px;
-      padding: 12px;
-      border-radius: 8px;
+      margin-top: 16px;
+      padding: 14px;
+      border-radius: 10px;
       display: none;
-      font-size: .9rem;
+      font-size: .92rem;
+      font-weight: 500;
     }
 
     .auth-message.success {
       display: block;
-      background: #DCFCE7;
-      color: var(--success);
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: #34D399;
     }
 
     .auth-message.error {
       display: block;
-      background: #FEF2F2;
-      color: var(--danger);
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #F87171;
     }
 
     .library {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 16px;
+      background: #0B0F19;
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 18px;
     }
 
     .library-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
+      gap: 12px;
     }
 
     .library-item {
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 10px;
-      background: white;
-      border: 1px solid var(--border);
-      border-radius: 8px;
+      gap: 12px;
+      padding: 12px 14px;
+      background: var(--input-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
       font-size: .9rem;
       cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .library-item:hover {
+      border-color: rgba(59, 130, 246, 0.4);
+      background: #252F3F;
     }
 
     .library-item input {
       width: auto;
+      accent-color: var(--accent);
+      width: 16px;
+      height: 16px;
     }
 
     .plans {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
+      gap: 20px;
+      margin-top: 20px;
     }
 
     .plan {
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 24px 18px;
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 28px 20px;
       text-align: center;
-      background: white;
-      transition: transform 0.2s, border-color 0.2s;
+      background: #0B0F19;
+      position: relative;
+      transition: transform 0.25s ease, border-color 0.25s ease;
     }
 
     .plan:hover {
       border-color: var(--accent);
-      transform: translateY(-2px);
+      transform: translateY(-4px);
+    }
+
+    .plan.featured {
+      border-color: var(--accent);
+      background: linear-gradient(180deg, #111827 0%, #0B0F19 100%);
+      box-shadow: 0 10px 30px rgba(59, 130, 246, 0.15);
     }
 
     .plan h3 {
-      color: var(--primary);
-      font-size: 1.2rem;
+      color: #FFFFFF;
+      font-size: 1.3rem;
       margin-bottom: 8px;
+      font-weight: 700;
     }
 
     .price {
-      font-size: 1.6rem;
+      font-size: 1.8rem;
       font-weight: 800;
-      margin: 10px 0;
-      color: var(--accent);
+      margin: 12px 0;
+      color: #60A5FA;
     }
 
     .plan p {
-      font-size: .88rem;
+      font-size: .9rem;
       color: var(--muted);
-      margin-bottom: 18px;
+      margin-bottom: 24px;
     }
 
     .btn-mp {
       width: 100%;
-      padding: 12px;
+      padding: 13px;
       background: var(--mp);
       color: white;
       font-weight: 700;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 158, 227, 0.3);
     }
 
     .btn-mp:hover {
       background: #008AC7;
+      box-shadow: 0 6px 16px rgba(0, 158, 227, 0.5);
     }
 
     .loader {
       display: none;
       text-align: center;
-      padding: 24px;
-      color: var(--accent);
+      padding: 30px;
+      color: #60A5FA;
       font-weight: 700;
+      font-size: 1.1rem;
     }
 
     .result-box {
       display: none;
-      margin-top: 20px;
-      background: white;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 24px;
+      margin-top: 24px;
+      background: #0B0F19;
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 28px;
       white-space: pre-wrap;
       font-size: .95rem;
-      line-height: 1.7;
+      line-height: 1.8;
+      color: #E5E7EB;
     }
 
     .result-actions {
       display: none;
-      gap: 10px;
-      margin-top: 14px;
+      gap: 12px;
+      margin-top: 16px;
       flex-wrap: wrap;
     }
 
     .result-actions button {
-      padding: 10px 16px;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      color: var(--primary);
+      padding: 11px 18px;
+      background: var(--input-bg);
+      border: 1px solid var(--card-border);
+      color: #FFFFFF;
+      font-weight: 600;
+    }
+
+    .result-actions button:hover {
+      background: #374151;
+      border-color: rgba(255,255,255,0.2);
     }
 
     .error-banner {
       display: none;
-      background: #FEF2F2;
-      border: 1px solid #F87171;
-      color: var(--danger);
-      padding: 14px;
-      border-radius: 8px;
-      margin-bottom: 18px;
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #F87171;
+      padding: 16px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      font-weight: 500;
     }
 
     .hidden {
@@ -374,13 +450,13 @@
     }
 
     .small {
-      font-size: .85rem;
+      font-size: .88rem;
       color: var(--muted);
     }
 
-    @media (max-width: 700px) {
+    @media (max-width: 768px) {
       body {
-        padding: 10px;
+        padding: 12px;
       }
 
       .card {
@@ -388,7 +464,7 @@
       }
 
       h1 {
-        font-size: 1.7rem;
+        font-size: 1.9rem;
       }
 
       .account-grid,
@@ -410,14 +486,14 @@
     <div class="subtitle">
       <span class="brand">Asistente inteligente para docentes</span>
     </div>
-    <p class="small" style="margin-top:8px;">
-      Planificaciones, secuencias, proyectos y rúbricas adaptadas a tu contexto educativo.
+    <p class="small" style="margin-top:10px;">
+      Planificaciones, secuencias, proyectos y rúbricas adaptadas con precisión quirúrgica a tu jurisdicción.
     </p>
   </header>
 
   <!-- AUTENTICACIÓN -->
   <section class="card auth-panel" id="auth-panel">
-    <h2 class="section-title">👤 Mi cuenta</h2>
+    <h2 class="section-title">👤 Acceso al sistema</h2>
 
     <div class="auth-tabs">
       <button id="tab-login" class="active" type="button">Iniciar sesión</button>
@@ -439,17 +515,17 @@
     </form>
 
     <div id="auth-message" class="auth-message"></div>
-    <p class="small" style="margin-top:14px;">
-      Tu cuenta permite guardar tu acceso y controlar tus generaciones mensuales.
+    <p class="small" style="margin-top:16px;text-align:center;">
+      Acceso seguro sincronizado con tu cuenta profesional.
     </p>
   </section>
 
   <!-- CUENTA -->
   <section class="card account-panel" id="account-panel">
-    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;">
       <div>
-        <h2 class="section-title" style="margin-bottom:2px;">👤 Mi cuenta</h2>
-        <div class="small" id="account-email">—</div>
+        <h2 class="section-title" style="margin-bottom:2px;">👤 Mi panel de cuenta</h2>
+        <div class="small" id="account-email" style="color:#60A5FA;">—</div>
       </div>
       <button class="btn-logout" type="button" id="logout-button">Cerrar sesión</button>
     </div>
@@ -457,14 +533,14 @@
     <div class="account-grid">
       <div class="account-box">
         <strong id="account-plan">Gratis</strong>
-        <span>Plan</span>
+        <span>Plan actual</span>
       </div>
       <div class="account-box">
         <strong id="account-used">0</strong>
         <span>Generaciones usadas</span>
       </div>
       <div class="account-box">
-        <strong id="account-remaining">5</strong>
+        <strong id="account-remaining" style="color:#34D399;">5</strong>
         <span>Disponibles</span>
       </div>
     </div>
@@ -472,39 +548,39 @@
 
   <!-- PLANES -->
   <section class="card account-panel" id="plans-panel">
-    <h2 class="section-title">💳 Planes de Edu.sistem Pro IA</h2>
+    <h2 class="section-title">💳 Potenciá tus herramientas pedagógicas</h2>
 
     <div class="plans">
       <div class="plan">
         <h3>Docente</h3>
         <div class="price">$4.999</div>
-        <p>100 generaciones por mes.</p>
-        <button class="btn-mp" onclick="window.open('https://mpago.la/2ECLDFR','_blank')">Suscribirme</button>
+        <p>100 generaciones por mes para potenciar tus clases.</p>
+        <button class="btn-mp" onclick="window.open('https://mpago.la/2ECLDFR','_blank')">Elegir Docente</button>
       </div>
 
-      <div class="plan" style="border-color: var(--accent);">
-        <h3 style="color: var(--accent);">Profesional</h3>
+      <div class="plan featured">
+        <h3 style="color: #60A5FA;">Profesional</h3>
         <div class="price">$8.999</div>
-        <p>300 generaciones por mes.</p>
-        <button class="btn-mp" onclick="window.open('https://mpago.la/2X9cT72','_blank')">Suscribirme</button>
+        <p>300 generaciones al mes. El favorito de los docentes líderes.</p>
+        <button class="btn-mp" onclick="window.open('https://mpago.la/2X9cT72','_blank')">Elegir Profesional</button>
       </div>
 
       <div class="plan">
         <h3>Institución</h3>
         <div class="price">$24.999</div>
-        <p>1.000 generaciones por mes.</p>
-        <button class="btn-mp" onclick="window.open('https://mpago.la/142hjdM','_blank')">Suscribirme</button>
+        <p>1.000 generaciones mensuales para equipos completos.</p>
+        <button class="btn-mp" onclick="window.open('https://mpago.la/142hjdM','_blank')">Elegir Institución</button>
       </div>
     </div>
 
-    <p class="small" style="margin-top:16px;text-align:center;">
-      El pago se realiza de forma segura mediante Mercado Pago.
+    <p class="small" style="margin-top:20px;text-align:center;">
+      Procesamiento protegido y transparente mediante Mercado Pago.
     </p>
   </section>
 
   <!-- GENERADOR -->
   <section class="card account-panel" id="generator-panel">
-    <h2 class="section-title">🤖 Generar material educativo</h2>
+    <h2 class="section-title">🤖 Generador inteligente de material</h2>
 
     <div id="error-banner" class="error-banner"></div>
 
@@ -567,7 +643,7 @@
 
       <div class="form-group">
         <label for="tema">Tema o eje central</label>
-        <input id="tema" name="tema" required placeholder="¿Qué querés trabajar?">
+        <input id="tema" name="tema" required placeholder="¿Qué querés trabajar hoy?">
       </div>
 
       <div class="form-group">
@@ -576,15 +652,15 @@
       </div>
 
       <div class="form-group">
-        <label for="indicaciones">¿Cómo querés que lo realice?</label>
-        <textarea id="indicaciones" name="indicaciones" placeholder="Escribí cualquier indicación especial para tu propuesta..."></textarea>
+        <label for="indicaciones">Indicaciones especiales (Opcional)</label>
+        <textarea id="indicaciones" name="indicaciones" placeholder="Agregá lineamientos particulares para tu propuesta..."></textarea>
       </div>
 
       <div class="form-group">
         <label>📚 Biblioteca Curricular Argentina</label>
         <div class="library">
           <div id="library-container" class="library-grid">
-            <div class="small">Cargando biblioteca...</div>
+            <div class="small">Cargando biblioteca curricular...</div>
           </div>
         </div>
       </div>
@@ -592,15 +668,15 @@
       <div class="form-group">
         <label for="materiales">📎 Materiales de referencia</label>
         <input type="file" id="materiales" name="materiales" multiple accept=".pdf,.docx,.txt,.md,.csv,.html,.htm">
-        <div class="small" style="margin-top:6px;">Podés adjuntar hasta 2 archivos de referencia.</div>
+        <div class="small" style="margin-top:6px;">Podés adjuntar hasta 2 archivos de referencia de apoyo.</div>
       </div>
 
       <button type="submit" class="btn-primary" id="btn-submit">
-        ✨ Generar material educativo
+        ✨ Generar material educativo con IA
       </button>
     </form>
 
-    <div id="loader" class="loader">⏳ Generando tu material educativo con IA...</div>
+    <div id="loader" class="loader">⚡ Procesando contexto y redactando material pedagógico...</div>
     <div id="result-box" class="result-box"></div>
     
     <div id="result-actions" class="result-actions">
@@ -661,7 +737,7 @@ authForm.addEventListener("submit", async function (event) {
       const result = await supabaseClient.auth.signUp({ email, password });
       if (result.error) throw result.error;
       if (!result.data.session) {
-        showAuthMessage("Cuenta creada. Revisá tu correo para confirmar la cuenta.", "success");
+        showAuthMessage("Cuenta creada. Revisá tu correo para confirmar el acceso.", "success");
       } else {
         showAuthMessage("Cuenta creada correctamente.", "success");
       }
